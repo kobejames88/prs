@@ -1,6 +1,7 @@
 package com.perfectchina.bns.controller;
 
 import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.service.ActiveNodeService;
 import com.perfectchina.bns.service.FiveStarTreeNodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +32,14 @@ public class RestApiActiveNetTreeNodeController {
 	public static final Logger logger = LoggerFactory.getLogger(RestApiActiveNetTreeNodeController.class);
 
 	@Autowired
-	FiveStarTreeNodeService fiveStarTreeNodeService; //Service which will do all data retrieval/manipulation work
+	ActiveNodeService activeNodeService; //Service which will do all data retrieval/manipulation work
 	
     
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		//TreeNode rootNode = treeNodeService.getTreeNode(1L); // pass root node id to retrieve whole tree 
-		TreeNode rootNode = fiveStarTreeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree 
+		TreeNode rootNode = activeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
@@ -56,12 +56,6 @@ public class RestApiActiveNetTreeNodeController {
 	        }
 	        treeNodes.add( top );
 	    }
-	    
-	    if ( logger.isDebugEnabled() ) {
-	    	for ( TreeNode temp: treeNodes ) {
-	    		logger.debug( "listAccounts, treeNodes="+ temp);
-	    	}
-	    }	    	    
 		
 		return new ResponseEntity<List<TreeNode>>(treeNodes, HttpStatus.OK);
 	}
@@ -74,9 +68,6 @@ public class RestApiActiveNetTreeNodeController {
 	 */
 	@RequestMapping(value = "/fiveStarNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> createFiveStarNet() {
-
-		
-		
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 
 		HttpHeaders headers = new HttpHeaders();
@@ -85,7 +76,6 @@ public class RestApiActiveNetTreeNodeController {
 		} catch (URISyntaxException e) {
 			logger.error( e.toString(), e);
 		}
-
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	}
 
