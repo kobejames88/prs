@@ -1,0 +1,27 @@
+<h1>InterfaceOPVNetTreeNode</h1>
+
+
+<button onclick="updata()">updata opvNet</button>
+<a href="#!/interface-opvnet-node/list"><button >list opvNet</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/opvNet/",
+         type:"put",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

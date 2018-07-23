@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+
+  <Properties>
+     <Property name="fileName">R:/Temp/log/LogViewer.log</Property>
+     <Property name="fileNamePattern">R:/Temp/log/LogViewer%d{dd-MM-yyyy}-%i.log</Property>
+     <Property name="logPattern">%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Property>
+  </Properties>
+
+
+  <Appenders>
+    <!-- Console Appender -->
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${logPattern}" />
+    </Console>
+    <!-- File Appender -->
+    <File name="File" fileName="R:/Temp/app.log">
+      <PatternLayout pattern="${logPattern}" />
+    </File>
+    
+    <RollingFile name="MyRollingFile" fileName="${fileName}" filePattern="${fileNamePattern}">
+        <!-- HTMLLayout charset="UTF-8"  pattern="${logPattern}"/ -->
+        <PatternLayout pattern="${logPattern}" />
+        <Policies>
+            <TimeBasedTriggeringPolicy/>
+            <SizeBasedTriggeringPolicy size="10MB"/>
+        </Policies>
+        <DefaultRolloverStrategy max="10"/>
+    </RollingFile>    
+    
+  </Appenders>
+
+  <Loggers>
+    <!-- Log everything in custom package -->
+    <Logger name="com.perfectchina.bns" level="debug" additivity="false">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="MyRollingFile" />
+    </Logger>
+
+    <!-- Log everything in Spring Boot -->
+    <Logger name="org.springframework.boot" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="MyRollingFile" />
+    </Logger>
+
+    <!-- Log everything in Spring Core -->
+    <Logger name="org.springframework.core" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="MyRollingFile" />
+    </Logger>
+
+    <Logger name="org.springframework" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="MyRollingFile" />
+    </Logger>
+
+    <Logger name="com.zaxxer.hikari" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="MyRollingFile" />
+    </Logger>
+
+    <Root level="info">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="MyRollingFile" />
+    </Root>
+    
+  </Loggers>
+</Configuration>

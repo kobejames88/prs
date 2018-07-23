@@ -1,0 +1,99 @@
+<h1>Interface Sales Record</h1>
+<h3>upload sales record</h3>
+
+<form id="tf"  enctype="multipart/form-data">  
+    <input type="file" name="file" id="file"  />  
+    <input type="button" value="Upload" onclick="upload()" style='display:inline-block'/>   
+</form>
+<button onclick="listPending()">listPending</button>
+<button onclick="confirm()">confirm</button>
+
+<table id="salesRecordTB" style="display:none;text-align:center;FONT-SIZE: 11pt; WIDTH: 600px; BORDER-COLLAPSE: collapse" borderColor=#3399ff cellSpacing=0 cellPadding=0 align=center border=1>   
+    <tr>   
+        <tr>
+          <th>accountNum</th>
+		  <th>orderNum</th>
+		  <th>requestDate</th>
+		  <th>requestStatus</th>
+		  <th>salesDate</th>
+		  <th>salesPv</th>
+        </tr>   
+    </tr>  
+    <tbody id="tbodyID"></tbody>
+</table>
+
+
+
+
+ <script type="text/javascript">
+ function confirm(){
+	 document.getElementById("salesRecordTB").style.display='none';
+	 $.ajax({
+         url:"/bns/api/interfaceSalesRecord/confirmBatch/",
+         type:"post",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+ function listPending(){
+     $.ajax({
+         url:"/bns/api/interfaceSalesRecord/listPendingSalesRecord",
+         type:"get",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+        	 document.getElementById("tbodyID").innerHTML='';
+        	 var table=document.getElementById("tbodyID");
+        	 for(var i=0;i<data.length;i++){
+                 var row=table.insertRow(table.rows.length);
+                 var c1=row.insertCell(0);
+                 c1.innerHTML=data[i].accountNum;
+                 var c2=row.insertCell(1);
+                 c2.innerHTML=data[i].orderNum;
+                 var c3=row.insertCell(2);
+                 c3.innerHTML=data[i].requestDate;
+                 var c4=row.insertCell(3);
+                 c4.innerHTML=data[i].requestStatus;
+                 var c5=row.insertCell(4);
+                 c5.innerHTML=data[i].salesDate;
+                 var c6=row.insertCell(5);
+                 c6.innerHTML=data[i].salesPv;
+             }
+
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });  
+     document.getElementById("salesRecordTB").style.display='';
+ }
+  function upload(){
+      var form = new FormData(document.getElementById("tf"));
+      $.ajax({
+          url:"/bns/api/interfaceSalesRecord/upload",
+          type:"post",
+          data:form,
+          async:true, 
+          processData:false,
+          contentType:false,
+          success:function(data){
+        	  alert("success!");
+          },
+          error:function(e){
+              alert("failed!");
+          }
+      });        
+  }
+  </script>
+
+

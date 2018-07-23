@@ -1,0 +1,27 @@
+<h1>InterfaceSimpleNetTreeNode</h1>
+
+
+<button onclick="updata()">updata simpleNet</button>
+<a href="#!/interface-simplenet-node/list"><button onclick="list()">list simpleNet</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/simpleNet/",
+         type:"put",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

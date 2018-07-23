@@ -1,0 +1,144 @@
+<h1>Interface Account</h1>
+<h3>Pending list for interface account:</h3>
+<ul>
+    <li ng-repeat="interfaceAccount in vm.allInterfaceAccounts">
+        {{interfaceAccount.id}} ({{interfaceAccount.accountNum}} {{interfaceAccount.uplinkAccount}} {{interfaceAccount.status}})
+        - <a ng-click="vm.deleteInterfaceAccount(interfaceAccount.id)">Delete</a>
+    </li>
+</ul>
+<p>&nbsp;</p>
+<p><a href="#!/login" class="btn btn-primary">Logout</a></p>
+
+<div class="col-md-6 col-md-offset-3">
+    <h2>Add Pending Account</h2>
+    <form name="form" ng-submit="vm.createInterfaceAccount()" role="form">
+        <div class="form-group" ng-class="{ 'has-error': form.accountNum.$dirty && form.accountNum.$error.required }">
+            <label for="username">Account number</label>
+            <input type="text" name="accountNum" id="accountNum" class="form-control" ng-model="vm.interfaceAccount.accountNum" required />
+            <span ng-show="form.accountNum.$dirty && form.accountNum.$error.required" class="help-block">Account number is required</span>
+        </div>
+        <div class="form-group" ng-class="{ 'has-error': form.uplinkAccount.$dirty && form.uplinkAccount.$error.required }">
+            <label for="username">Uplink account number</label>
+            <input type="text" name="uplinkAccount" id="Text1" class="form-control" ng-model="vm.interfaceAccount.uplinkAccount" required />
+            <span ng-show="form.uplinkAccount.$dirty && form.uplinkAccount.$error.required" class="help-block">Uplink account number is required</span>
+        </div>
+        <div class="form-actions">
+            <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Add new interface account</button>
+            <img ng-if="vm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            <a href="#!/login" class="btn btn-link">Cancel</a>
+        </div>
+    </form>
+    
+  <form id="tf"  enctype="multipart/form-data">  
+    <input type="file" name="file" id="file" />  
+    <input type="button" value="Upload" onclick="upload()"/>   
+  </form>
+  <button onclick="listPending()">listPending</button>
+  <button onclick="confirm()">confirm</button>
+</div>
+
+<table id="accountsTB" style="display:none;text-align:center;FONT-SIZE: 11pt; WIDTH: 600px; BORDER-COLLAPSE: collapse" borderColor=#3399ff cellSpacing=0 cellPadding=0 align=center border=1>   
+    <tr>   
+        <tr>
+          <th>accountNum</th>
+		  <th>accountName</th>
+		  <th>accountAddress</th>
+		  <th>uplinkAccount</th>
+		  <th>pin</th>
+		  <th>status</th>
+		  <th>joinDate</th>
+		  <th>expiryDate</th>
+		  <th>action</th>
+		  <th>actionDate</th>
+		  <th>requestDate</th>
+		  <th>requestStatus</th>
+        </tr>   
+    </tr>  
+    <tbody id="tbodyID"></tbody>
+</table>
+
+
+
+
+ <script type="text/javascript">
+ function confirm(){
+	 document.getElementById("accountsTB").style.display='none';
+	 $.ajax({
+         url:"/bns/api/interfaceAccount/confirmBatch/",
+         type:"post",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+ function listPending(){
+     $.ajax({
+         url:"/bns/api/interfaceAccount/listPendingAccounts",
+         type:"get",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+        	 document.getElementById("tbodyID").innerHTML='';
+        	 var table=document.getElementById("tbodyID");
+        	 for(var i=0;i<data.length;i++){
+                 var row=table.insertRow(table.rows.length);
+                 var c1=row.insertCell(0);
+                 c1.innerHTML=data[i].accountNum;
+                 var c2=row.insertCell(1);
+                 c2.innerHTML=data[i].accountName;
+                 var c3=row.insertCell(2);
+                 c3.innerHTML=data[i].accountAddress;
+                 var c4=row.insertCell(3);
+                 c4.innerHTML=data[i].uplinkAccount;
+                 var c5=row.insertCell(4);
+                 c5.innerHTML=data[i].pin;
+                 var c6=row.insertCell(5);
+                 c6.innerHTML=data[i].status;
+                 var c7=row.insertCell(6);
+                 c7.innerHTML=data[i].joinDate;
+                 var c8=row.insertCell(7);
+                 c8.innerHTML=data[i].expiryDate;
+                 var c9=row.insertCell(8);
+                 c9.innerHTML=data[i].action;
+                 var c10=row.insertCell(9);
+                 c10.innerHTML=data[i].actionDate;
+                 var c11=row.insertCell(10);
+                 c11.innerHTML=data[i].requestDate;
+                 var c12=row.insertCell(11);
+                 c12.innerHTML=data[i].requestStatus;
+             }
+
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });  
+     document.getElementById("accountsTB").style.display='';
+ }
+  function upload(){
+      var form = new FormData(document.getElementById("tf"));
+      $.ajax({
+          url:"/bns/api/interfaceAccount/upload",
+          type:"post",
+          data:form,
+          async:true, 
+          processData:false,
+          contentType:false,
+          success:function(data){
+        	  alert("success!");
+          },
+          error:function(e){
+              alert("failed!");
+          }
+      });        
+  }
+  </script>
