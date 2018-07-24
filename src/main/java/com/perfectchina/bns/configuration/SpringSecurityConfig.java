@@ -104,20 +104,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll();
         */
 	      
-//        http.exceptionHandling().authenticationEntryPoint(new AjaxAwareEntryPoint(LOGIN))
-//        .and()
-//        .authorizeRequests()
-//        .antMatchers("/", "/auth/**", "/api/**", "/console/**").permitAll()
-//        // .antMatchers("/", "/auth/**" ).permitAll()  // all api/user not works ?
-//        .anyRequest().authenticated()
-//        .and()
-//        .formLogin().loginPage(LOGIN)
-//        .and()
-//        .logout().permitAll()
-//        .and()
-//        .csrf().csrfTokenRepository(csrfTokenRepository())
-//        .and()
-//        .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
+        http.exceptionHandling().authenticationEntryPoint(new AjaxAwareEntryPoint(LOGIN))
+        .and()
+        .authorizeRequests()
+        .antMatchers("/", "/auth/**", "/api/**", "/console/**").permitAll()
+        // .antMatchers("/", "/auth/**" ).permitAll()  // all api/user not works ?
+        .anyRequest().authenticated()
+        .and()
+        .formLogin().loginPage(LOGIN)
+        .and()
+        .logout().permitAll()
+        .and()
+        .csrf().csrfTokenRepository(csrfTokenRepository())
+        .and()
+        .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
 
 	      http.csrf().disable(); // this one only used to debug , should be remove in production
 	      http.headers().frameOptions().disable(); // this one only used to debug , should be remove in production

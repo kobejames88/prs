@@ -40,12 +40,11 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	}
 	
     public void updateWholeTree() {
-    	// get root node
+    	// 获取子节点
     	TreeNode rootNode = simpleTreeNodeRepository.getRootTreeNode();
     	updateChildTreeLevel( 0, rootNode );
-    	
     }
-	
+
     // Return fromNode with all the child updated
 	public void updateChildTreeLevel( Integer fromLevelNum, TreeNode fromNode){
 		List<TreeNode> childList = fromNode.getChildNodes();
@@ -66,7 +65,7 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	        for ( TreeNode child : top.getChildNodes()) {
 	        	child.setLevelNum( childLevelNum );
 	            stk.push(child);
-	        }	        
+	        }
 	       process(top);
 	    }
 		

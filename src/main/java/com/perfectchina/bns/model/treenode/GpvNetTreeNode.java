@@ -1,0 +1,45 @@
+package com.perfectchina.bns.model.treenode;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+/**
+ * 个人小组积分
+ */
+@Entity
+@Table(name = "GpvNetTreeNode")
+@NamedQuery(name="GpvNetTreeNode.findAll", query="SELECT a FROM GpvNetTreeNode a")
+public class GpvNetTreeNode extends TreeNode {
+	private static final long serialVersionUID = 1L;
+
+	// Current month gpv
+	private Float ppv;  // personal PV
+
+	private Float gpv;  // 个人及下级未达到五星的所有PPV总和
+
+
+	public Float getPpv() {
+		return ppv;
+	}
+
+	public void setPpv(Float ppv) {
+		this.ppv = ppv;
+	}
+
+	public Float getGpv() {
+		return gpv;
+	}
+
+	public void setGpv(Float gpv) {
+		this.gpv = gpv;
+	}
+
+	@Override
+	public String toString() {
+		return "OpvNetTreeNode [ppv=" + ppv + ", gpv=" + gpv + ", toString()=" + super.toString() + "]";
+	}
+
+
+	
+}

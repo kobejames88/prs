@@ -1,0 +1,27 @@
+<h1>InterfaceGPVNetTreeNode</h1>
+
+
+<button onclick="updata()">updata gpvNet</button>
+<a href="#!/interface-gpvnet-node/list"><button >list gpvNet</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/gpvNet/",
+         type:"put",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

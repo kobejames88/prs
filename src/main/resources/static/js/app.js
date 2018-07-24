@@ -68,14 +68,28 @@
             .when('/interface-opvnet-node', {
                 controller: 'InterfaceOpvNetNodeController',
                 //templateUrl: 'register',
-                templateUrl: 'js/interface-opvnet-node/interface-opvnet-node.view.html',
+                templateUrl: 'js/interface-opvnet-node/interface-gpvnet-node.view.html',
                 controllerAs: 'vm'
             })
             
             .when('/interface-opvnet-node/list', {
                 controller: 'InterfaceOpvNetNodeController',
                 //templateUrl: 'register',
-                templateUrl: 'js/interface-opvnet-node/list/opvnettreenode.html',
+                templateUrl: 'js/interface-opvnet-node/list/gpvnettreenode.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-gpvnet-node', {
+                controller: 'InterfaceGpvNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-gpvnet-node/interface-gpvnet-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-gpvnet-node/list', {
+                controller: 'InterfaceGpvNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-gpvnet-node/list/gpvnettreenode.html',
                 controllerAs: 'vm'
             })
             
