@@ -66,13 +66,13 @@ public class RestApiActiveNetTreeNodeController {
 	/**
 	 * @return
 	 */
-	@RequestMapping(value = "/fiveStarNet/", method = RequestMethod.PUT)
+	@RequestMapping(value = "/ActiveNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> createFiveStarNet() {
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			headers.setLocation( new URI( "/api/fiveStarNet/listAccounts" ) );
+			headers.setLocation( new URI( "/api/ActiveNet/listAccounts" ) );
 		} catch (URISyntaxException e) {
 			logger.error( e.toString(), e);
 		}
