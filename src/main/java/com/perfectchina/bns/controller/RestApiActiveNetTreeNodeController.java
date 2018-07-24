@@ -21,8 +21,8 @@ import java.util.Stack;
 
 
 /**
- * This controller receive request and create five star network 
- * @author Steve
+ * This controller receive request and create active network
+ * @author Terry
  *
  */
 @RestController
@@ -39,15 +39,17 @@ public class RestApiActiveNetTreeNodeController {
 
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		TreeNode rootNode = activeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree
+		// 通过根节点获取整棵树
+		TreeNode rootNode = activeNodeService.getRootTreeNode();
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
 		
-		// parse the whole tree in depth first order for the whole list of TreeNode				
-		List<TreeNode> treeNodes = new ArrayList<TreeNode>();
-		
-	    Stack<TreeNode> stk = new Stack<TreeNode>();
+		// parse the whole tree in depth first order for the whole list of TreeNode
+		// 将整个树按深度顺序依次解析整个树列表
+		List<TreeNode> treeNodes = new ArrayList<>();
+		// 将节点放入堆栈中
+	    Stack<TreeNode> stk = new Stack<>();
 	    stk.push( rootNode );
 	    while (!stk.empty()) {
 	        TreeNode top = stk.pop();
@@ -61,7 +63,7 @@ public class RestApiActiveNetTreeNodeController {
 	}
 
 	
-	// -------------------Create a fiveStarNetTree-------------------------------------------
+	// -------------------Create a ActiveNetTree-------------------------------------------
 
 	/**
 	 * @return

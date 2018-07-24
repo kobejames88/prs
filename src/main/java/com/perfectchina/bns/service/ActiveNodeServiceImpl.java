@@ -27,11 +27,15 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 	@Autowired
 	private SimpleNetTreeNodeRepository simpleTreeNodeRepository;
 
-	private Date previousDateEndTime; // Parameter to set calculate PPV for
+	// Parameter to set calculate PPV for
 	// which month
+	private Date previousDateEndTime;
 
 	public Date getPreviousDateEndTime() {
 		return previousDateEndTime;
+	}
+	public void setPreviousDateEndTime(Date previousDateEndTime) {
+		this.previousDateEndTime = previousDateEndTime;
 	}
 
 	@Override
