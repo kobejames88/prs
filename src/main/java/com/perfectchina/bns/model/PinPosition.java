@@ -3,6 +3,7 @@ package com.perfectchina.bns.model;
 public interface PinPosition {
 	
 	public final String MEMBER = "MEMBER" ;
+	public final String NEW_FIVE_STAR = "NEW_FIVE_STAR" ;
 	public final String FIVE_STAR = "FIVE_STAR" ;
 	public final String RUBY = "RUBY" ;
 	public final String EMERALD = "EMERALD" ;

@@ -38,6 +38,9 @@ public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T,
 	@Query("SELECT a FROM #{#entityName} a WHERE a.hasChild = FALSE AND a.id IN (SELECT DISTINCT a2.uplinkId FROM #{#entityName} a2 )")
 	public List<T> retrieveInCorrectHasChildAccounts();
 	
+	@Query("SELECT a FROM #{#entityName} a WHERE a.hasChild = FALSE and a.snapshotDate = :snapshotDate ")
+	public List<T> findLeafNodes(@Param("snapshotDate") String snapshotDate);
+	
 	// need to find out the account has no distributor child 
 	//@Query("SELECT a FROM Account a WHERE a.hasChild = TRUE AND a.id NOT IN (SELECT DISTINCT a2.uplinkId FROM Account a2 WHERE a2.pin in ('T','AS','S','M','SM','EM','D','SD') )")
 	@Query("SELECT a FROM #{#entityName} a WHERE a.hasChild = TRUE AND a.id NOT IN (SELECT DISTINCT a2.uplinkId FROM #{#entityName} a2 )")

@@ -78,9 +78,13 @@ public class RestApiFiveStarNetTreeNodeController {
 	@RequestMapping(value = "/fiveStarNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> createFiveStarNet() {
 
+		Date currentDate = new Date();
+		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		//fiveStarTreeNodeService.setPreviousDateEndTime(previousDateEndTime);
+		fiveStarTreeNodeService.createFiveStarNetTree();
+		fiveStarTreeNodeService.updateWholeTreeFiveStar();
 		
-		
-		logger.info("execute, finished updateSimpleNetPpv.");
+		logger.info("execute, finished Create a fiveStarNetTree.");
 		 
 		HttpHeaders headers = new HttpHeaders();
 		try {
