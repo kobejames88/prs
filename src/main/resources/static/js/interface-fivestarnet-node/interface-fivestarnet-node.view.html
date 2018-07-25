@@ -1,0 +1,27 @@
+<h1>InterfaceFiveStarNetTreeNode</h1>
+
+
+<button onclick="updata()">updata fiveStarNet</button>
+<a href="#!/interface-fivestarnet-node/list"><button >list fiveStarNet</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/fiveStarNet/",
+         type:"put",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

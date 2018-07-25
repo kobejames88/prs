@@ -1,5 +1,6 @@
 package com.perfectchina.bns.common.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +11,38 @@ public class DateUtils {
 	private static final String DAY = "D";
 	private static final String MONTH = "M";
 	private static final String YEAR = "Y";
+	
+	public static String getCurrentSnapshotDate(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+		String currentSnapshotDate = sdf.format(new Date());
+		return currentSnapshotDate;
+	}
+	
+	public static String getLastMonthSnapshotDate(String snapshotDate){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+		String lastMonthSnapshotDate=null;
+		try {
+			Date date = sdf.parse(snapshotDate);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			int year = date.getYear()+1900;
+			int month = date.getMonth();
+			String m = "";
+			if(month==0){
+				year = year-1;
+				m=m+12;
+			}
+			else if(month<10){
+				m="0"+month;
+			}else{
+				m=m+month;
+			}
+			lastMonthSnapshotDate=""+year+m;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return lastMonthSnapshotDate;
+	}
 	
 	public static Date getPureToday() {		
 		Calendar _cal = Calendar.getInstance();

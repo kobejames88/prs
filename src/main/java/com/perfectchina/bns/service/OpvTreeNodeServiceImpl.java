@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.model.PinPosition;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
@@ -101,7 +103,8 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		// find out AOPV from last month of the OPVNetTreeNode for the same account
 		Long accountId = node.getData().getId();
 		
-		OpvNetTreeNode prevMonthNode = opvTreeNodeRepository.getAccountByAccountNum(simpleNetTreeNode.getSnapshotDate(),
+		OpvNetTreeNode prevMonthNode = opvTreeNodeRepository.getAccountByAccountNum(
+				DateUtils.getLastMonthSnapshotDate(simpleNetTreeNode.getSnapshotDate()),
 				simpleNetTreeNode.getData().getAccountNum());
 		
 		Float aopvLastMonth = 0F;
@@ -133,8 +136,13 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				List<TreeNode> childNodes = opvTreeNodeRepository.getChildNodesByUpid(opvNetTreeNode.getId());
 				for (TreeNode treeNode : childNodes) {
 					OpvNetTreeNode opvChildNode = (OpvNetTreeNode) treeNode;
-					opvNetTreeNode.setOpv(opvNetTreeNode.getOpv()+opvChildNode.getOpv());
+					Float opv = opvNetTreeNode.getOpv();
+					opvNetTreeNode.setOpv(opv+opvChildNode.getOpv());
 				}
+				Float aopvLastMonth = opvNetTreeNode.getAopvLastMonth();
+				Float opv = opvNetTreeNode.getOpv();
+				
+				opvNetTreeNode.setAopv(aopvLastMonth+opv);
 				opvTreeNodeRepository.saveAndFlush(opvNetTreeNode);
 			} // end for loop
 			treeLevel--;

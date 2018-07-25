@@ -1,44 +1,44 @@
 [
   {
     "accountNum":"Ac",
-    "salesDate":"2018-07-07",
+    "salesDate":"2018-07-01",
     "orderNum":"11",
-    "salesPv":3000
+    "salesPv":30000
   },
   {
     "accountNum":"B",
-    "salesDate":"2018-07-07",
+    "salesDate":"2018-07-01",
     "orderNum":"22",
-    "salesPv":6000
+    "salesPv":60000
   },
   {
     "accountNum":"C",
-    "salesDate":"2018-07-07",
+    "salesDate":"2018-07-01",
     "orderNum":"33",
-    "salesPv":300
+    "salesPv":3000
   },
   {
     "accountNum":"D",
-    "salesDate":"2018-07-07",
+    "salesDate":"2018-07-01",
     "orderNum":"44",
-    "salesPv":12000
+    "salesPv":120000
   },
   {
     "accountNum":"E",
-    "salesDate":"2018-07-07",
+    "salesDate":"2018-07-01",
     "orderNum":"55",
-    "salesPv":6000
+    "salesPv":60000
   },
   {
     "accountNum":"F",
-    "salesDate":"2018-07-07",
+    "salesDate":"2018-07-01",
     "orderNum":"66",
-    "salesPv":400
+    "salesPv":40000
   },
   {
     "accountNum":"G",
-    "salesDate":"2018-07-07",
+    "salesDate":"2018-07-01",
     "orderNum":"77",
-    "salesPv":1000
+    "salesPv":10000
   }
 ]

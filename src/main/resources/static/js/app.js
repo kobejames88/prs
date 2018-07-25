@@ -93,6 +93,20 @@
                 controllerAs: 'vm'
             })
             
+            .when('/interface-fivestarnet-node', {
+                controller: 'InterfaceFiveStarNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-fivestarnet-node/interface-fivestarnet-node.view.html',
+                controllerAs: 'vm'
+            })
+            
+            .when('/interface-fivestarnet-node/list', {
+                controller: 'InterfaceFiveStarNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-fivestarnet-node/list/fivestarnettreenode.html',
+                controllerAs: 'vm'
+            })
+            
             .otherwise({ redirectTo: '/login' });
                 
     }
