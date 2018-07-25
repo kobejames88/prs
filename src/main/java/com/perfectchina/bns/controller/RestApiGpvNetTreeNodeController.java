@@ -66,7 +66,7 @@ public class RestApiGpvNetTreeNodeController {
 	// -------------------Create a InterfaceAccountInfo-------------------------------------------
 
 	/**
-	 * 基于SalesRecord更新gpv
+	 * Update gpv based on SalesRecord
 	 * @return
 	 */
 	@RequestMapping(value = "/gpvNet/", method = RequestMethod.PUT)

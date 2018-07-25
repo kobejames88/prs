@@ -75,11 +75,10 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 	protected void process(TreeNode node) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
-		// 将原始网络图的节点加上上级id复制到GpvNetTreeNode
+		// Copy the node of the original network map plus the uplinkId to GpvNetTreeNode
 		SimpleNetTreeNode simpleNetTreeNode = (SimpleNetTreeNode) node;
 		GpvNetTreeNode gpvNetTreeNode = new GpvNetTreeNode();
 		//the uplinkId is SimpleNet
-		// opvNetTreeNode.setUplinkId( simpleNetTreeNode.getUplinkId() ); 
 		long uplinkId = simpleNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
 			SimpleNetTreeNode one = simpleTreeNodeRepository.getOne(uplinkId);
@@ -95,24 +94,15 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		gpvNetTreeNode.setSnapshotDate(simpleNetTreeNode.getSnapshotDate());
 		gpvNetTreeNode.setData(simpleNetTreeNode.getData());
 
-		// find out AOPV from last month of the OPVNetTreeNode for the same account
-		Long accountId = node.getData().getId();
-
-
-		// retrieve child level OPV for the current month, then add current node OPV
-		// 检查当前月份的子级opv，并加上当前节点的opv
-
-		// throw new IllegalArgumentException("Not finished yet.");
-
 		gpvNetTreeNodeRepository.saveAndFlush(gpvNetTreeNode);
 	}
 
 	@Override
 	/**
-	 * 更新整棵树的gpv
+	 * Update the entire tree's gpv
 	 */
 	public void updateWholeTreeGPV() {
-		// 获取原始树的代数
+		// Get the level of the original tree
 		int treeLevel = getTreeLevel();
 		if (treeLevel < 0)
 			return;
@@ -121,11 +111,11 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 			List<GpvNetTreeNode> thisTreeLevelTreeList = gpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
 			for (GpvNetTreeNode opvNetTreeNode : thisTreeLevelTreeList) {
-				// 判断该会员是否五星及以上
+				// Determine if the member is more than the five stars
 				if (Const.PinEnum.valOf(opvNetTreeNode.getData().getPin()).getCode() >= 6){
 					opvNetTreeNode.setGpv(opvNetTreeNode.getPpv());
 				}else {
-					// 判断id是否在map的key中
+					// Determine if the id is in the key of the map
 					if (map.containsKey(opvNetTreeNode.getId())){
 						opvNetTreeNode.setGpv(opvNetTreeNode.getPpv()+map.get(opvNetTreeNode.getId()));
 					}else {
@@ -146,7 +136,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 	}
 
 	/**
-	 * 获取原始树的代数
+	 * Get the level of the original tree
 	 * @return
 	 */
 	private int getTreeLevel() {

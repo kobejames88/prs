@@ -16,7 +16,7 @@ public class GpvNetTreeNode extends TreeNode {
 	// Current month gpv
 	private Float ppv;  // personal PV
 
-	private Float gpv;  // 个人及下级未达到五星的所有PPV总和
+	private Float gpv;  // Individuals and subordinates do not reach the five-star total PPV sum
 
 
 	public Float getPpv() {

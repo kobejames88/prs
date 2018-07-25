@@ -111,7 +111,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		opvNetTreeNode.setAopvLastMonth(aopvLastMonth);
 
 		// retrieve child level OPV for the current month, then add current node OPV
-		// 检查当前月份的子级opv，并加上当前节点的opv
 
 		// throw new IllegalArgumentException("Not finished yet.");
 
@@ -119,7 +118,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	}
 
 	@Override
-	// 更新整棵树的opv
 	public void updateWholeTreeOPV() {
 		int treeLevel = getTreeLevel();
 		if (treeLevel < 0)

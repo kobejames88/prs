@@ -40,7 +40,7 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	}
 	
     public void updateWholeTree() {
-    	// 获取子节点
+    	// Get child nodes
     	TreeNode rootNode = simpleTreeNodeRepository.getRootTreeNode();
     	updateChildTreeLevel( 0, rootNode );
     }

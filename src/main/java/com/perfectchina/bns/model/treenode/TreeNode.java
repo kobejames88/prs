@@ -41,7 +41,7 @@ public abstract class TreeNode implements Serializable {
 	@OneToOne
 	private Account data;
 
-	// 根据uplinkId连接
+	// Connect according to uplinkId
 	@OneToMany(mappedBy = "uplinkId")
 	@JsonIgnore
 	List<TreeNode> childNodes = new ArrayList<>(0);
