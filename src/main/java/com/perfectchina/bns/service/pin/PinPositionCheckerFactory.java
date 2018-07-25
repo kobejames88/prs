@@ -1,7 +1,6 @@
 package com.perfectchina.bns.service.pin;
 
 import com.perfectchina.bns.model.Account;
-import com.perfectchina.bns.model.PinPosition;
 import com.perfectchina.bns.service.AccountAwardService;
 import com.perfectchina.bns.service.AccountService;
 

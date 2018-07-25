@@ -1,4 +1,4 @@
-package com.perfectchina.bns.common.utils;
+package com.perfectchina.bns.service.pin;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,13 +9,14 @@ public class Const {
         TWO_STAR(3,"TWO_STAR"),
         THREE_STAR(4,"THREE_STAR"),
         FOUR_STAR(5,"FOUR_STAR"),
-        FIVE_STAR(6,"FIVE_STAR"),
-        RUBY(7,"RUBY"),
-        EMERALD(8,"EMERALD"),
-        DIAMONDS(9,"DIAMONDS"),
-        GOLD_DRILL(10,"GOLD_DRILL"),
-        DOUBLE_GOLD_DRILL(11,"DOUBLE_GOLD_DRILL"),
-        THREE_GOLD_DRILL(12,"THREE_GOLD_DRILL");
+        NEW_FIVE_STAR(6,"NEW_FIVE_STAR"),
+        FIVE_STAR(7,"FIVE_STAR"),
+        RUBY(8,"RUBY"),
+        EMERALD(9,"EMERALD"),
+        DIAMONDS(10,"DIAMONDS"),
+        GOLD_DRILL(11,"GOLD_DRILL"),
+        DOUBLE_GOLD_DRILL(12,"DOUBLE_GOLD_DRILL"),
+        THREE_GOLD_DRILL(13,"THREE_GOLD_DRILL");
 
         private String value;
         private Integer code;

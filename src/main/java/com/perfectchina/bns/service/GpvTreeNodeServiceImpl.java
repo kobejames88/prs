@@ -1,12 +1,10 @@
 package com.perfectchina.bns.service;
 
-import com.perfectchina.bns.common.utils.Const;
+import com.perfectchina.bns.service.pin.Const;
 import com.perfectchina.bns.model.treenode.GpvNetTreeNode;
-import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
 import org.slf4j.Logger;
@@ -55,7 +53,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		// need to check if Simple Net already exist, otherwise, cannot
 		// calculate
 		boolean isReady = false;
-		// 当前月份
+		// // Current month
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
@@ -110,26 +108,32 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		while (treeLevel >= 0) {
 			List<GpvNetTreeNode> thisTreeLevelTreeList = gpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
-			for (GpvNetTreeNode opvNetTreeNode : thisTreeLevelTreeList) {
+			for (GpvNetTreeNode gpvNetTreeNode : thisTreeLevelTreeList) {
+				long id = gpvNetTreeNode.getId();
+				Float pv = gpvNetTreeNode.getPpv();
+				long uplinkId = gpvNetTreeNode.getUplinkId();
+				Float gpv = gpvNetTreeNode.getGpv();
+				String pin = gpvNetTreeNode.getData().getPin();
 				// Determine if the member is more than the five stars
-				if (Const.PinEnum.valOf(opvNetTreeNode.getData().getPin()).getCode() >= 6){
-					opvNetTreeNode.setGpv(opvNetTreeNode.getPpv());
+				// Use Pin`s code to compare pin
+				if (Const.PinEnum.valOf(pin).getCode() >= Const.PinEnum.NEW_FIVE_STAR.getCode()){
+					gpvNetTreeNode.setGpv(pv);
 				}else {
 					// Determine if the id is in the key of the map
-					if (map.containsKey(opvNetTreeNode.getId())){
-						opvNetTreeNode.setGpv(opvNetTreeNode.getPpv()+map.get(opvNetTreeNode.getId()));
+					if (map.containsKey(id)){
+						gpvNetTreeNode.setGpv(pv+map.get(id));
 					}else {
-						opvNetTreeNode.setGpv(opvNetTreeNode.getPpv());
+						gpvNetTreeNode.setGpv(pv);
 					}
-					if(map.containsKey(opvNetTreeNode.getUplinkId())){
-						Float value = map.get(opvNetTreeNode.getUplinkId());
-						Float newVal = value+opvNetTreeNode.getGpv();
-						map.put(opvNetTreeNode.getUplinkId(),newVal);
+					if(map.containsKey(uplinkId)){
+						Float value = map.get(uplinkId);
+						Float newVal = value+gpv;
+						map.put(uplinkId,newVal);
 					}else {
-						map.put(opvNetTreeNode.getUplinkId(),opvNetTreeNode.getGpv());
+						map.put(uplinkId,gpv);
 					}
 				}
-				gpvNetTreeNodeRepository.saveAndFlush(opvNetTreeNode);
+				gpvNetTreeNodeRepository.saveAndFlush(gpvNetTreeNode);
 			} // end for loop
 			treeLevel--;
 		}

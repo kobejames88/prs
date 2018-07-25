@@ -1,7 +1,6 @@
-package com.perfectchina.bns.model;
+package com.perfectchina.bns.service.pin;
 
 public interface PinPosition {
-	
 	public final String MEMBER = "MEMBER" ;
 	public final String NEW_FIVE_STAR = "NEW_FIVE_STAR" ;
 	public final String FIVE_STAR = "FIVE_STAR" ;
@@ -12,5 +11,4 @@ public interface PinPosition {
 	public final String DOUBLE_GOLD_DIAMOND = "DOUBLE_GOLD_DIAMOND" ;
 	public final String TRIPLE_GOLD_DIAMOND = "TRIPLE_GOLD_DIAMOND" ;
 
-		
 }

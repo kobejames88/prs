@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perfectchina.bns.common.utils.DateUtils;
-import com.perfectchina.bns.model.PinPosition;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
@@ -58,7 +57,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		// need to check if Simple Net already exist, otherwise, cannot
 		// calculate
 		boolean isReady = false;
-		// 当前月份
+		// Current month
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
@@ -150,7 +149,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	}
 
 	/**
-	 * 获取树的等级
+	 * Get the level of the original tree
 	 * @return
 	 */
 	private int getTreeLevel() {
