@@ -68,14 +68,14 @@
             .when('/interface-opvnet-node', {
                 controller: 'InterfaceOpvNetNodeController',
                 //templateUrl: 'register',
-                templateUrl: 'js/interface-opvnet-node/interface-gpvnet-node.view.html',
+                templateUrl: 'js/interface-opvnet-node/interface-opvnet-node.view.html',
                 controllerAs: 'vm'
             })
             
             .when('/interface-opvnet-node/list', {
                 controller: 'InterfaceOpvNetNodeController',
                 //templateUrl: 'register',
-                templateUrl: 'js/interface-opvnet-node/list/gpvnettreenode.html',
+                templateUrl: 'js/interface-opvnet-node/list/opvnettreenode.html',
                 controllerAs: 'vm'
             })
 

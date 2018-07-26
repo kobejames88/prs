@@ -117,7 +117,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 						uplinkNode2 = fiveStarNetTreeNodeRepository.findOne(uplinkNode2.getUplinkId());
 						if(uplinkNode2==null){break;}
 					}
-					fiveStarNetTreeNode.setUplinkId(uplinkNode.getId());
+					fiveStarNetTreeNode.setUplinkId(uplinkNode2.getId());
 				}
 				fiveStarNetTreeNodeRepository.saveAndFlush(fiveStarNetTreeNode);
 				fiveStarNetTreeNode = uplinkNode;
