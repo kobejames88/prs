@@ -107,6 +107,21 @@
                 controllerAs: 'vm'
             })
             
+            .when('/interface-activenet-node', {
+	            controller: 'InterfaceActiveNetNodeController',
+	            //templateUrl: 'register',
+	            templateUrl: 'js/interface-activenet-node/interface-activenet-node.view.html',
+	            controllerAs: 'vm'
+            })
+            
+            .when('/interface-activenet-node/list', {
+                controller: 'InterfaceActiveNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-activenet-node/list/activenettreenode.html',
+                controllerAs: 'vm'
+            })
+
+            
             .otherwise({ redirectTo: '/login' });
                 
     }

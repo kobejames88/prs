@@ -1,0 +1,27 @@
+<h1>InterfaceActiveNetTreeNode</h1>
+
+
+<button onclick="updata()">updata activeNet</button>
+<a href="#!/interface-activenet-node/list"><button >list activeNet</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/activeNet/",
+         type:"put",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

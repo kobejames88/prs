@@ -28,6 +28,8 @@ public class ActiveNetTreeNode extends TreeNode {
 	private float gpv;
 	
 	private float opv;
+	
+	private Boolean isActiveMember;
 
 	public String getSnapshotDate() {
 		return snapshotDate;
@@ -59,6 +61,14 @@ public class ActiveNetTreeNode extends TreeNode {
 
 	public void setOpv(float opv) {
 		this.opv = opv;
+	}
+
+	public Boolean getIsActiveMember() {
+		return isActiveMember;
+	}
+
+	public void setIsActiveMember(Boolean isActiveMember) {
+		this.isActiveMember = isActiveMember;
 	}
 
 	@Override

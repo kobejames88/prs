@@ -1,5 +1,6 @@
 package com.perfectchina.bns.controller;
 
+import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.service.ActiveNodeService;
 import com.perfectchina.bns.service.FiveStarTreeNodeService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -60,11 +62,12 @@ public class RestApiActiveNetTreeNodeController {
 	/**
 	 * @return
 	 */
-	@RequestMapping(value = "/ActiveNet/", method = RequestMethod.PUT)
+	@RequestMapping(value = "/activeNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> createActiveNet() {
-		
+		Date currentDate = new Date();
+		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		activeNodeService.setPreviousDateEndTime(previousDateEndTime);
 		activeNodeService.createActiveNetTree();
-		activeNodeService.updateWholeTreeActiveNet();
 		
 		logger.info("execute, finished createActiveNet.");
 		HttpHeaders headers = new HttpHeaders();
