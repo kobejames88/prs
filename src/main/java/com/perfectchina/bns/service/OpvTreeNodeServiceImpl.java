@@ -79,7 +79,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				+ ", level [" + node.getLevelNum() + "].");
 
 		// copy SimpleTreeNode to OpvTreeNode, inlcuding uplink Id
-		// 将原始网络图的节点加上上级id复制到OpvTreeNode
 		SimpleNetTreeNode simpleNetTreeNode = (SimpleNetTreeNode) node;
 		OpvNetTreeNode opvNetTreeNode = new OpvNetTreeNode();
 		//the uplinkId is SimpleNet, not OPV net
@@ -100,7 +99,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		opvNetTreeNode.setData(simpleNetTreeNode.getData());
 
 		// find out AOPV from last month of the OPVNetTreeNode for the same account
-		Long accountId = node.getData().getId();
+		//Long accountId = node.getData().getId();
 		
 		OpvNetTreeNode prevMonthNode = opvTreeNodeRepository.getAccountByAccountNum(
 				DateUtils.getLastMonthSnapshotDate(simpleNetTreeNode.getSnapshotDate()),

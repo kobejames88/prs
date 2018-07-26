@@ -47,6 +47,30 @@ public class PrintTreeUtil {
 	        process(front);
 	    }
 	}	
+
+	// DFS, bottom
+	public static void printBottomUp(TreeNode node) {
+	    if (node== null )
+	        return;
+
+	    // Traverse the tree
+	    Stack<TreeNode> bottomUpStk = new Stack<TreeNode>();
+	    
+	    Stack<TreeNode> stk = new Stack<TreeNode>();
+	    stk.push(node);
+	    
+	    while (!stk.empty()) {
+	        TreeNode top = stk.pop();
+	        for ( TreeNode child : top.getChildNodes()) {
+	            stk.push(child);
+	            bottomUpStk.push(child);
+	        }	       
+	    	process(top);
+	    }
+	    
+	    
+	}
+	
 	
 	private static void process( TreeNode node ) {
 		int nodeLevel = node.getLevelNum();

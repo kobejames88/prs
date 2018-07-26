@@ -5,7 +5,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
- * 个人小组积分
+ * Group PV
  */
 @Entity
 @Table(name = "GpvNetTreeNode")

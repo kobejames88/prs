@@ -1,6 +1,7 @@
 package com.perfectchina.bns.service;
 
-import com.perfectchina.bns.service.pin.Const;
+
+import com.perfectchina.bns.service.pin.PinPosition;
 import com.perfectchina.bns.model.treenode.GpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
@@ -104,7 +105,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		int treeLevel = getTreeLevel();
 		if (treeLevel < 0)
 			return;
-		Map<Long,Float> map = new HashMap();
+		Map<Long,Float> map = new HashMap<Long,Float>();
 		while (treeLevel >= 0) {
 			List<GpvNetTreeNode> thisTreeLevelTreeList = gpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
@@ -112,19 +113,29 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 				long id = gpvNetTreeNode.getId();
 				Float pv = gpvNetTreeNode.getPpv();
 				long uplinkId = gpvNetTreeNode.getUplinkId();
-				Float gpv = gpvNetTreeNode.getGpv();
+
 				String pin = gpvNetTreeNode.getData().getPin();
 				// Determine if the member is more than the five stars
 				// Use Pin`s code to compare pin
-				if (Const.PinEnum.valOf(pin).getCode() >= Const.PinEnum.NEW_FIVE_STAR.getCode()){
+				if ( ( pin.equals( PinPosition.NEW_FIVE_STAR)) || 
+						( pin.equals( PinPosition.FIVE_STAR)) ||
+						( pin.equals( PinPosition.RUBY)) ||
+						( pin.equals( PinPosition.EMERALD)) ||
+						( pin.equals( PinPosition.DIAMOND)) ||
+						( pin.equals( PinPosition.GOLD_DIAMOND)) ||
+						( pin.equals( PinPosition.DOUBLE_GOLD_DIAMOND)) ||
+						( pin.equals( PinPosition.TRIPLE_GOLD_DIAMOND)) 
+						){
 					gpvNetTreeNode.setGpv(pv);
 				}else {
 					// Determine if the id is in the key of the map
-					if (map.containsKey(id)){
-						gpvNetTreeNode.setGpv(pv+map.get(id));
+					Float tempPoint = map.get(id);
+					if ( tempPoint != null ){
+						gpvNetTreeNode.setGpv(pv+ tempPoint);
 					}else {
 						gpvNetTreeNode.setGpv(pv);
 					}
+					Float gpv = gpvNetTreeNode.getGpv();
 					if(map.containsKey(uplinkId)){
 						Float value = map.get(uplinkId);
 						Float newVal = value+gpv;

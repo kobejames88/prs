@@ -35,14 +35,13 @@ public class RestApiActiveNetTreeNodeController {
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		// 通过根节点获取整棵树
+		// Retrieve tree from node
 		TreeNode rootNode = activeNodeService.getRootTreeNode();
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
-		// 将整个树按深度顺序依次解析整个树列表
+		// tranverse from root to child
 		List<TreeNode> treeNodes = new ArrayList<>();
-		// 将节点放入堆栈中
 	    Stack<TreeNode> stk = new Stack<>();
 	    stk.push( rootNode );
 	    while (!stk.empty()) {

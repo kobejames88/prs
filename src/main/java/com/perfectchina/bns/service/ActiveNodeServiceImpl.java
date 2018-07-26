@@ -41,10 +41,10 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 	@Override
 	public boolean isReadyToUpdate() {
 		// need to check if Simple Net already exist, otherwise, cannot
-		// 检查当前月份原始网络图的树根是否存在
+		// Check current month tree to see the node exist
 		// calculate
 		boolean isReady = false;
-		// 当前月份
+		// Current month
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());

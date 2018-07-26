@@ -40,11 +40,11 @@ public abstract class TreeNode implements Serializable {
 	// separate structure and business data
 	@OneToOne
 	private Account data;
-
-	// Connect according to uplinkId
+	
 	@OneToMany(mappedBy = "uplinkId")
 	@JsonIgnore
-	List<TreeNode> childNodes = new ArrayList<>(0);
+	List<TreeNode> childNodes = new ArrayList<TreeNode>(0);
+	
 	public List<TreeNode> getChildNodes() {
 		return childNodes;
 	}
