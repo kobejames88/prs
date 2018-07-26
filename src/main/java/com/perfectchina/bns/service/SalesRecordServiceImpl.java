@@ -1,6 +1,5 @@
 package com.perfectchina.bns.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perfectchina.bns.common.utils.DateUtils;
-import com.perfectchina.bns.model.Account;
-import com.perfectchina.bns.model.PinPosition;
 import com.perfectchina.bns.model.SalesRecord;
-import com.perfectchina.bns.repositories.AccountRepository;
 import com.perfectchina.bns.repositories.SalesRecordRepository;
 
 

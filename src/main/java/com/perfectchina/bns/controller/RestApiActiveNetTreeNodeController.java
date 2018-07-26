@@ -36,10 +36,14 @@ public class RestApiActiveNetTreeNodeController {
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
+
+		// Retrieve tree from node
 		TreeNode rootNode = activeNodeService.getRootTreeNode();
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
+
+		// tranverse from root to child
 		List<TreeNode> treeNodes = new ArrayList<>();
 	    Stack<TreeNode> stk = new Stack<>();
 	    stk.push( rootNode );

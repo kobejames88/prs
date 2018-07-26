@@ -25,3 +25,5 @@
 /.nb-gradle/
 
 R:/
+.DS_Store
+src/test/.DS_Store

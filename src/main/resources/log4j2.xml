@@ -2,8 +2,8 @@
 <Configuration status="INFO" monitorInterval="30">
 
   <Properties>
-     <Property name="fileName">D:/Temp/log/LogViewer.log</Property>
-     <Property name="fileNamePattern">D:/Temp/log/LogViewer%d{dd-MM-yyyy}-%i.log</Property>
+     <Property name="fileName">R:/Temp/log/LogViewer.log</Property>
+     <Property name="fileNamePattern">R:/Temp/log/LogViewer%d{dd-MM-yyyy}-%i.log</Property>
      <Property name="logPattern">%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Property>
   </Properties>
 
@@ -14,7 +14,7 @@
       <PatternLayout pattern="${logPattern}" />
     </Console>
     <!-- File Appender -->
-    <File name="File" fileName="D:/Temp/app.log">
+    <File name="File" fileName="R:/Temp/app.log">
       <PatternLayout pattern="${logPattern}" />
     </File>
     

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perfectchina.bns.common.utils.DateUtils;
-import com.perfectchina.bns.model.PinPosition;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
@@ -54,6 +53,8 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		// need to check if Simple Net already exist, otherwise, cannot
 		// calculate
 		boolean isReady = false;
+
+		// Current month
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
@@ -95,7 +96,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		opvNetTreeNode.setData(simpleNetTreeNode.getData());
 
 		// find out AOPV from last month of the OPVNetTreeNode for the same account
-		Long accountId = node.getData().getId();
+		//Long accountId = node.getData().getId();
 		
 		OpvNetTreeNode prevMonthNode = opvTreeNodeRepository.getAccountByAccountNum(
 				DateUtils.getLastMonthSnapshotDate(simpleNetTreeNode.getSnapshotDate()),
@@ -144,6 +145,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	}
 
 	/**
+	 * Get the level of the original tree
 	 * @return
 	 */
 	private int getTreeLevel() {
