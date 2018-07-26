@@ -1,0 +1,27 @@
+<h1>InterfacePassUpGPVNetTreeNode</h1>
+
+
+<button onclick="updata()">updata passUpGpvNet</button>
+<a href="#!/interface-passupgpvnet-node/list"><button >list passUpGpvNet</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/passUpGpvNet/",
+         type:"put",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

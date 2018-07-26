@@ -106,6 +106,20 @@
                 templateUrl: 'js/interface-fivestarnet-node/list/fivestarnettreenode.html',
                 controllerAs: 'vm'
             })
+
+            .when('/interface-passupgpvnet-node', {
+                controller: 'InterfacePassUpGpvNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-passupgpvnet-node/interface-passupgpvnet-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-passupgpvnet-node/list', {
+                controller: 'InterfacePassUpGpvNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-passupgpvnet-node/list/passupgpvnettreenode.html',
+                controllerAs: 'vm'
+            })
             
             .when('/interface-activenet-node', {
 	            controller: 'InterfaceActiveNetNodeController',

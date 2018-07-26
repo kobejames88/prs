@@ -14,7 +14,7 @@ import org.hibernate.annotations.PolymorphismType;
 @Entity
 @Table(name = "FiveStarNetTreeNode")
 @NamedQuery(name="FiveStarNetTreeNode.findAll", query="SELECT a FROM FiveStarNetTreeNode a")
-public class FiveStarNetTreeNode extends TreeNode {
+public class FiveStarNetTreeNode extends SimpleNetTreeNode {
 
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class FiveStarNetTreeNode extends TreeNode {
 	private Float ppv;
 	private Float opv;   // opv for current month
 	private Float aopv;  // aopv = current month opv + last month accumulated opv
-	private Boolean qualified;
+//	private Boolean qualified;
 	private String pin;
 	private Boolean isActiveMember;
 	private Float gpv;
@@ -64,13 +64,13 @@ public class FiveStarNetTreeNode extends TreeNode {
 		this.aopv = aopv;
 	}
 
-	public Boolean getQualified() {
-		return qualified;
-	}
+//	public Boolean getQualified() {
+//		return qualified;
+//	}
 
-	public void setQualified(Boolean qualified) {
-		this.qualified = qualified;
-	}
+//	public void setQualified(Boolean qualified) {
+//		this.qualified = qualified;
+//	}
 	
 
 	public String getPin() {

@@ -127,6 +127,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		updataLevel();
 	}
 
+
 	private void updataLevel() {
 		int fromLevelNum = 0;
 		FiveStarNetTreeNode rootTreeNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
