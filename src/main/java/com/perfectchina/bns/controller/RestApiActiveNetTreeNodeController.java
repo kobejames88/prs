@@ -32,17 +32,15 @@ public class RestApiActiveNetTreeNodeController {
 
 	@Autowired
 	ActiveNodeService activeNodeService; //Service which will do all data retrieval/manipulation work
+	
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		// 通过根节点获取整棵树
 		TreeNode rootNode = activeNodeService.getRootTreeNode();
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
-		// 将整个树按深度顺序依次解析整个树列表
 		List<TreeNode> treeNodes = new ArrayList<>();
-		// 将节点放入堆栈中
 	    Stack<TreeNode> stk = new Stack<>();
 	    stk.push( rootNode );
 	    while (!stk.empty()) {
@@ -59,9 +57,12 @@ public class RestApiActiveNetTreeNodeController {
 	 * @return
 	 */
 	@RequestMapping(value = "/ActiveNet/", method = RequestMethod.PUT)
-	public ResponseEntity<?> createFiveStarNet() {
-		logger.info("execute, finished updateSimpleNetPpv.");
-		 
+	public ResponseEntity<?> createActiveNet() {
+		
+		activeNodeService.createActiveNetTree();
+		activeNodeService.updateWholeTreeActiveNet();
+		
+		logger.info("execute, finished createActiveNet.");
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			headers.setLocation( new URI( "/api/ActiveNet/listAccounts" ) );

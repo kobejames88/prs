@@ -27,10 +27,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM", Locale.ENGLISH);
 
-//	@Autowired
-//	private TreeNodeRepository<SimpleNetTreeNode> simpleTreeNodeRepository;
-//	@Autowired
-//	private TreeNodeRepository<OpvNetTreeNode> opvTreeNodeRepository;
 	@Autowired
 	private SimpleNetTreeNodeRepository simpleTreeNodeRepository;
 	@Autowired
@@ -58,7 +54,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		// need to check if Simple Net already exist, otherwise, cannot
 		// calculate
 		boolean isReady = false;
-		// 当前月份
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
@@ -80,7 +75,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				+ ", level [" + node.getLevelNum() + "].");
 
 		// copy SimpleTreeNode to OpvTreeNode, inlcuding uplink Id
-		// 将原始网络图的节点加上上级id复制到OpvTreeNode
 		SimpleNetTreeNode simpleNetTreeNode = (SimpleNetTreeNode) node;
 		OpvNetTreeNode opvNetTreeNode = new OpvNetTreeNode();
 		//the uplinkId is SimpleNet, not OPV net
@@ -150,7 +144,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	}
 
 	/**
-	 * 获取树的等级
 	 * @return
 	 */
 	private int getTreeLevel() {

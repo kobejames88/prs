@@ -41,10 +41,8 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 	@Override
 	public boolean isReadyToUpdate() {
 		// need to check if Simple Net already exist, otherwise, cannot
-		// 检查当前月份原始网络图的树根是否存在
 		// calculate
 		boolean isReady = false;
-		// 当前月份
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
@@ -68,9 +66,16 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 		// TODO Auto-generated method stub
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
-
 	}
-
-
+	@Override
+	public void createActiveNetTree() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void updateWholeTreeActiveNet() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
