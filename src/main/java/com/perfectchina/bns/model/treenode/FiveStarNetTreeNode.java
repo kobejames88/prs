@@ -14,7 +14,7 @@ import org.hibernate.annotations.PolymorphismType;
 @Entity
 @Table(name = "FiveStarNetTreeNode")
 @NamedQuery(name="FiveStarNetTreeNode.findAll", query="SELECT a FROM FiveStarNetTreeNode a")
-public class FiveStarNetTreeNode extends SimpleNetTreeNode {
+public class FiveStarNetTreeNode extends TreeNode {
 
 	/**
 	 * 

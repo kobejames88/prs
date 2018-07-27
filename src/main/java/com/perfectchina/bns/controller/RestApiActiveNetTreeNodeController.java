@@ -1,6 +1,5 @@
 package com.perfectchina.bns.controller;
 
-import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.service.ActiveNodeService;
 import com.perfectchina.bns.service.FiveStarTreeNodeService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -34,17 +32,14 @@ public class RestApiActiveNetTreeNodeController {
 
 	@Autowired
 	ActiveNodeService activeNodeService; //Service which will do all data retrieval/manipulation work
-	
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-
 		// Retrieve tree from node
 		TreeNode rootNode = activeNodeService.getRootTreeNode();
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
-
 		// tranverse from root to child
 		List<TreeNode> treeNodes = new ArrayList<>();
 	    Stack<TreeNode> stk = new Stack<>();
@@ -62,14 +57,10 @@ public class RestApiActiveNetTreeNodeController {
 	/**
 	 * @return
 	 */
-	@RequestMapping(value = "/activeNet/", method = RequestMethod.PUT)
-	public ResponseEntity<?> createActiveNet() {
-		Date currentDate = new Date();
-		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-		activeNodeService.setPreviousDateEndTime(previousDateEndTime);
-		activeNodeService.createActiveNetTree();
-		
-		logger.info("execute, finished createActiveNet.");
+	@RequestMapping(value = "/ActiveNet/", method = RequestMethod.PUT)
+	public ResponseEntity<?> createFiveStarNet() {
+		logger.info("execute, finished updateSimpleNetPpv.");
+
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			headers.setLocation( new URI( "/api/ActiveNet/listAccounts" ) );

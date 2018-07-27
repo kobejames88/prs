@@ -53,7 +53,7 @@ public abstract class AbstractPinPositionChecker implements PinPositionChecker {
 	 */
 	public CheckMeetTargetResult checkMeetQualifiedFiveStar(OpvNetTreeNode opvNetTreeNode, Date lastMonthEndDate ) {
 		
-		// List<AccountReward> monthlyRewards = accountRewardService.findAccountRewardByAccountId(accountId, RewardType.STANDARD, dateFrom, dateTo);
+		// List<CustomerDifferentialBonus> monthlyRewards = accountRewardService.findAccountRewardByAccountId(accountId, RewardType.STANDARD, dateFrom, dateTo);
 		CheckMeetTargetResult result = new CheckMeetTargetResult();
 		if ( opvNetTreeNode.getOpv() >= 36000F ) {
 			result.setMeetQualifiedFiveStar( true );
