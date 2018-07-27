@@ -15,7 +15,7 @@ import com.perfectchina.bns.model.treenode.TreeNode;
 @Repository
 public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T, Long> {
 // public interface TreeNodeRepository extends JpaRepository<TreeNode, Long> {
-	
+
 	@Query("SELECT a FROM #{#entityName} a WHERE a.uplinkId = :parentId")
 	public List<T> findByParentId(@Param("parentId") Long parentId);
 	
@@ -48,6 +48,9 @@ public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T,
 	
 	@Query("SELECT a FROM #{#entityName} a WHERE a.levelNum = 0 order by a.id")
 	public T getRootTreeNode();
+
+	@Query("SELECT max(a.levelNum) FROM #{#entityName} a ")
+	public int getMaxLevelNum();
 
 	@Query("SELECT a FROM #{#entityName} a WHERE a.levelNum = 0 and a.snapshotDate = :snapshotDate order by a.id")
 	public T getRootTreeNodeOfMonth(@Param("snapshotDate") String snapshotDate);
