@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perfectchina.bns.model.SalesRecord;
+import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
@@ -60,6 +61,15 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		
 		getTreeNodeRepository().saveAndFlush( thisNode);	
 		
+	}
+
+	public List<FiveStarNetTreeNode> findChildLeafList() {
+		throw new RuntimeException("Not implemented.");
+
+	}
+
+	public int getMaxTreeLevel() {
+		throw new RuntimeException("Not implemented.");
 	}
 
 }
