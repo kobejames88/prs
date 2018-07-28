@@ -9,7 +9,7 @@ import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 @Repository
 public interface FiveStarNetTreeNodeRepository extends TreeNodeRepository<FiveStarNetTreeNode> {
 	@Modifying
-	@Query("DELETE FROM FiveStarNetTreeNode WHERE levelNum = -1")
+	@Query("DELETE FROM FiveStarNetTreeNode WHERE pin = 'MEMBER'")
 	void deleteLevel();
 
 }

@@ -1,6 +1,7 @@
 package com.perfectchina.bns.controller;
 
 import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.repositories.ActiveNetTreeNodeRepository;
 import com.perfectchina.bns.service.ActiveNodeService;
 import com.perfectchina.bns.service.FiveStarTreeNodeService;
 import org.slf4j.Logger;
@@ -32,11 +33,15 @@ public class RestApiActiveNetTreeNodeController {
 
 	@Autowired
 	ActiveNodeService activeNodeService; //Service which will do all data retrieval/manipulation work
+	
+	@Autowired
+	ActiveNetTreeNodeRepository activeNetTreeNodeRepository;
+	
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
 		// Retrieve tree from node
-		TreeNode rootNode = activeNodeService.getRootTreeNode();
+		TreeNode rootNode = activeNetTreeNodeRepository.getRootTreeNode();
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
+import com.perfectchina.bns.model.treenode.GpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
@@ -67,13 +68,13 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 
 	@Override
 	public void createFiveStarNetTree() {
-		OpvNetTreeNode rootTreeNodeOfOPV = opvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
-		Stack<OpvNetTreeNode> stk = new Stack<OpvNetTreeNode>();
-		stk.push(rootTreeNodeOfOPV);
+		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
+		Stack<GpvNetTreeNode> stk = new Stack<GpvNetTreeNode>();
+		stk.push(rootTreeNode);
 		while (!stk.empty()) {
-			OpvNetTreeNode top = stk.pop();
+			GpvNetTreeNode top = stk.pop();
 			for (TreeNode child : top.getChildNodes()) {
-				stk.push((OpvNetTreeNode) child);
+				stk.push((GpvNetTreeNode) child);
 			}
 			FiveStarNetTreeNode fiveStarNetTreeNode = new FiveStarNetTreeNode();
 			fiveStarNetTreeNode.setHasChild(top.getHasChild());
@@ -83,11 +84,12 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 			fiveStarNetTreeNode.setOpv(top.getOpv());
 			fiveStarNetTreeNode.setPpv(top.getPpv());
 			fiveStarNetTreeNode.setLevelNum(top.getLevelNum());
-			fiveStarNetTreeNode.setGpv(top.getPpv());
+			fiveStarNetTreeNode.setGpv(top.getGpv());
+			fiveStarNetTreeNode.setPin(top.getPin());
 			
 			long uplinkId = top.getUplinkId();
 			if(uplinkId!=0){
-				OpvNetTreeNode one = opvNetTreeNodeRepository.getOne(uplinkId);
+				GpvNetTreeNode one = gpvNetTreeNodeRepository.getOne(uplinkId);
 				String accountNum = one.getData().getAccountNum();
 				FiveStarNetTreeNode one2 = fiveStarNetTreeNodeRepository.getAccountByAccountNum(top.getSnapshotDate(),
 						accountNum);
@@ -107,9 +109,6 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 			FiveStarNetTreeNode uplinkNode = fiveStarNetTreeNodeRepository.findOne(fiveStarNetTreeNode.getUplinkId());
 			while(uplinkNode!=null){
 				if(fiveStarNetTreeNode.getPin()==PinPosition.MEMBER){
-					uplinkNode.setGpv(uplinkNode.getGpv()+fiveStarNetTreeNode.getGpv());
-					fiveStarNetTreeNode.setGpv(0f);
-					fiveStarNetTreeNode.setLevelNum(-1);
 				}else{
 					FiveStarNetTreeNode uplinkNode2 = uplinkNode;
 					while(uplinkNode2.getPin()==PinPosition.MEMBER){
