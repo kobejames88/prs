@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "GpvNetTreeNode")
 @NamedQuery(name="GpvNetTreeNode.findAll", query="SELECT a FROM GpvNetTreeNode a")
-public class GpvNetTreeNode extends TreeNode {
+public class GpvNetTreeNode extends OpvNetTreeNode {
 	private static final long serialVersionUID = 1L;
 
 	// Current month gpv

@@ -71,5 +71,4 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		throw new RuntimeException("Not implemented.");
 	}
 
-
 }
