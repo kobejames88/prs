@@ -39,13 +39,16 @@ public class RestApiOpvNetTreeNodeController {
 	@Autowired
 	OpvTreeNodeService treeNodeService; //Service which will do all data retrieval/manipulation work
 	
+	@Autowired
+	OpvNetTreeNodeRepository opvNetTreeNodeRepository;
+	
     
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
 	@RequestMapping(value = "/opvNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
 		//TreeNode rootNode = treeNodeService.getTreeNode(1L); // pass root node id to retrieve whole tree 
-		TreeNode rootNode = treeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree 
+		TreeNode rootNode = opvNetTreeNodeRepository.getRootTreeNode(); // pass root node id to retrieve whole tree 
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND

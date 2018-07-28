@@ -70,8 +70,8 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 	}
 
     @Override
-	public TreeNodeRepository<ActiveNetTreeNode> getTreeNodeRepository() {
-		return activeNetTreeNodeRepository;
+	public SimpleNetTreeNodeRepository getTreeNodeRepository() {
+		return simpleTreeNodeRepository;
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.perfectchina.bns.jsonDto.AccntInfoJson;
 import com.perfectchina.bns.model.InterfaceAccountInfo;
 import com.perfectchina.bns.model.InterfaceInfoStatus;
 import com.perfectchina.bns.service.InterfaceAccountService;

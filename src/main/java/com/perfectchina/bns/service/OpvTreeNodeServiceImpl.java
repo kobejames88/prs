@@ -12,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.model.treenode.ActiveNetTreeNode;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.repositories.ActiveNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
+import com.perfectchina.bns.service.pin.PinPosition;
 
 @Service
 public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTreeNodeService {
@@ -27,10 +30,10 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM", Locale.ENGLISH);
 
 	@Autowired
-	private SimpleNetTreeNodeRepository simpleTreeNodeRepository;
-	@Autowired
 	private OpvNetTreeNodeRepository opvTreeNodeRepository;
-
+	
+	@Autowired
+	private ActiveNetTreeNodeRepository activeNetTreeNodeRepository;
 	
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -45,8 +48,8 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public TreeNodeRepository<OpvNetTreeNode> getTreeNodeRepository() {
-		return opvTreeNodeRepository;
+	public ActiveNetTreeNodeRepository getTreeNodeRepository() {
+		return activeNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
@@ -58,7 +61,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
-			SimpleNetTreeNode rootNode = simpleTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
+			ActiveNetTreeNode rootNode = activeNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
 			if (rootNode != null) {
 				isReady = true;
 			}
@@ -81,31 +84,37 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				+ ", level [" + node.getLevelNum() + "].");
 
 		// copy SimpleTreeNode to OpvTreeNode, inlcuding uplink Id
-		SimpleNetTreeNode simpleNetTreeNode = (SimpleNetTreeNode) node;
+		ActiveNetTreeNode activeNetTreeNode = (ActiveNetTreeNode) node;
 		OpvNetTreeNode opvNetTreeNode = new OpvNetTreeNode();
 		//the uplinkId is SimpleNet, not OPV net
 		// opvNetTreeNode.setUplinkId( simpleNetTreeNode.getUplinkId() ); 
-		long uplinkId = simpleNetTreeNode.getUplinkId();
+		long uplinkId = activeNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
-			SimpleNetTreeNode one = simpleTreeNodeRepository.getOne(uplinkId);
+			ActiveNetTreeNode one = activeNetTreeNodeRepository.getOne(uplinkId);
 			String accountNum = one.getData().getAccountNum();
-			OpvNetTreeNode one2 = opvTreeNodeRepository.getAccountByAccountNum(simpleNetTreeNode.getSnapshotDate(),
+			OpvNetTreeNode one2 = opvTreeNodeRepository.getAccountByAccountNum(activeNetTreeNode.getSnapshotDate(),
 					accountNum);
 			opvNetTreeNode.setUplinkId(one2.getId());
 		}
 		
-		opvNetTreeNode.setHasChild(simpleNetTreeNode.getHasChild());
-		opvNetTreeNode.setLevelNum(simpleNetTreeNode.getLevelNum());
-		opvNetTreeNode.setPpv(simpleNetTreeNode.getPpv());
-		opvNetTreeNode.setSnapshotDate(simpleNetTreeNode.getSnapshotDate());
-		opvNetTreeNode.setData(simpleNetTreeNode.getData());
+		opvNetTreeNode.setHasChild(activeNetTreeNode.getHasChild());
+		opvNetTreeNode.setLevelNum(activeNetTreeNode.getLevelNum());
+		opvNetTreeNode.setPpv(activeNetTreeNode.getPv());
+		opvNetTreeNode.setSnapshotDate(activeNetTreeNode.getSnapshotDate());
+		opvNetTreeNode.setData(activeNetTreeNode.getData());
 
 		// find out AOPV from last month of the OPVNetTreeNode for the same account
 		//Long accountId = node.getData().getId();
 		
 		OpvNetTreeNode prevMonthNode = opvTreeNodeRepository.getAccountByAccountNum(
-				DateUtils.getLastMonthSnapshotDate(simpleNetTreeNode.getSnapshotDate()),
-				simpleNetTreeNode.getData().getAccountNum());
+				DateUtils.getLastMonthSnapshotDate(activeNetTreeNode.getSnapshotDate()),
+				activeNetTreeNode.getData().getAccountNum());
+		
+		if(prevMonthNode==null){
+			opvNetTreeNode.setPin(PinPosition.MEMBER);
+		}else{
+			opvNetTreeNode.setPin(prevMonthNode.getPin());
+		}
 		
 		Float aopvLastMonth = 0F;
 		if (prevMonthNode != null) {
@@ -143,6 +152,9 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				Float opv = opvNetTreeNode.getOpv();
 				
 				opvNetTreeNode.setAopv(aopvLastMonth+opv);
+				if(opvNetTreeNode.getPin()==PinPosition.MEMBER&&opvNetTreeNode.getOpv()>=18000&&opvNetTreeNode.getAopv()>=36000){
+					opvNetTreeNode.setPin(PinPosition.NEW_FIVE_STAR);
+				}
 				opvTreeNodeRepository.saveAndFlush(opvNetTreeNode);
 			} // end for loop
 			treeLevel--;
@@ -155,7 +167,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	 */
 	private int getTreeLevel() {
 		// get root node
-		TreeNode fromNode = simpleTreeNodeRepository.getRootTreeNode();
+		TreeNode fromNode = activeNetTreeNodeRepository.getRootTreeNode();
 		int treeLevel = 0;
 		
 		Stack<TreeNode> stk = new Stack<TreeNode>();

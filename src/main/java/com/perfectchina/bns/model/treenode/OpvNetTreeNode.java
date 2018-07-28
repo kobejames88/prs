@@ -32,6 +32,8 @@ public class OpvNetTreeNode extends TreeNode {
 	// last month accumulated OPV
 	private Float aopvLastMonth; // Last month accumulated OPV 
 	
+	private String pin;
+	
 	public Float getPpv() {
 		return ppv;
 	}
@@ -62,6 +64,14 @@ public class OpvNetTreeNode extends TreeNode {
 
 	public void setAopvLastMonth(Float aopvLastMonth) {
 		this.aopvLastMonth = aopvLastMonth;
+	}
+	
+	public String getPin() {
+		return pin;
+	}
+
+	public void setPin(String pin) {
+		this.pin = pin;
 	}
 
 	@Override

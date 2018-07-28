@@ -81,7 +81,6 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 			fiveStarNetTreeNode.setAopv(top.getAopv());
 			fiveStarNetTreeNode.setOpv(top.getOpv());
 			fiveStarNetTreeNode.setPpv(top.getPpv());
-			fiveStarNetTreeNode.setIsActiveMember(top.getPpv()>=200);
 			fiveStarNetTreeNode.setLevelNum(top.getLevelNum());
 			fiveStarNetTreeNode.setGpv(top.getPpv());
 			
@@ -92,18 +91,6 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 				FiveStarNetTreeNode one2 = fiveStarNetTreeNodeRepository.getAccountByAccountNum(top.getSnapshotDate(),
 						accountNum);
 				fiveStarNetTreeNode.setUplinkId(one2.getId());
-			}
-			
-			FiveStarNetTreeNode prevMonthNode = fiveStarNetTreeNodeRepository.getAccountByAccountNum(
-					DateUtils.getLastMonthSnapshotDate(top.getSnapshotDate()),
-					top.getData().getAccountNum());
-			if(prevMonthNode==null){
-				fiveStarNetTreeNode.setPin(PinPosition.MEMBER);
-			}else{
-				fiveStarNetTreeNode.setPin(prevMonthNode.getPin());
-			}
-			if(fiveStarNetTreeNode.getOpv()>=18000&&fiveStarNetTreeNode.getAopv()>=36000){
-				fiveStarNetTreeNode.setPin(PinPosition.NEW_FIVE_STAR);
 			}
 			
 			fiveStarNetTreeNodeRepository.saveAndFlush(fiveStarNetTreeNode);

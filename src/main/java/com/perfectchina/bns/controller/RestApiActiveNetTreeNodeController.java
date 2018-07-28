@@ -57,10 +57,10 @@ public class RestApiActiveNetTreeNodeController {
 	/**
 	 * @return
 	 */
-	@RequestMapping(value = "/ActiveNet/", method = RequestMethod.PUT)
+	@RequestMapping(value = "/activeNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> createFiveStarNet() {
 		logger.info("execute, finished updateSimpleNetPpv.");
-
+		activeNodeService.createActiveNetTree();
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			headers.setLocation( new URI( "/api/ActiveNet/listAccounts" ) );
