@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
 import com.perfectchina.bns.service.FiveStarTreeNodeService;
 
 
@@ -36,13 +37,16 @@ public class RestApiFiveStarNetTreeNodeController {
 	@Autowired
 	FiveStarTreeNodeService fiveStarTreeNodeService; //Service which will do all data retrieval/manipulation work
 	
+	@Autowired
+	FiveStarNetTreeNodeRepository fiveStarNetTreeNodeRepository;
+	
     
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
 	@RequestMapping(value = "/fiveStarNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
 		//TreeNode rootNode = treeNodeService.getTreeNode(1L); // pass root node id to retrieve whole tree 
-		TreeNode rootNode = fiveStarTreeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree 
+		TreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNode(); // pass root node id to retrieve whole tree 
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}

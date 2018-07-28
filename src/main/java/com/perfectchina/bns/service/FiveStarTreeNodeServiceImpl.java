@@ -17,6 +17,7 @@ import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
+import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
 import com.perfectchina.bns.service.pin.PinPosition;
@@ -32,8 +33,8 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	private FiveStarNetTreeNodeRepository  fiveStarNetTreeNodeRepository;
 	
 	@Autowired
-	private OpvNetTreeNodeRepository opvNetTreeNodeRepository;
-
+	private GpvNetTreeNodeRepository gpvNetTreeNodeRepository;
+	
 	@Override
 	public boolean isReadyToUpdate() {
 		// TODO Auto-generated method stub

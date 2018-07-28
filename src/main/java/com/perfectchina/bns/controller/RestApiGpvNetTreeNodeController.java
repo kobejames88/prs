@@ -2,6 +2,7 @@ package com.perfectchina.bns.controller;
 
 import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
 import com.perfectchina.bns.service.GpvTreeNodeService;
 import com.perfectchina.bns.service.OpvTreeNodeService;
 import org.slf4j.Logger;
@@ -36,12 +37,15 @@ public class RestApiGpvNetTreeNodeController {
 	@Autowired
 	GpvTreeNodeService treeNodeService; //Service which will do all data retrieval/manipulation work
 	
+	@Autowired
+	GpvNetTreeNodeRepository gpvNetTreeNodeRepository;
+	
     
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
 	@RequestMapping(value = "/gpvNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		TreeNode rootNode = treeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree
+		TreeNode rootNode = gpvNetTreeNodeRepository.getRootTreeNode(); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND

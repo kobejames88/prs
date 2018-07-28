@@ -45,8 +45,8 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public TreeNodeRepository<GpvNetTreeNode> getTreeNodeRepository() {
-		return gpvNetTreeNodeRepository;
+	public OpvNetTreeNodeRepository getTreeNodeRepository() {
+		return opvNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
