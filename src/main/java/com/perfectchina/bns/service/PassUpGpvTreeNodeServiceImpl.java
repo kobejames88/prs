@@ -79,6 +79,12 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		super.updateChildTreeLevel(fromLevelNum, fromNode);
 	}
 
+	@Override
+	public int getMaxTreeLevel() {
+        int maxLevelNum = fiveStarNetTreeNodeRepository.getMaxLevelNum();
+        return maxLevelNum;
+	}
+
 	/**
 	 * param node is SimpleNetTreeNode walking through
 	 */

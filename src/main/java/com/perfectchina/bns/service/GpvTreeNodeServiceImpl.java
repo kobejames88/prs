@@ -8,6 +8,7 @@ import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,11 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		return isReady;
 	}
 
+	@Override
+	public int getMaxTreeLevel() {
+		return 0;
+	}
+
 	/**
 	 * param node is SimpleNetTreeNode walking through
 	 */
@@ -114,35 +120,34 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 				Float pv = gpvNetTreeNode.getPpv();
 				long uplinkId = gpvNetTreeNode.getUplinkId();
 
+                Float tempPoint = map.get(id);
+                if ( tempPoint != null ){
+                    gpvNetTreeNode.setGpv(pv+ tempPoint);
+                }else {
+                    gpvNetTreeNode.setGpv(pv);
+                }
+
 				String pin = gpvNetTreeNode.getData().getPin();
 				// Determine if the member is more than the five stars
-				// Use Pin`s code to compare pin
-				if ( ( pin.equals( PinPosition.NEW_FIVE_STAR)) || 
-						( pin.equals( PinPosition.FIVE_STAR)) ||
-						( pin.equals( PinPosition.RUBY)) ||
-						( pin.equals( PinPosition.EMERALD)) ||
-						( pin.equals( PinPosition.DIAMOND)) ||
-						( pin.equals( PinPosition.GOLD_DIAMOND)) ||
-						( pin.equals( PinPosition.DOUBLE_GOLD_DIAMOND)) ||
-						( pin.equals( PinPosition.TRIPLE_GOLD_DIAMOND)) 
+
+				if ( !(( StringUtils.equals(pin,PinPosition.NEW_FIVE_STAR) ) ||
+						( StringUtils.equals(pin,PinPosition.FIVE_STAR) ) ||
+						( StringUtils.equals(pin,PinPosition.RUBY) ) ||
+						( StringUtils.equals(pin,PinPosition.EMERALD) ) ||
+						( StringUtils.equals(pin,PinPosition.DIAMOND) ) ||
+						( StringUtils.equals(pin,PinPosition.GOLD_DIAMOND) ) ||
+						( StringUtils.equals(pin,PinPosition.DOUBLE_GOLD_DIAMOND) ) ||
+						( StringUtils.equals(pin,PinPosition.TRIPLE_GOLD_DIAMOND) ))
 						){
-					gpvNetTreeNode.setGpv(pv);
-				}else {
-					// Determine if the id is in the key of the map
-					Float tempPoint = map.get(id);
-					if ( tempPoint != null ){
-						gpvNetTreeNode.setGpv(pv+ tempPoint);
-					}else {
-						gpvNetTreeNode.setGpv(pv);
-					}
-					Float gpv = gpvNetTreeNode.getGpv();
-					if(map.containsKey(uplinkId)){
-						Float value = map.get(uplinkId);
-						Float newVal = value+gpv;
-						map.put(uplinkId,newVal);
-					}else {
-						map.put(uplinkId,gpv);
-					}
+                    Float gpv = gpvNetTreeNode.getGpv();
+                    Float map_uplinkId = map.get(uplinkId);
+                    if(map_uplinkId != null){
+                        Float value = map_uplinkId;
+                        Float newVal = value+gpv;
+                        map.put(uplinkId,newVal);
+                    }else {
+                        map.put(uplinkId,gpv);
+                    }
 				}
 				gpvNetTreeNodeRepository.saveAndFlush(gpvNetTreeNode);
 			} // end for loop

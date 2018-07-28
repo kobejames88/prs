@@ -3,6 +3,7 @@ package com.perfectchina.bns.service;
 import java.util.List;
 import java.util.Stack;
 
+import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,11 +69,11 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	        }
 	       process(top);
 	    }
-		
 	}
-	 
-	
-	
-	
+
+	public int getMaxTreeLevel(){
+		return 0;
+	}
+
 
 }

@@ -68,6 +68,11 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		return isReady;
 	}
 
+	@Override
+	public int getMaxTreeLevel() {
+		return 0;
+	}
+
 	/**
 	 * param node is SimpleNetTreeNode walking through
 	 */

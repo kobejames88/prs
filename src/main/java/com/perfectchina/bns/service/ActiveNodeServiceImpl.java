@@ -65,6 +65,11 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 	}
 
 	@Override
+	public int getMaxTreeLevel() {
+        return 0;
+	}
+
+    @Override
 	public TreeNodeRepository<ActiveNetTreeNode> getTreeNodeRepository() {
 		return activeNetTreeNodeRepository;
 	}

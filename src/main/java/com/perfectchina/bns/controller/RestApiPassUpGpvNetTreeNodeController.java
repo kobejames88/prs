@@ -89,4 +89,13 @@ public class RestApiPassUpGpvNetTreeNodeController {
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	}
 
+	@RequestMapping(value = "/test/", method = RequestMethod.GET)
+	public ResponseEntity<?> test() {
+        int maxTreeLevel = treeNodeService.getMaxTreeLevel();
+
+        HttpHeaders headers = new HttpHeaders();
+
+		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+	}
+
 }

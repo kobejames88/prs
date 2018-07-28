@@ -41,6 +41,19 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	}
 
 	@Override
+	public int getMaxTreeLevel() {
+		return 0;
+	}
+
+    public List<FiveStarNetTreeNode> findChildLeafList(){
+        return null;
+    }
+
+	public List<FiveStarNetTreeNode> findNodeAtLevel(int treeLevelNum) {
+		return null;
+	}
+
+	@Override
 	public TreeNodeRepository getTreeNodeRepository() {
 		return fiveStarNetTreeNodeRepository;
 	}

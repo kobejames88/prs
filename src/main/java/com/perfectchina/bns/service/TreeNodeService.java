@@ -5,7 +5,7 @@ import java.util.List;
 import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 
-public interface TreeNodeService {
+public interface TreeNodeService<T> {
 		
 	boolean isNodeDataExist(String accountNum);
 	
@@ -19,8 +19,5 @@ public interface TreeNodeService {
 	
 	void updateChildTreeLevel(Integer fromLevelNum, TreeNode treeNode);
 
-	List<FiveStarNetTreeNode> findChildLeafList();
-
 	int getMaxTreeLevel();
-
 }
