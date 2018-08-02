@@ -20,11 +20,11 @@ public class GpvNetTreeNode extends TreeNode {
 
 	private Float opv;  // Opv for the current month, opv = child's opv + thisNode ppv
 
-	private Float aopv; // Aopv = opv + aopvLastMonth  
-	
+	private Float aopv; // Aopv = opv + aopvLastMonth
+
 	// last month accumulated OPV
-	private Float aopvLastMonth; // Last month accumulated OPV 
-	
+	private Float aopvLastMonth; // Last month accumulated OPV
+
 	private String pin;
 
 	public Float getPpv() {

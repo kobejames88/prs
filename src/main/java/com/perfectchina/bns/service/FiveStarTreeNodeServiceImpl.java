@@ -35,10 +35,9 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	
 	@Autowired
 	private GpvNetTreeNodeRepository gpvNetTreeNodeRepository;
-	
+
 	@Override
 	public boolean isReadyToUpdate() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -69,7 +68,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	@Override
 	public void createFiveStarNetTree() {
 		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
-		Stack<GpvNetTreeNode> stk = new Stack<GpvNetTreeNode>();
+		Stack<GpvNetTreeNode> stk = new Stack<>();
 		stk.push(rootTreeNode);
 		while (!stk.empty()) {
 			GpvNetTreeNode top = stk.pop();
@@ -127,7 +126,6 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		updataLevel();
 	}
 
-
 	private void updataLevel() {
 		int fromLevelNum = 0;
 		FiveStarNetTreeNode rootTreeNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
@@ -145,9 +143,4 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	        }	        
 	    }
 	}
-	
-	
-
-
-
 }

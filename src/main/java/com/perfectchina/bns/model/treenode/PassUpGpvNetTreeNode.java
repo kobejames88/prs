@@ -1,5 +1,6 @@
 package com.perfectchina.bns.model.treenode;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -13,24 +14,25 @@ import javax.persistence.Table;
 public class PassUpGpvNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
+    @Column(columnDefinition="float default 0.00")
+    private Float gpv;
 	// PassUpGpv
+    @Column(columnDefinition="float default 0.00")
 	private Float passUpGpv;
-	// Individuals and subordinates do not reach the five-star total PPV sum
-	private Float gpv;
 	// Lower level is a qualified five star or more
+    @Column(columnDefinition="int default 0")
 	private int qualifiedLine;
 
-	private Boolean isActiveMember;
 
-	public Boolean getIsActiveMember() {
-		return isActiveMember;
-	}
+    public Float getGpv() {
+        return gpv;
+    }
 
-	public void setIsActiveMember(Boolean isActiveMember) {
-		this.isActiveMember = isActiveMember;
-	}
+    public void setGpv(Float gpv) {
+        this.gpv = gpv;
+    }
 
-	public Float getPassUpGpv() {
+    public Float getPassUpGpv() {
 		return passUpGpv;
 	}
 
@@ -46,17 +48,9 @@ public class PassUpGpvNetTreeNode extends TreeNode {
 		this.qualifiedLine = qualifiedLine;
 	}
 
-	public Float getGpv() {
-		return gpv;
-	}
-
-	public void setGpv(Float gpv) {
-		this.gpv = gpv;
-	}
-
 	@Override
 	public String toString() {
-		return "OpvNetTreeNode [passUpGpv=" + passUpGpv + ", gpv=" + gpv + ", qualifiedLine=" + qualifiedLine + ", toString()=" + super.toString() + "]";
+		return "OpvNetTreeNode [passUpGpv=" + passUpGpv + ", qualifiedLine=" + qualifiedLine + ", toString()=" + super.toString() + "]";
 	}
 
 

@@ -19,18 +19,11 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM", Locale.ENGLISH);
 
-//	@Autowired
-//	private TreeNodeRepository<SimpleNetTreeNode> simpleTreeNodeRepository;
-//	@Autowired
-//	private TreeNodeRepository<OpvNetTreeNode> opvTreeNodeRepository;
-//	@Autowired
-//	private SimpleNetTreeNodeRepository simpleTreeNodeRepository;
 	@Autowired
 	private FiveStarNetTreeNodeRepository fiveStarNetTreeNodeRepository;
 	@Autowired
 	private PassUpGpvNetTreeNodeRepository passUpGpvNetTreeNodeRepository;
 
-	
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
 
@@ -44,8 +37,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public TreeNodeRepository<PassUpGpvNetTreeNode> getTreeNodeRepository() {
-		return passUpGpvNetTreeNodeRepository;
+	public TreeNodeRepository<FiveStarNetTreeNode> getTreeNodeRepository() {
+		return fiveStarNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
@@ -56,7 +49,6 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
-//			SimpleNetTreeNode rootNode = simpleTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
 			FiveStarNetTreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
 
 			if (rootNode != null) {
@@ -70,7 +62,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	@Override
 	public void updateWholeTree() {
-		TreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNode();
+		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode();
 		updateChildTreeLevel( 0, rootNode );
 	}
 
@@ -81,7 +73,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	@Override
 	public int getMaxTreeLevel() {
-        int maxLevelNum = fiveStarNetTreeNodeRepository.getMaxLevelNum();
+        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum();
         return maxLevelNum;
 	}
 
@@ -97,7 +89,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		//the uplinkId is SimpleNet
 		long uplinkId = fiveStarNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
-			FiveStarNetTreeNode one = fiveStarNetTreeNodeRepository.getOne(uplinkId);
+			FiveStarNetTreeNode one = getTreeNodeRepository().getOne(uplinkId);
 			String accountNum = one.getData().getAccountNum();
 			PassUpGpvNetTreeNode one2 = passUpGpvNetTreeNodeRepository.getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
 					accountNum);
@@ -119,7 +111,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	 */
 	public void updateWholeTreePassUpGPV() {
 		// Get the level of the original tree
-		int treeLevel = getTreeLevel();
+		int treeLevel = passUpGpvNetTreeNodeRepository.getMaxLevelNum();
+//		int treeLevel = getTreeLevel();
 		if (treeLevel < 0)
 			return;
 		Map<Long,Float> map = new HashMap<>();
@@ -130,7 +123,6 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				long id = passUpGpvNetTreeNode.getId();
 				long uplinkId = passUpGpvNetTreeNode.getUplinkId();
 				Float gpv = passUpGpvNetTreeNode.getGpv();
-
 				Float tempPoint = map.get(id);
 				if ( tempPoint != null ){
 					passUpGpvNetTreeNode.setPassUpGpv(gpv+ tempPoint);
@@ -139,14 +131,13 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				}
 				Float passUpGpv = passUpGpvNetTreeNode.getPassUpGpv();
 				int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
-				Boolean isActiveMember = passUpGpvNetTreeNode.getIsActiveMember();
 				List<PassUpGpvNetTreeNode> nodes = new ArrayList<>();
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
 					if (passUpGpv >= 18000F){
 						upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 					}else {
-						if (isAboveRuby(passUpGpv,qualifiedLine,isActiveMember)){
+						if (isAboveRuby(passUpGpv,qualifiedLine)){
 							upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 						}else {
 							Float mapUplinkId = map.get(uplinkId);
@@ -169,8 +160,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		}
 	}
 
-	private Boolean isAboveRuby(Float passUpGpv,int qualifiedLine,Boolean isActiveMember){
-		if ((passUpGpv >= 9000F && qualifiedLine > 0) || (isActiveMember && qualifiedLine >= 2)){
+	private Boolean isAboveRuby(Float passUpGpv,int qualifiedLine){
+		if ((passUpGpv >= 9000F && qualifiedLine > 0) || (qualifiedLine >= 2)){
 			return true;
 		}
 		return false;

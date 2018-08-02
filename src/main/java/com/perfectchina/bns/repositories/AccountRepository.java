@@ -28,7 +28,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 			@Param("dateFrom") Date dateFrom,			
 			@Param("dateTo") Date dateTo);
 	
-	@Query("SELECT a FROM Account a WHERE a.id = :id AND a.status = 'A'")
+//	@Query("SELECT a FROM Account a WHERE a.id = :id AND a.status = 'A'")
+	@Query("SELECT a FROM Account a WHERE a.id = :id ")
 	public Account getAccountById(@Param("id") Long id);
 	
 	@Query("SELECT a FROM Account a WHERE a.accountNum = :accountNum AND a.status = 'A'")

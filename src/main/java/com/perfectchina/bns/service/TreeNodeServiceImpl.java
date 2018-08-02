@@ -49,14 +49,11 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
     // Return fromNode with all the child updated
 	public void updateChildTreeLevel( Integer fromLevelNum, TreeNode fromNode){
 		List<TreeNode> childList = fromNode.getChildNodes();
-
 	    if ( ( childList == null ) || ( childList.size() == 0 ) )  {
 	        return;
 	    }
-		
 		logger.debug("updateChildTreeLevel, fromLevelNum="+ fromLevelNum +",  accountNum="+ fromNode.getData().getAccountNum()  );
-		
-	    Stack<TreeNode> stk = new Stack<TreeNode>();
+	    Stack<TreeNode> stk = new Stack<>();
 	    fromNode.setLevelNum(fromLevelNum);	    
 	    stk.push(fromNode);
 
