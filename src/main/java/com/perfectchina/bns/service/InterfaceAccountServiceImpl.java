@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.perfectchina.bns.common.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -91,8 +92,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
 	public void convertInterfaceAccountInfoToSimpleNetTreeNode() {
 		logger.debug("convertInterfaceAccountInfoToSimpleNetTreeNode, start");
 		
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
-		String snapshotDate = format.format(new Date());
+		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
 		
 		// only retrieve the requestStatus corresponding to operationDate
 		List<InterfaceAccountInfo> interfaceAccountInfoList = interfaceAccountInfoRepository.findByRequestStatus(InterfaceInfoStatus.CONFIRMED );

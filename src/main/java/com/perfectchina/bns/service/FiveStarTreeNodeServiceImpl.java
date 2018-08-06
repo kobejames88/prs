@@ -69,7 +69,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	@Override
 	public void createFiveStarNetTree() {
 
-		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
+		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
 		Stack<GpvNetTreeNode> stk = new Stack<>();
 
 		stk.push(rootTreeNode);
@@ -134,7 +134,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 
 	private void updataLevel() {
 		int fromLevelNum = 0;
-		FiveStarNetTreeNode rootTreeNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
+		FiveStarNetTreeNode rootTreeNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
 		
 	    Stack<TreeNode> stk = new Stack<TreeNode>();
 	    rootTreeNode.setLevelNum(fromLevelNum);	    

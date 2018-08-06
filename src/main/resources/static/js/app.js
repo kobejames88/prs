@@ -135,6 +135,20 @@
                 controllerAs: 'vm'
             })
 
+            .when('/interface-customernet-node', {
+                controller: 'InterfaceCustomerNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-customernet-node/interface-customernet-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-customernet-node/list', {
+                controller: 'InterfaceCustomerNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-customernet-node/list/customernettreenode.html',
+                controllerAs: 'vm'
+            })
+
             
             .otherwise({ redirectTo: '/login' });
                 

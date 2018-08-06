@@ -1,0 +1,27 @@
+<h1>Interface customer net TreeNode</h1>
+
+
+<button onclick="updata()">updata customernet</button>
+<a href="#!/interface-customernet-node/list"><button >list customernet</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/reward/create/rewardnet",
+         type:"get",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

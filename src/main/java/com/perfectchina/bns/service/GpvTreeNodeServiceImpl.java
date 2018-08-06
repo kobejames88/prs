@@ -97,7 +97,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		if(uplinkId!=0){
 			OpvNetTreeNode one = getTreeNodeRepository().getOne(uplinkId);
 			String accountNum = one.getData().getAccountNum();
-			GpvNetTreeNode one2 = gpvNetTreeNodeRepository.getAccountByAccountNum(DateUtils.getCurrentSnapshotDate(),
+			GpvNetTreeNode one2 = gpvNetTreeNodeRepository.getAccountByAccountNum(DateUtils.getLastMonthSnapshotDate(),
 					accountNum);
 			gpvNetTreeNode.setUplinkId(one2.getId());
 		}

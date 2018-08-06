@@ -47,7 +47,7 @@ public class CustomerBonusNetServiceImpl  implements  CustomerBonusNetService{
      */
     @Override
     public void createRewardNet() {
-        OpvNetTreeNode fromNode = opvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
+        OpvNetTreeNode fromNode = opvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
 
         Stack<TreeNode> stk = new Stack<TreeNode>();
         stk.push(fromNode);
@@ -87,7 +87,7 @@ public class CustomerBonusNetServiceImpl  implements  CustomerBonusNetService{
                 // amountTotal = section calculate total; reward = amountTotal - child.amountTotal
                 float amountTotal = 0 ;
                 // base on LMAOPV find rate >= lastMonth.rate asc
-                List<CustomerBonusRate> bonusRates = customerBonusRateRepository.findBonusRateByAopvAndDateAsc((long) customerBonusNet.getAopvLastMonth(), new Date());
+                List<CustomerBonusRate> bonusRates = customerBonusRateRepository.findBonusRateByAopvAndDateAsc(customerBonusNet.getAopvLastMonth(), new Date());
                 for (CustomerBonusRate customerBonusRate : bonusRates){
                     //the opv need calculate in current section ;this is the last section
                     if(opv+start<=customerBonusRate.getAopv()){
@@ -117,6 +117,12 @@ public class CustomerBonusNetServiceImpl  implements  CustomerBonusNetService{
             }
             maxLevelNum--;
         }
+    }
+
+    @Override
+    public TreeNode getRootNode(String snapShotDate) {
+        TreeNode rootNode = customerBonusNetRepository.getRootTreeNodeOfMonth( snapShotDate );
+        return rootNode;
     }
 
 

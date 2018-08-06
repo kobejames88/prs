@@ -21,7 +21,7 @@ public interface CustomerBonusRateRepository extends JpaRepository<CustomerBonus
 	//find all rate >= lastMonth rate base on LMAOPV asc
 	@Query("SELECT br FROM CustomerBonusRate br WHERE br.aopv > :aopv and ( :checkAsAtDate between br.effectiveFrom and br.effectiveTo ) order by br.aopv asc ")
 	List<CustomerBonusRate> findBonusRateByAopvAndDateAsc(
-			@Param("aopv") long aopv,
+			@Param("aopv") float aopv,
 			@Param("checkAsAtDate") Date checkAsAtDate);
 
 }

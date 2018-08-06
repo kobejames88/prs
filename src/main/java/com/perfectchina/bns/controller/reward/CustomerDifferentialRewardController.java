@@ -54,19 +54,19 @@ public class CustomerDifferentialRewardController {
      * @return
      */
     @GetMapping(value = "/list/rewardnet")
-    public ResponseEntity<List<CustomerBonusNet>> listAccounts() {
-        CustomerBonusNet rootNode = customerBonusNetService.getCustomerBonusNetRepository().getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate()); // pass root node id to retrieve whole tree
+    public ResponseEntity<List<TreeNode>> listAccounts() {
+        TreeNode rootNode = customerBonusNetService.getRootNode(DateUtils.getLastMonthSnapshotDate()); // pass root node id to retrieve whole tree
         if ( rootNode == null ) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 
         // parse the whole tree in depth first order for the whole list of TreeNode
-        List<CustomerBonusNet> treeNodes = new ArrayList<CustomerBonusNet>();
+        List<TreeNode> treeNodes = new ArrayList<TreeNode>();
 
-        Stack<CustomerBonusNet> stk = new Stack<CustomerBonusNet>();
+        Stack<TreeNode> stk = new Stack<TreeNode>();
         stk.push( rootNode );
         while (!stk.empty()) {
-            CustomerBonusNet top = stk.pop();
+            TreeNode top = stk.pop();
             for ( TreeNode child : top.getChildNodes()) {
                 stk.push((CustomerBonusNet)child);
             }
@@ -79,7 +79,7 @@ public class CustomerDifferentialRewardController {
             }
         }
 
-        return new ResponseEntity<List<CustomerBonusNet>>(treeNodes, HttpStatus.OK);
+        return new ResponseEntity<List<TreeNode>>(treeNodes, HttpStatus.OK);
     }
 
 

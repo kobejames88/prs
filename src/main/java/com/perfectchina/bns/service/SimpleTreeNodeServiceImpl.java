@@ -2,15 +2,15 @@ package com.perfectchina.bns.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 
+import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perfectchina.bns.model.SalesRecord;
-import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
@@ -24,7 +24,7 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 	private SalesRecordService salesRecordService;
     
 	@Autowired
-	private TreeNodeRepository<SimpleNetTreeNode> simpleTreeNodeRepository;
+	private SimpleNetTreeNodeRepository simpleTreeNodeRepository;
 	
     private Date previousDateEndTime; // Parameter to set calculate PPV for which date
     
@@ -52,8 +52,8 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		
 		// retrieve sales records of given period to calculate the PPV
 		Long accountId = node.getData().getId();
-		
-		List<SalesRecord> accountMonthlySales = salesRecordService.retrieveSelfSaleRecordOfLastMonth( accountId, previousDateEndTime );
+		Date lastMonthEndDate = DateUtils.getLastMonthEndDate(new Date());
+		List<SalesRecord> accountMonthlySales = salesRecordService.retrieveSelfSaleRecordOfLastMonth( accountId, lastMonthEndDate );
 		SalesRecord totalSales = salesRecordService.findOutPersonalSalesRecordTotal(accountMonthlySales);
 		
 		SimpleNetTreeNode thisNode = (SimpleNetTreeNode) node ;

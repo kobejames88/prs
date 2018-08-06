@@ -84,8 +84,7 @@ public class RestApiOpvNetTreeNodeController {
 	@RequestMapping(value = "/opvNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateOpvNetPpv() {
 
-		Date currentDate = new Date();
-		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		Date previousDateEndTime = DateUtils.getLastMonthEndDate(new Date());
 		String snapshotDate = DateUtils.convertToSnapShotDate(previousDateEndTime);
 
 		treeNodeService.setPreviousDateEndTime(previousDateEndTime);

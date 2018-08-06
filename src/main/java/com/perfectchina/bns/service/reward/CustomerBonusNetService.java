@@ -1,5 +1,6 @@
 package com.perfectchina.bns.service.reward;
 
+import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.CustomerBonusNetRepository;
 import com.perfectchina.bns.service.TreeNodeService;
 
@@ -13,5 +14,5 @@ public interface CustomerBonusNetService  {
     void createRewardNet();
 
     void calculateReward(String snapShotDate);
-    CustomerBonusNetRepository getCustomerBonusNetRepository();
+    TreeNode getRootNode(String snapShotDate);
 }
