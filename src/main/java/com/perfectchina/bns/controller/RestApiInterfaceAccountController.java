@@ -51,8 +51,13 @@ public class RestApiInterfaceAccountController {
 	@Autowired
 	@Qualifier("simpleTreeNodeServiceImpl")
 	TreeNodeService simpleNetTreeNodeService; //Service which will do all data retrieval/manipulation work
-	
-	
+
+	/**
+	 * upload accountsJson file then save in db interfaceAccount
+	 * @param file accountsJson
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("/interfaceAccount/upload") 
 	public ResponseEntity<?> singleFileUpload(@RequestParam MultipartFile file) throws Exception {
 		if (!file.isEmpty()) {
@@ -216,7 +221,12 @@ public class RestApiInterfaceAccountController {
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	}
 	
-	// confirm those newly added interface accounts and import to core bonus system
+	/**
+	 * confirm those newly added interface accounts and import to core bonus system
+	 * and convert InterfaceAccountInfo To SimpleNetTreeNode
+	 * @param ucBuilder
+	 * @return
+	 */
 	@RequestMapping(value = "/interfaceAccount/confirmBatch/", method = RequestMethod.POST)
 	public ResponseEntity<?> confirmBatchInterfaceAccountInfo(UriComponentsBuilder ucBuilder) {
 		logger.info("Confirm batch InterfaceAccountInfo : ");

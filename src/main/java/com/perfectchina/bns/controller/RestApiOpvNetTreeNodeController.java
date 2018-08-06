@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
-import com.perfectchina.bns.service.AccountService;
 import com.perfectchina.bns.service.OpvTreeNodeService;
 
 
@@ -47,8 +45,8 @@ public class RestApiOpvNetTreeNodeController {
 
 	@RequestMapping(value = "/opvNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		//TreeNode rootNode = treeNodeService.getTreeNode(1L); // pass root node id to retrieve whole tree 
-		TreeNode rootNode = opvNetTreeNodeRepository.getRootTreeNode(); // pass root node id to retrieve whole tree 
+		//get opvNetTree root by last month snapshotDate
+		TreeNode rootNode = treeNodeService.getRootNode(DateUtils.getLastMonthSnapshotDate()); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
@@ -88,9 +86,11 @@ public class RestApiOpvNetTreeNodeController {
 
 		Date currentDate = new Date();
 		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		String snapshotDate = DateUtils.convertToSnapShotDate(previousDateEndTime);
+
 		treeNodeService.setPreviousDateEndTime(previousDateEndTime);
-		treeNodeService.updateWholeTree();
-		treeNodeService.updateWholeTreeOPV();
+		treeNodeService.updateWholeTree(snapshotDate);
+		treeNodeService.updateWholeTreeOPV(snapshotDate);
 		
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 

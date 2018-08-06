@@ -25,13 +25,15 @@ public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T,
 	
 	@Query("SELECT a FROM #{#entityName} a WHERE a.data.accountNum = :accountNum order by a.id desc")
 	public T getAccountByAccountNum(@Param("accountNum") String accountNum);
-	
-	
+
 	@Query("SELECT a FROM #{#entityName} a WHERE a.snapshotDate = :snapShotDate and a.data.accountNum = :accountNum order by a.id desc")
 	public T getAccountByAccountNum(@Param("snapShotDate") String snapShotDate, @Param("accountNum") String accountNum);
 	
 	@Query("SELECT a FROM #{#entityName} a WHERE a.data.accountNum = :accountNum order by a.id desc")
 	public List<T> findByAccountNum(@Param("accountNum") String accountNum);
+
+	@Query("SELECT a FROM #{#entityName} a WHERE a.snapshotDate = :snapShotDate and a.data.accountNum = :accountNum order by a.id desc")
+	public T findByAccountNum(@Param("snapShotDate") String snapShotDate,@Param("accountNum") String accountNum);
 	
 	// need to update the field hasChild to true if the account actually has distributor child (Not VIP Child)
 	//@Query("SELECT a FROM Account a WHERE a.hasChild = FALSE AND a.id IN (SELECT DISTINCT a2.uplinkId FROM Account a2 WHERE a2.pin in ('T','AS','S','M','SM','EM','D','SD') )")
@@ -46,11 +48,11 @@ public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T,
 	@Query("SELECT a FROM #{#entityName} a WHERE a.hasChild = TRUE AND a.id NOT IN (SELECT DISTINCT a2.uplinkId FROM #{#entityName} a2 )")
 	public List<T> retrieveInCorrectLeafAccounts();	
 	
-	@Query("SELECT a FROM #{#entityName} a WHERE a.levelNum = 0 order by a.id")
-	public T getRootTreeNode();
+	@Query("SELECT a FROM #{#entityName} a WHERE a.snapshotDate = :snapshotDate and a.levelNum = 0 order by a.id")
+	public T getRootTreeNode(@Param("snapshotDate") String snapshotDate);
 
-	@Query("SELECT max(a.levelNum) FROM #{#entityName} a ")
-	public int getMaxLevelNum();
+	@Query("SELECT max(a.levelNum) FROM #{#entityName} a WHERE a.snapshotDate = :snapshotDate")
+	public int getMaxLevelNum(@Param("snapshotDate") String snapshotDate);
 
 	@Query("SELECT a FROM #{#entityName} a WHERE a.levelNum = 0 and a.snapshotDate = :snapshotDate order by a.id")
 	public T getRootTreeNodeOfMonth(@Param("snapshotDate") String snapshotDate);

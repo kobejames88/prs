@@ -14,9 +14,14 @@ import com.perfectchina.bns.model.CustomerBonusRate;
 public interface CustomerBonusRateRepository extends JpaRepository<CustomerBonusRate, Long> {
 	
 	@Query("SELECT br FROM CustomerBonusRate br WHERE br.aopv <= :aopv and ( :checkAsAtDate between br.effectiveFrom and br.effectiveTo ) order by br.aopv desc ")
-	public List<CustomerBonusRate> findBonusRateByAopvAndDate(
+	List<CustomerBonusRate> findBonusRateByAopvAndDateDesc(
             @Param("aopv") float aopv,
             @Param("checkAsAtDate") Date checkAsAtDate);
-	
+
+	//find all rate >= lastMonth rate base on LMAOPV asc
+	@Query("SELECT br FROM CustomerBonusRate br WHERE br.aopv > :aopv and ( :checkAsAtDate between br.effectiveFrom and br.effectiveTo ) order by br.aopv asc ")
+	List<CustomerBonusRate> findBonusRateByAopvAndDateAsc(
+			@Param("aopv") long aopv,
+			@Param("checkAsAtDate") Date checkAsAtDate);
 
 }

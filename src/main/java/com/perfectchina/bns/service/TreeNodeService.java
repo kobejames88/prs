@@ -10,14 +10,14 @@ public interface TreeNodeService<T> {
 	boolean isNodeDataExist(String accountNum);
 	
 	TreeNode getTreeNode(Long id);
-	TreeNode getRootTreeNode();
+	TreeNode getRootTreeNode(String snapshotDate);
 	
 	// Child function need to check if the network ready to create or update
 	boolean isReadyToUpdate(); 
 	
-	void updateWholeTree();
+	void updateWholeTree(String snapshotDate);
 	
 	void updateChildTreeLevel(Integer fromLevelNum, TreeNode treeNode);
 
-	int getMaxTreeLevel();
+	//int getMaxTreeLevel(String snapShotDate);
 }

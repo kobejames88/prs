@@ -63,12 +63,4 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		
 	}
 
-	public List<FiveStarNetTreeNode> findChildLeafList() {
-		throw new RuntimeException("Not implemented.");
-	}
-
-	public int getMaxTreeLevel() {
-		throw new RuntimeException("Not implemented.");
-	}
-
 }

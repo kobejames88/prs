@@ -41,7 +41,10 @@ public class RestApiPassUpGpvNetTreeNodeController {
 
 	@RequestMapping(value = "/passUpGpvNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		TreeNode rootNode = treeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree
+		
+		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
+		
+		TreeNode rootNode = treeNodeService.getRootTreeNode(snapshotDate); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
@@ -72,10 +75,12 @@ public class RestApiPassUpGpvNetTreeNodeController {
 	@RequestMapping(value = "/passUpGpvNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> updatePassUpGpvNet() {
 		Date currentDate = new Date();
-		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-		treeNodeService.setPreviousDateEndTime(previousDateEndTime);
-		treeNodeService.updateWholeTree();
-		treeNodeService.updateWholeTreePassUpGPV();
+		// Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
+		
+		treeNodeService.setPreviousDateEndTime( DateUtils.getLastMonthEndDate(currentDate));
+		treeNodeService.updateWholeTree(snapshotDate);
+		treeNodeService.updateWholeTreePassUpGPV(snapshotDate);
 		
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 
@@ -91,7 +96,8 @@ public class RestApiPassUpGpvNetTreeNodeController {
 
 	@RequestMapping(value = "/test/", method = RequestMethod.GET)
 	public ResponseEntity<?> test() {
-        int maxTreeLevel = treeNodeService.getMaxTreeLevel();
+		String lastMonthSnapShotDate = DateUtils.getLastMonthSnapshotDate();
+        //int maxTreeLevel = treeNodeService.getMaxTreeLevel(lastMonthSnapShotDate);
 
         HttpHeaders headers = new HttpHeaders();
 

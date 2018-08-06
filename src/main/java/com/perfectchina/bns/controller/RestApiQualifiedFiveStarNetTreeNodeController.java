@@ -39,7 +39,9 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 
 	@RequestMapping(value = "/qualifiedFiveStar/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		TreeNode rootNode = treeNodeService.getRootTreeNode(); // pass root node id to retrieve whole tree
+		
+		String snapshotDate	= DateUtils.getLastMonthSnapshotDate();	
+		TreeNode rootNode = treeNodeService.getRootTreeNode(snapshotDate); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
@@ -71,9 +73,13 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 	public ResponseEntity<?> updatePassUpGpvNet() {
 		Date currentDate = new Date();
 		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-		treeNodeService.setPreviousDateEndTime(previousDateEndTime);
-		treeNodeService.updateWholeTree();
-		treeNodeService.updateWholeTreeQualifiedFiveStar();
+		
+		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
+		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
+		
+		treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
+		treeNodeService.updateWholeTree(snapshotDate);
+		treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
 		
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 
@@ -90,10 +96,14 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 	@RequestMapping(value = "/qualifiedFiveStar/test/", method = RequestMethod.GET)
 	public ResponseEntity<?> test() {
 		Date currentDate = new Date();
-        Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-        treeNodeService.setPreviousDateEndTime(previousDateEndTime);
-        treeNodeService.updateWholeTree();
-        treeNodeService.updateWholeTreeQualifiedFiveStar();
+        // Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
+		String snapShotDate = DateUtils.getLastMonthSnapshotDate();
+        
+        
+        treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
+        treeNodeService.updateWholeTree(snapShotDate);
+        treeNodeService.updateWholeTreeQualifiedFiveStar(snapShotDate);
 
         HttpHeaders headers = new HttpHeaders();
 

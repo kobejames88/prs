@@ -21,7 +21,7 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
     @Autowired
 	private SimpleNetTreeNodeRepository simpleTreeNodeRepository;
 
-    public abstract TreeNodeRepository getTreeNodeRepository();
+    protected abstract TreeNodeRepository getTreeNodeRepository();
 	protected abstract void process( TreeNode node );
     
 	public boolean isNodeDataExist(String accountNum) {
@@ -36,14 +36,16 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 		return (TreeNode) getTreeNodeRepository().getOne(id);
 	}
 	
-	public TreeNode getRootTreeNode() {
-		return (TreeNode) getTreeNodeRepository().getRootTreeNode();
+	public TreeNode getRootTreeNode(String snapshotDate) {
+		return (TreeNode) getTreeNodeRepository().getRootTreeNode(snapshotDate);
 	}
 	
-    public void updateWholeTree() {
+    public void updateWholeTree(String snapshotDate) {
     	// Get child nodes
-    	TreeNode rootNode = getTreeNodeRepository().getRootTreeNode();
+    	logger.debug("updateWholeTree, start");
+    	TreeNode rootNode = getTreeNodeRepository().getRootTreeNode(snapshotDate);
     	updateChildTreeLevel( 0, rootNode );
+    	logger.debug("updateWholeTree, end");
     }
 
     // Return fromNode with all the child updated
@@ -64,13 +66,8 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	        	child.setLevelNum( childLevelNum );
 	            stk.push(child);
 	        }
-	       process(top);
+	        process(top);
 	    }
 	}
-
-	public int getMaxTreeLevel(){
-		return 0;
-	}
-
 
 }

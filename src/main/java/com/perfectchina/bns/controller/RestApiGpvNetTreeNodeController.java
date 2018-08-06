@@ -1,10 +1,12 @@
 package com.perfectchina.bns.controller;
 
-import com.perfectchina.bns.common.utils.DateUtils;
-import com.perfectchina.bns.model.treenode.TreeNode;
-import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
-import com.perfectchina.bns.service.GpvTreeNodeService;
-import com.perfectchina.bns.service.OpvTreeNodeService;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Stack;
+import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.service.GpvTreeNodeService;
 
 
 /**
@@ -37,15 +36,13 @@ public class RestApiGpvNetTreeNodeController {
 	@Autowired
 	GpvTreeNodeService treeNodeService; //Service which will do all data retrieval/manipulation work
 	
-	@Autowired
-	GpvNetTreeNodeRepository gpvNetTreeNodeRepository;
-	
-    
+
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
 	@RequestMapping(value = "/gpvNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		TreeNode rootNode = gpvNetTreeNodeRepository.getRootTreeNode(); // pass root node id to retrieve whole tree
+		//get gpvNetTree root by last month snapshotDate
+		TreeNode rootNode = treeNodeService.getRootNode(DateUtils.getLastMonthSnapshotDate()); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
@@ -77,9 +74,11 @@ public class RestApiGpvNetTreeNodeController {
 	public ResponseEntity<?> updateGpvNet() {
 		Date currentDate = new Date();
 		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		String snapshotDate = DateUtils.convertToSnapShotDate(previousDateEndTime);
+		
 		treeNodeService.setPreviousDateEndTime(previousDateEndTime);
-		treeNodeService.updateWholeTree();
-		treeNodeService.updateWholeTreeGPV();
+		treeNodeService.updateWholeTree(snapshotDate);
+		treeNodeService.updateWholeTreeGPV(snapshotDate);
 		
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 

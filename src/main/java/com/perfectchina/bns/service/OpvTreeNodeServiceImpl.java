@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +13,9 @@ import org.springframework.stereotype.Service;
 import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.ActiveNetTreeNode;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
-import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.ActiveNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.TreeNodeRepository;
 import com.perfectchina.bns.service.pin.PinPosition;
 
 @Service
@@ -48,7 +44,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public ActiveNetTreeNodeRepository getTreeNodeRepository() {
+	protected ActiveNetTreeNodeRepository getTreeNodeRepository() {
 		return activeNetTreeNodeRepository;
 	}
 
@@ -71,9 +67,8 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		return isReady;
 	}
 
-	@Override
-	public int getMaxTreeLevel() {
-		return 0;
+	public int getMaxTreeLevel(String snapShotDate) {
+		return opvTreeNodeRepository.getMaxLevelNum(snapShotDate);
 	}
 
 	/**
@@ -130,8 +125,8 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	}
 
 	@Override
-	public void updateWholeTreeOPV() {
-		int treeLevel = getTreeLevel();
+	public void updateWholeTreeOPV(String snapshotDate) {
+		int treeLevel = getMaxTreeLevel( snapshotDate );
 		if (treeLevel < 0)
 			return;
 		
@@ -161,25 +156,9 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		}
 	}
 
-	/**
-	 * Get the level of the original tree
-	 * @return
-	 */
-	private int getTreeLevel() {
-		// get root node
-		TreeNode fromNode = activeNetTreeNodeRepository.getRootTreeNode();
-		int treeLevel = 0;
-		
-		Stack<TreeNode> stk = new Stack<TreeNode>();
-		stk.push(fromNode);
-		while (!stk.empty()) {
-			TreeNode top = stk.pop();
-			for (TreeNode child : top.getChildNodes()) {
-				treeLevel = treeLevel > child.getLevelNum() ? treeLevel : child.getLevelNum();
-				stk.push(child);
-			}
-		}
-		return treeLevel;
+	public TreeNode getRootNode(String snapshotDate) {
+		TreeNode rootNode = opvTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
+		return rootNode;
 	}
-
+	
 }

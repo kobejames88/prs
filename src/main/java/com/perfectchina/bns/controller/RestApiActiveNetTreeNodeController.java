@@ -1,5 +1,6 @@
 package com.perfectchina.bns.controller;
 
+import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.ActiveNetTreeNodeRepository;
 import com.perfectchina.bns.service.ActiveNodeService;
@@ -34,14 +35,12 @@ public class RestApiActiveNetTreeNodeController {
 	@Autowired
 	ActiveNodeService activeNodeService; //Service which will do all data retrieval/manipulation work
 	
-	@Autowired
-	ActiveNetTreeNodeRepository activeNetTreeNodeRepository;
-	
+
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
-		// Retrieve tree from node
-		TreeNode rootNode = activeNetTreeNodeRepository.getRootTreeNode();
+		// Retrieve tree from node ; find activeTreeRootNode by last month snapshotDate
+		TreeNode rootNode = activeNodeService.getRootNode( DateUtils.getLastMonthSnapshotDate() );
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
@@ -58,14 +57,15 @@ public class RestApiActiveNetTreeNodeController {
 	    }
 		return new ResponseEntity<>(treeNodes, HttpStatus.OK);
 	}
-	// -------------------Create a ActiveNetTree-------------------------------------------
+
 	/**
+	 * Create a ActiveNetTree base on simpleNetTree
 	 * @return
 	 */
 	@RequestMapping(value = "/activeNet/", method = RequestMethod.PUT)
 	public ResponseEntity<?> createFiveStarNet() {
-		logger.info("execute, finished updateSimpleNetPpv.");
-		activeNodeService.createActiveNetTree();
+		String lastMonthSnapShotDate = DateUtils.getLastMonthSnapshotDate();
+		activeNodeService.createActiveNetTree(lastMonthSnapShotDate);
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			headers.setLocation( new URI( "/api/ActiveNet/listAccounts" ) );

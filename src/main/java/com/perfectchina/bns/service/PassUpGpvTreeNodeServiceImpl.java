@@ -37,7 +37,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public TreeNodeRepository<FiveStarNetTreeNode> getTreeNodeRepository() {
+	protected TreeNodeRepository<FiveStarNetTreeNode> getTreeNodeRepository() {
 		return fiveStarNetTreeNodeRepository;
 	}
 
@@ -61,8 +61,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	}
 
 	@Override
-	public void updateWholeTree() {
-		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode();
+	public void updateWholeTree(String snapshotDate) {
+		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode( snapshotDate );
 		updateChildTreeLevel( 0, rootNode );
 	}
 
@@ -71,11 +71,10 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		super.updateChildTreeLevel(fromLevelNum, fromNode);
 	}
 
-	@Override
-	public int getMaxTreeLevel() {
-        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum();
-        return maxLevelNum;
-	}
+//	public int getMaxTreeLevel(String snapShotDate) {
+//       int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+//        return maxLevelNum;
+//	}
 
 	/**
 	 * param node is SimpleNetTreeNode walking through
@@ -109,9 +108,9 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	/**
 	 * Update the entire tree's pass-up-gpv
 	 */
-	public void updateWholeTreePassUpGPV() {
+	public void updateWholeTreePassUpGPV(String snapShotDate) {
 		// Get the level of the original tree
-		int treeLevel = passUpGpvNetTreeNodeRepository.getMaxLevelNum();
+		int treeLevel = passUpGpvNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
 //		int treeLevel = getTreeLevel();
 		if (treeLevel < 0)
 			return;
@@ -165,27 +164,6 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Get the level of the five-star-net-tree
-	 * @return
-	 */
-	private int getTreeLevel() {
-		// get root node
-		TreeNode fromNode = fiveStarNetTreeNodeRepository.getRootTreeNode();
-		int treeLevel = 0;
-		
-		Stack<TreeNode> stk = new Stack<>();
-		stk.push(fromNode);
-		while (!stk.empty()) {
-			TreeNode top = stk.pop();
-			for (TreeNode child : top.getChildNodes()) {
-				treeLevel = treeLevel > child.getLevelNum() ? treeLevel : child.getLevelNum();
-				stk.push(child);
-			}
-		}
-		return treeLevel;
 	}
 
 }

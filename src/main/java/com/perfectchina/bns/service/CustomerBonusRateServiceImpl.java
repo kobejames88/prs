@@ -18,8 +18,8 @@ public class CustomerBonusRateServiceImpl implements CustomerBonusRateService {
 	private CustomerBonusRateRepository customerBonusRateRepository;
 
 	@Override
-	public CustomerBonusRate getBonusRateByAopv(float aopv, Date checkAsAtDate) {
-		List<CustomerBonusRate> customerBonusRates = customerBonusRateRepository.findBonusRateByAopvAndDate(aopv, checkAsAtDate);
+	public CustomerBonusRate getBonusRateByAopvDesc(float aopv, Date checkAsAtDate) {
+		List<CustomerBonusRate> customerBonusRates = customerBonusRateRepository.findBonusRateByAopvAndDateDesc(aopv, checkAsAtDate);
 		CustomerBonusRate result = null;
 		for ( CustomerBonusRate customerBonusRate: customerBonusRates ) {
 			result = customerBonusRate;
@@ -30,6 +30,6 @@ public class CustomerBonusRateServiceImpl implements CustomerBonusRateService {
 		
 	}
 
-	
-	
+
+
 }

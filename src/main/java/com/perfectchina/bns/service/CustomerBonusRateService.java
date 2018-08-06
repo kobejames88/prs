@@ -6,5 +6,5 @@ import com.perfectchina.bns.model.CustomerBonusRate;
 
 public interface CustomerBonusRateService {
 
-	public CustomerBonusRate getBonusRateByAopv(float aopv, Date checkAsAtDate);
+	public CustomerBonusRate getBonusRateByAopvDesc( float aopv, Date checkAsAtDate );	
 }

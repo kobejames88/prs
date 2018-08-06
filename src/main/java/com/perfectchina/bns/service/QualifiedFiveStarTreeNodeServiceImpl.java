@@ -69,8 +69,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	}
 
 	@Override
-	public void updateWholeTree() {
-		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode();
+	public void updateWholeTree(String snapshotDate) {
+		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode(snapshotDate);
 		updateChildTreeLevel( 0, rootNode );
 	}
 
@@ -79,11 +79,10 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		super.updateChildTreeLevel(fromLevelNum, fromNode);
 	}
 
-	@Override
-	public int getMaxTreeLevel() {
-        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum();
-        return maxLevelNum;
-	}
+//	public int getMaxTreeLevel(String snapShotDate) {
+//        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+//        return maxLevelNum;
+//	}
 
 	/**
 	 * param node is SimpleNetTreeNode walking through
@@ -150,9 +149,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	/**
 	 * Update the entire tree's pass-up-gpv
 	 */
-	public void updateWholeTreeQualifiedFiveStar() {
+	public void updateWholeTreeQualifiedFiveStar(String snapShotDate) {
 		// Get the level of the original tree
-		int treeLevel = qualifiedFiveStarNetTreeNodeRepository.getMaxLevelNum();
+		int treeLevel = qualifiedFiveStarNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
 		if (treeLevel < 0)
 			return;
 		Map<Long,List<PassUpGpv>> downLines = new HashMap<>();

@@ -44,9 +44,12 @@ public class RestApiSimpleNetTreeNodeController {
 
 	@RequestMapping(value = "/simpleNet/listAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts() {
+		
+		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
+		
 		// pass root node id to retrieve whole tree 
 		//TreeNode rootNode = simpleTreeNodeService.getTreeNode(1L); 
-		TreeNode rootNode = simpleTreeNodeService.getRootTreeNode();
+		TreeNode rootNode = simpleTreeNodeService.getRootTreeNode(snapshotDate);
 		
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -75,10 +78,9 @@ public class RestApiSimpleNetTreeNodeController {
 		return new ResponseEntity<List<TreeNode>>(treeNodes, HttpStatus.OK);
 	}
 
-	
-	// -------------------Create a InterfaceAccountInfo-------------------------------------------
 
 	/**
+	 * Create a InterfaceAccountInfo
 	 * This method update the PPV of the simpleNetTreeNode based on the SalesRecord
 	 * @return
 	 */
@@ -87,8 +89,10 @@ public class RestApiSimpleNetTreeNodeController {
 
 		Date currentDate = new Date();
 		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
+		
 		simpleTreeNodeService.setPreviousDateEndTime(previousDateEndTime);
-		simpleTreeNodeService.updateWholeTree();
+		simpleTreeNodeService.updateWholeTree(snapshotDate);
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 
 		HttpHeaders headers = new HttpHeaders();

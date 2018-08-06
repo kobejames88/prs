@@ -57,7 +57,7 @@ public class CustomerDifferentialRewardServiceImpl implements CustomerDifferenti
 			
 		// compare previousMonthReward.bonusRate to the calculated bonus rate to get the highest rate
 		
-		CustomerBonusRate bonusRate = customerBonusRateService.getBonusRateByAopv(currentMonthReward.getAopv(), lastMonthEndDate) ;
+		CustomerBonusRate bonusRate = customerBonusRateService.getBonusRateByAopvDesc(currentMonthReward.getAopv(), lastMonthEndDate) ;
 		logger.debug( "calculateAccountRewardBonusRate, currentMonthReward=[" + currentMonthReward+
 				", bonusRate=["+bonusRate+"], previousMonthReward=[" + previousMonthReward +"]");
 		
@@ -102,12 +102,13 @@ public class CustomerDifferentialRewardServiceImpl implements CustomerDifferenti
 	@Override
 	public void calculateReward(Date lastMonthEndDate) {
 		
-		List<FiveStarNetTreeNode> childList = fiveStarTreeNodeService.findChildLeafList();
+		String snapShotDate = DateUtils.convertToSnapShotDate(lastMonthEndDate);
+		List<FiveStarNetTreeNode> childList = fiveStarTreeNodeService.findChildLeafList( snapShotDate );
 		logger.info( "calculateReward, start with date=["+lastMonthEndDate+"]");
 		
 		int maxTreeLevel = 0;
-		// get max tree level from DB
-		maxTreeLevel = fiveStarTreeNodeService.getMaxTreeLevel();
+		// get max tree level from DB		
+		maxTreeLevel = fiveStarTreeNodeService.getMaxTreeLevel( snapShotDate );
 		
 		rewardFindingOnNextLevel( maxTreeLevel, lastMonthEndDate ); // this method calculate reward from bottom to root
 		logger.info( "calculateCashReward, end with date=["+lastMonthEndDate+"]");
@@ -118,11 +119,11 @@ public class CustomerDifferentialRewardServiceImpl implements CustomerDifferenti
 	private void rewardFindingOnNextLevel(int treeLevelNum, Date lastMonthEndDate) {
 		if ( treeLevelNum <= 0 ) return;
 		logger.info( "rewardFindingOnNextLevel, start levelNum=["+treeLevelNum+"], with date=["+lastMonthEndDate+"]");
-		
+		String snapShotDate = DateUtils.convertToSnapShotDate(lastMonthEndDate);
 		while ( treeLevelNum > 0) {
 			logger.debug( "rewardFindingOnNextLevel, treeLevelNum=["+ treeLevelNum +"]");
 
-			List<FiveStarNetTreeNode> thisTreeLevelNodeList = fiveStarTreeNodeService.findNodeAtLevel( treeLevelNum );
+			List<FiveStarNetTreeNode> thisTreeLevelNodeList = fiveStarTreeNodeService.findNodeAtLevel( snapShotDate, treeLevelNum );
 			// loop for the children to calculate PPV at the lowest level
 			for (FiveStarNetTreeNode node: thisTreeLevelNodeList) {
 				//long accountId = account.getId();

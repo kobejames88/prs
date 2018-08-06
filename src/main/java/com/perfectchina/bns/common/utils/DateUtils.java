@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateUtils {
@@ -11,33 +12,51 @@ public class DateUtils {
 	private static final String DAY = "D";
 	private static final String MONTH = "M";
 	private static final String YEAR = "Y";
-	
+	private static SimpleDateFormat SDF = new SimpleDateFormat("yyyyMM", Locale.ENGLISH);
+
+	/**
+	 * This function convert the Date object to snapShotDate format
+	 * @param inputDate
+	 * @return
+	 */
+	public static String convertToSnapShotDate( Date inputDate ) {
+		return SDF.format(inputDate);
+	}
+
+
+	/**
+	 * get current month snapshotDate
+	 * @return snapshotDate yyyyMM
+	 */
 	public static String getCurrentSnapshotDate(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-		String currentSnapshotDate = sdf.format(new Date());
+		String currentSnapshotDate = SDF.format(new Date());
 		return currentSnapshotDate;
 	}
-	
+
+	/**
+	 * get last month snapshotDate
+	 * @return
+	 */
+	public static String getLastMonthSnapshotDate(){
+		Calendar cal = Calendar.getInstance();
+		cal.add(cal.MONTH, -1);
+		String lastMonthSnapshotDate = SDF.format(cal.getTime());
+		return lastMonthSnapshotDate;
+	}
+
+	/**
+	 * get last month snapshotDate by current snapshotDate
+	 * @param snapshotDate
+	 * @return
+	 */
 	public static String getLastMonthSnapshotDate(String snapshotDate){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
 		String lastMonthSnapshotDate=null;
 		try {
-			Date date = sdf.parse(snapshotDate);
+			Date date = SDF.parse(snapshotDate);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(date);
-			int year = date.getYear()+1900;
-			int month = date.getMonth();
-			String m = "";
-			if(month==0){
-				year = year-1;
-				m=m+12;
-			}
-			else if(month<10){
-				m="0"+month;
-			}else{
-				m=m+month;
-			}
-			lastMonthSnapshotDate=""+year+m;
+			calendar.add(calendar.MONTH,-1);
+			lastMonthSnapshotDate = SDF.format(calendar.getTime());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

@@ -1,24 +1,26 @@
 package com.perfectchina.bns.service;
 
 
-import com.perfectchina.bns.common.utils.DateUtils;
-import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
-import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
-import com.perfectchina.bns.service.pin.PinPosition;
-import com.perfectchina.bns.model.treenode.GpvNetTreeNode;
-import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
-import com.perfectchina.bns.model.treenode.TreeNode;
-import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.TreeNodeRepository;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.model.treenode.GpvNetTreeNode;
+import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
+import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
+import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
+import com.perfectchina.bns.service.pin.PinPosition;
 
 @Service
 public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTreeNodeService {
@@ -67,18 +69,18 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		return isReady;
 	}
 	@Override
-	public void updateWholeTree() {
+	public void updateWholeTree(String snapshotDate) {
 		// Get child nodes
-		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode();
+		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode(snapshotDate);
 		updateChildTreeLevel( 0, rootNode );
 	}
 	@Override
 	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode) {
 		super.updateChildTreeLevel(fromLevelNum, fromNode);
 	}
-	@Override
-	public int getMaxTreeLevel() {
-		return getTreeNodeRepository().getMaxLevelNum();
+	
+	public int getMaxTreeLevel(String snapShotDate) {
+		return getTreeNodeRepository().getMaxLevelNum(snapShotDate);
 	}
 
 	/**
@@ -113,9 +115,9 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 	/**
 	 * Update the entire tree's gpv
 	 */
-	public void updateWholeTreeGPV() {
+	public void updateWholeTreeGPV(String snapshotDate) {
 		// Get the level of the original tree
-		int treeLevel = getMaxTreeLevel();
+		int treeLevel = getMaxTreeLevel(snapshotDate);
 		if (treeLevel < 0)
 			return;
 		Map<Long,Float> map = new HashMap<>();
@@ -161,4 +163,10 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 			treeLevel--;
 		}
 	}
+
+	public TreeNode getRootNode(String snapshotDate) {
+		TreeNode rootNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
+		return rootNode;
+	}
+	
 }

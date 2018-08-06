@@ -15,11 +15,9 @@ import org.springframework.stereotype.Service;
 import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.GpvNetTreeNode;
-import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.GpvNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
 import com.perfectchina.bns.service.pin.PinPosition;
 
@@ -41,17 +39,16 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		return false;
 	}
 
-	@Override
-	public int getMaxTreeLevel() {
-		return 0;
+	public int getMaxTreeLevel(String snapShotDate) {
+		return fiveStarNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
 	}
 
-    public List<FiveStarNetTreeNode> findChildLeafList(){
-        return null;
+    public List<FiveStarNetTreeNode> findChildLeafList(String snapShotDate){
+        throw new java.lang.RuntimeException("Not yet implemented");
     }
 
-	public List<FiveStarNetTreeNode> findNodeAtLevel(int treeLevelNum) {
-		return null;
+	public List<FiveStarNetTreeNode> findNodeAtLevel(String snapShotDate, int treeLevelNum) {
+        throw new java.lang.RuntimeException("Not yet implemented");
 	}
 
 	@Override
@@ -62,13 +59,19 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	@Override
 	protected void process(TreeNode node) {
 		// TODO Auto-generated method stub
+        throw new java.lang.RuntimeException("Not yet implemented");
 		
 	}
 
+	/**
+	 * copy value form gpvNetTree
+	 */
 	@Override
 	public void createFiveStarNetTree() {
+
 		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getCurrentSnapshotDate());
 		Stack<GpvNetTreeNode> stk = new Stack<>();
+
 		stk.push(rootTreeNode);
 		while (!stk.empty()) {
 			GpvNetTreeNode top = stk.pop();
@@ -99,6 +102,9 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		}
 	}
 
+	/**
+	 * after createFiveStarNetTree(copy) then update tree delete some not need information
+	 */
 	@Override
 	@Transactional
 	public void updateWholeTreeFiveStar() {
@@ -107,10 +113,10 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		for (FiveStarNetTreeNode fiveStarNetTreeNode : leafNodes) {
 			FiveStarNetTreeNode uplinkNode = fiveStarNetTreeNodeRepository.findOne(fiveStarNetTreeNode.getUplinkId());
 			while(uplinkNode!=null){
-				if(fiveStarNetTreeNode.getPin()==PinPosition.MEMBER){
+				if(PinPosition.MEMBER.equals(fiveStarNetTreeNode.getPin())){
 				}else{
 					FiveStarNetTreeNode uplinkNode2 = uplinkNode;
-					while(uplinkNode2.getPin()==PinPosition.MEMBER){
+					while(PinPosition.MEMBER.equals(uplinkNode2.getPin())){
 						uplinkNode2 = fiveStarNetTreeNodeRepository.findOne(uplinkNode2.getUplinkId());
 						if(uplinkNode2==null){break;}
 					}
@@ -143,4 +149,10 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	        }	        
 	    }
 	}
+	
+	public TreeNode getRootNode(String snapshotDate) {
+		TreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
+		return rootNode;
+	}
+	
 }
