@@ -42,6 +42,16 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 	@Column(columnDefinition="float default 0.00")
     private Float asteriskNodePoints;
 
+    private String levelLine;
+
+    public String getLevelLine() {
+        return levelLine;
+    }
+
+    public void setLevelLine(String levelLine) {
+        this.levelLine = levelLine;
+    }
+
     public Float getPassUpGpv() {
         return passUpGpv;
     }

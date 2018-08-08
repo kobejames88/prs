@@ -88,11 +88,11 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		//the uplinkId is SimpleNet
 		long uplinkId = fiveStarNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
-			FiveStarNetTreeNode one = getTreeNodeRepository().getOne(uplinkId);
-			String accountNum = one.getData().getAccountNum();
-			PassUpGpvNetTreeNode one2 = passUpGpvNetTreeNodeRepository.getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
+			FiveStarNetTreeNode fiveStarUplink = getTreeNodeRepository().getOne(uplinkId);
+			String accountNum = fiveStarUplink.getData().getAccountNum();
+			PassUpGpvNetTreeNode passUpGpvUplink = passUpGpvNetTreeNodeRepository.getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
 					accountNum);
-			passUpGpvNetTreeNode.setUplinkId(one2.getId());
+			passUpGpvNetTreeNode.setUplinkId(passUpGpvUplink.getId());
 		}
 
 		passUpGpvNetTreeNode.setHasChild(fiveStarNetTreeNode.getHasChild());
@@ -109,37 +109,45 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	 * Update the entire tree's pass-up-gpv
 	 */
 	public void updateWholeTreePassUpGPV(String snapShotDate) {
-		// Get the level of the original tree
+		// 获取passUpGpvNetTree的最大层级
 		int treeLevel = passUpGpvNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
-//		int treeLevel = getTreeLevel();
 		if (treeLevel < 0)
 			return;
 		Map<Long,Float> map = new HashMap<>();
 		while (treeLevel >= 0) {
-			List<PassUpGpvNetTreeNode> thisTreeLevelTreeList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			// 获取这层中的所有节点
+			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
-			for (PassUpGpvNetTreeNode passUpGpvNetTreeNode : thisTreeLevelTreeList) {
+			for (PassUpGpvNetTreeNode passUpGpvNetTreeNode : thisTreeLevelList) {
 				long id = passUpGpvNetTreeNode.getId();
 				long uplinkId = passUpGpvNetTreeNode.getUplinkId();
 				Float gpv = passUpGpvNetTreeNode.getGpv();
+				// 获取紧缩上来的pass-up-gpv
 				Float tempPoint = map.get(id);
+                Float passUpGpv;
 				if ( tempPoint != null ){
-					passUpGpvNetTreeNode.setPassUpGpv(gpv+ tempPoint);
+                    passUpGpv = gpv+ tempPoint;
+					passUpGpvNetTreeNode.setPassUpGpv(passUpGpv);
 				}else {
-					passUpGpvNetTreeNode.setPassUpGpv(gpv);
+                    passUpGpv = gpv;
+					passUpGpvNetTreeNode.setPassUpGpv(passUpGpv);
 				}
-				Float passUpGpv = passUpGpvNetTreeNode.getPassUpGpv();
+                // 获取此节点的合格线
 				int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
 				List<PassUpGpvNetTreeNode> nodes = new ArrayList<>();
+                Boolean isAbove18000 = passUpGpv >= 18000F;
+
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
-					if (passUpGpv >= 18000F){
+					// 如果是合格五星或者红宝石，上级合格线加1
+					if (isAbove18000){
 						upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 					}else {
 						if (isAboveRuby(passUpGpv,qualifiedLine)){
 							upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 						}else {
 							Float mapUplinkId = map.get(uplinkId);
+							// 如果不为空说明有共同的上级,因此需要叠加pass-up-gpv
 							if(mapUplinkId != null){
 								Float value = mapUplinkId;
 								Float newVal = value+passUpGpv;
@@ -150,6 +158,10 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 						}
 					}
 					nodes.add(upLinkNode);
+				}
+                if (isAbove18000) {
+				    passUpGpvNetTreeNode.setHasAsteriskNode(true);
+                    passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-18000F);
 				}
 				nodes.add(passUpGpvNetTreeNode);
 				passUpGpvNetTreeNodeRepository.save(nodes);

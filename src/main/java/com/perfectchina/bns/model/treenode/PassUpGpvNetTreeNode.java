@@ -23,6 +23,26 @@ public class PassUpGpvNetTreeNode extends TreeNode {
     @Column(columnDefinition="int default 0")
 	private int qualifiedLine;
 
+    private Boolean hasAsteriskNode;
+
+    @Column(columnDefinition="float default 0.00")
+    private Float asteriskNodePoints;
+
+    public Boolean getHasAsteriskNode() {
+        return hasAsteriskNode;
+    }
+
+    public void setHasAsteriskNode(Boolean hasAsteriskNode) {
+        this.hasAsteriskNode = hasAsteriskNode;
+    }
+
+    public Float getAsteriskNodePoints() {
+        return asteriskNodePoints;
+    }
+
+    public void setAsteriskNodePoints(Float asteriskNodePoints) {
+        this.asteriskNodePoints = asteriskNodePoints;
+    }
 
     public Float getGpv() {
         return gpv;
