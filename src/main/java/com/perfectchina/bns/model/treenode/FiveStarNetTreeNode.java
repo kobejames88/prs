@@ -26,6 +26,7 @@ public class FiveStarNetTreeNode extends TreeNode {
 	private Float ppv;
 	private Float opv;   // opv for current month
 	private Float aopv;  // aopv = current month opv + last month accumulated opv
+	private Float aopvLastMonth;
 //	private Boolean qualified;
 	private String pin;
 	private Float gpv;
@@ -79,13 +80,21 @@ public class FiveStarNetTreeNode extends TreeNode {
 	public void setPin(String pin) {
 		this.pin = pin;
 	}
-	
+
 	public Float getGpv() {
 		return gpv;
 	}
 
 	public void setGpv(Float gpv) {
 		this.gpv = gpv;
+	}
+
+	public Float getAopvLastMonth() {
+		return aopvLastMonth;
+	}
+
+	public void setAopvLastMonth(Float aopvLastMonth) {
+		this.aopvLastMonth = aopvLastMonth;
 	}
 
 	@Override

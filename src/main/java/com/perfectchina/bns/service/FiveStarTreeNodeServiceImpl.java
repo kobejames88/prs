@@ -84,6 +84,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 			fiveStarNetTreeNode.setData(top.getData());
 			fiveStarNetTreeNode.setAopv(top.getAopv());
 			fiveStarNetTreeNode.setOpv(top.getOpv());
+			fiveStarNetTreeNode.setAopvLastMonth(top.getAopvLastMonth());
 			fiveStarNetTreeNode.setPpv(top.getPpv());
 			fiveStarNetTreeNode.setLevelNum(top.getLevelNum());
 			fiveStarNetTreeNode.setGpv(top.getGpv());
