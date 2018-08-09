@@ -18,7 +18,48 @@ public class GpvNetTreeNode extends TreeNode {
 
 	private Float gpv;  // Individuals and subordinates do not reach the five-star total PPV sum
 
-	public Float getPpv() {
+	private Float opv;  // Opv for the current month, opv = child's opv + thisNode ppv
+
+	private Float aopv; // Aopv = opv + aopvLastMonth
+
+	// last month accumulated OPV
+	private Float aopvLastMonth; // Last month accumulated OPV
+
+	private String pin;
+
+    public Float getOpv() {
+        return opv;
+    }
+
+    public void setOpv(Float opv) {
+        this.opv = opv;
+    }
+
+    public Float getAopv() {
+        return aopv;
+    }
+
+    public void setAopv(Float aopv) {
+        this.aopv = aopv;
+    }
+
+    public Float getAopvLastMonth() {
+        return aopvLastMonth;
+    }
+
+    public void setAopvLastMonth(Float aopvLastMonth) {
+        this.aopvLastMonth = aopvLastMonth;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public Float getPpv() {
 		return ppv;
 	}
 
@@ -33,6 +74,7 @@ public class GpvNetTreeNode extends TreeNode {
 	public void setGpv(Float gpv) {
 		this.gpv = gpv;
 	}
+
 
 
 	@Override

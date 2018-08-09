@@ -224,8 +224,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 //                    int qualifiedFiveStarLine = passUpGpvs.size();
                     // 如果有子节点，但是不需要借分
                     if (fiveStarIntegral >= 18000F){
+                        String pin = changePin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
                         qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
-                        changePin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                        qualifiedFiveStarNetTreeNode.setPin(pin);
                         qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarNetTreeNode);
                     }else {
                         // 开始借分
@@ -251,12 +252,14 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 if (isAchieve){
                                     if (downLineNodeFiveStarIntegral >= 18000F){
                                         // 借分后合格，计算职级
-                                        changePin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                                        String pin = changePin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                                        qualifiedFiveStarNetTreeNode.setPin(pin);
                                     }else {
                                         //借分后不合格，判断职级
                                         qualifiedLine-=1;
+                                        String pin = changePin(fiveStarIntegral,passUpGpv,qualifiedLine,accountId);
                                         qualifiedFiveStarNetTreeNode.setQualifiedLine(qualifiedLine);
-                                        changePin(fiveStarIntegral,passUpGpv,qualifiedLine,accountId);
+                                        qualifiedFiveStarNetTreeNode.setPin(pin);
                                     }
                                 }else {
                                     qualifiedLine-=1;
@@ -274,8 +277,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     }
                 }else {
                     // 没有下级或者不需要借分的节点，直接计算五星代积分
+                    String pin = changePin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
                     qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
-                    changePin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                    qualifiedFiveStarNetTreeNode.setPin(pin);
                     qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarNetTreeNode);
                 }
 			} // end for loop
@@ -283,26 +287,33 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		}
 	}
 
-	private void changePin(Float currentFiveStarIntegral,Float passUpGpv,int qualifiedLine,Long id){
+	private String changePin(Float currentFiveStarIntegral,Float passUpGpv,int qualifiedLine,Long id){
         Account account = accountRepository.getAccountById(id);
+        String pin;
         if ((passUpGpv >= 9000F && qualifiedLine >= 1)||(qualifiedLine >= 2)){
             if ((qualifiedLine >= 3 && currentFiveStarIntegral >= 18000F)||(qualifiedLine >= 4)){
                 if ((qualifiedLine >= 5 && currentFiveStarIntegral >= 18000F)||(qualifiedLine >= 6)){
                     if ((qualifiedLine >= 7 && currentFiveStarIntegral >= 18000F)||(qualifiedLine >= 8)){
                         account.setPin(PinPosition.GOLD_DIAMOND);
+                        pin = PinPosition.GOLD_DIAMOND;
                     }else {
                         account.setPin(PinPosition.DIAMOND);
+                        pin = PinPosition.DIAMOND;
                     }
                 }else {
                     account.setPin(PinPosition.EMERALD);
+                    pin = PinPosition.EMERALD;
                 }
             }else {
                 account.setPin(PinPosition.RUBY);
+                pin = PinPosition.RUBY;
             }
         }else {
             account.setPin(PinPosition.QUALIFIED_FIVE_STAR);
+            pin = PinPosition.QUALIFIED_FIVE_STAR;
         }
         accountRepository.saveAndFlush(account);
+        return pin;
     }
 
 //    private void setAsteriskNode(Float currentFiveStarIntegral,Float Gpv,Float PassUpGpv,String pin,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode){
@@ -321,5 +332,10 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
         Collections.sort(passUpGpvs);
         return passUpGpvs;
+    }
+
+    public TreeNode getRootNode(String snapshotDate) {
+        TreeNode rootNode = qualifiedFiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
+        return rootNode;
     }
 }

@@ -44,6 +44,16 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private String levelLine;
 
+    private String pin;
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
     public String getLevelLine() {
         return levelLine;
     }
@@ -91,10 +101,10 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 //    public void setAsteriskNodePoints(Float asteriskNodePoints) {
 //        this.asteriskNodePoints = asteriskNodePoints;
 //    }
-//
-//    public Float getBorrowPoints() {
-//		return borrowPoints;
-//	}
+
+    public Float getBorrowPoints() {
+		return borrowPoints;
+	}
 
 	public void setBorrowPoints(Float borrowPoints) {
 		this.borrowPoints = borrowPoints;

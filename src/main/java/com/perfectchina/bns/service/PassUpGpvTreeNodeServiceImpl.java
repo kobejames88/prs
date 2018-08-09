@@ -178,4 +178,9 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		return false;
 	}
 
+	public TreeNode getRootNode(String snapshotDate) {
+		TreeNode rootNode = passUpGpvNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
+		return rootNode;
+	}
+
 }

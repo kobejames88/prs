@@ -105,6 +105,10 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		gpvNetTreeNode.setHasChild(opvNetTreeNode.getHasChild());
 		gpvNetTreeNode.setLevelNum(opvNetTreeNode.getLevelNum());
 		gpvNetTreeNode.setPpv(opvNetTreeNode.getPpv());
+		gpvNetTreeNode.setOpv(opvNetTreeNode.getOpv());
+		gpvNetTreeNode.setAopvLastMonth(opvNetTreeNode.getAopvLastMonth());
+		gpvNetTreeNode.setAopv(opvNetTreeNode.getAopv());
+		gpvNetTreeNode.setPin(opvNetTreeNode.getPin());
 		gpvNetTreeNode.setSnapshotDate(opvNetTreeNode.getSnapshotDate());
 		gpvNetTreeNode.setData(opvNetTreeNode.getData());
 
@@ -164,5 +168,9 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		}
 	}
 
+	public TreeNode getRootNode(String snapshotDate) {
+		TreeNode rootNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
+		return rootNode;
+	}
 	
 }
