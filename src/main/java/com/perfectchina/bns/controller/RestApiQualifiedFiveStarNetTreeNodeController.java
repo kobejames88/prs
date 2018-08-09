@@ -76,12 +76,12 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 		
 		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
 		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
-		
+
+
 		treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
-		
-		logger.info("execute, finished updateSimpleNetPpv.");
+
 		 
 		HttpHeaders headers = new HttpHeaders();
 		try {
@@ -99,11 +99,14 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
         // Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
 		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
 		String snapShotDate = DateUtils.getLastMonthSnapshotDate();
-        
-        
+
+        long startTime = System.currentTimeMillis();    //获取开始时间
         treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
         treeNodeService.updateWholeTree(snapShotDate);
-//        treeNodeService.updateWholeTreeQualifiedFiveStar(snapShotDate);
+        treeNodeService.updateWholeTreeQualifiedFiveStar(snapShotDate);
+        long endTime = System.currentTimeMillis();    //获取结束时间
+
+        logger.info("程序运行时间： {} ms ",(endTime - startTime));
 
         HttpHeaders headers = new HttpHeaders();
 
