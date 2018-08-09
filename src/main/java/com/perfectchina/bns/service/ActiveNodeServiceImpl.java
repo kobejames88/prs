@@ -98,8 +98,6 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 			activeNetTreeNode.setData(top.getData());
 			activeNetTreeNode.setPv(top.getPpv());
 			activeNetTreeNode.setIsActiveMember(top.getPpv()>=200);
-			//gpv temporary value gpv = ppv;conveinet for calculate gpv
-			activeNetTreeNode.setGpv(top.getPpv());
 			//find and set upLinkId
 			if(top.getUplinkId()!=0){
 				SimpleNetTreeNode upLinkNode = simpleTreeNodeRepository.getOne(top.getUplinkId());
@@ -128,14 +126,17 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 				if(activeNetTreeNode.getIsActiveMember()){
 					ActiveNetTreeNode upLinkNode2 = upLinkNode;
 					while(!upLinkNode2.getIsActiveMember()){
-						upLinkNode2 = activeNetTreeNodeRepository.findOne(upLinkNode2.getUplinkId());
-						if(upLinkNode2==null){break;}
+						ActiveNetTreeNode upLinkNode2Up = activeNetTreeNodeRepository.findOne(upLinkNode2.getUplinkId());
+						if(upLinkNode2Up==null){break;}
+						upLinkNode2Up.setPv(upLinkNode2Up.getPv()+upLinkNode2.getPv());
+						upLinkNode2.setPv(0F);
+						upLinkNode2 = upLinkNode2Up;
 						activeNetTreeNode.setUplinkId(upLinkNode2.getId());
 					}
 				//pass gpv to uplinkNode;then set gpv=0,avoid repeatb calculate gpv
 				}else{
-					upLinkNode.setGpv(upLinkNode.getGpv()+activeNetTreeNode.getGpv());
-					activeNetTreeNode.setGpv(0);
+					upLinkNode.setPv(upLinkNode.getPv()+activeNetTreeNode.getPv());
+					activeNetTreeNode.setPv(0);
 				}
 				//loop
 				activeNetTreeNode = upLinkNode;
