@@ -107,9 +107,6 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		gpvNetTreeNode.setPpv(opvNetTreeNode.getPpv());
 		gpvNetTreeNode.setSnapshotDate(opvNetTreeNode.getSnapshotDate());
 		gpvNetTreeNode.setData(opvNetTreeNode.getData());
-		gpvNetTreeNode.setOpv(opvNetTreeNode.getOpv());
-		gpvNetTreeNode.setAopv(opvNetTreeNode.getAopv());
-		gpvNetTreeNode.setAopvLastMonth(opvNetTreeNode.getAopvLastMonth());
 
 		gpvNetTreeNodeRepository.saveAndFlush(gpvNetTreeNode);
 	}
@@ -125,9 +122,9 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 			return;
 		Map<Long,Float> map = new HashMap<>();
 		while (treeLevel >= 0) {
-			List<GpvNetTreeNode> thisTreeLevelTreeList = gpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			List<GpvNetTreeNode> thisTreeLevelList = gpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
-			for (GpvNetTreeNode gpvNetTreeNode : thisTreeLevelTreeList) {
+			for (GpvNetTreeNode gpvNetTreeNode : thisTreeLevelList) {
 				long id = gpvNetTreeNode.getId();
 				Float pv = gpvNetTreeNode.getPpv();
 				long uplinkId = gpvNetTreeNode.getUplinkId();
@@ -167,9 +164,5 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		}
 	}
 
-	public TreeNode getRootNode(String snapshotDate) {
-		TreeNode rootNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
-		return rootNode;
-	}
 	
 }

@@ -190,7 +190,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 // first 判断map里是否有有共同上级的人，没有就新增，有就叠加
 			    long uplinkId = qualifiedFiveStarNetTreeNode.getUplinkId();
                 Float passUpGpv = qualifiedFiveStarNetTreeNode.getPassUpGpv();
-                Float gpv = qualifiedFiveStarNetTreeNode.getGpv();
+//                Float gpv = qualifiedFiveStarNetTreeNode.getGpv();
                 int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
                 long id = qualifiedFiveStarNetTreeNode.getId();
 
@@ -214,7 +214,6 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
                 // second
                 // 当前节点的五星代积分
-                // todo 将计算后的五星代积分存到数据库
                 Float fiveStarIntegral = qualifiedFiveStarNetTreeNode.getPassUpGpv();
                 // 获取该节点的所有直接下级
                 List<PassUpGpv> passUpGpvs = downLines.get(id);

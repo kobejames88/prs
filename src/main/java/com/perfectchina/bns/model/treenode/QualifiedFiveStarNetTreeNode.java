@@ -37,10 +37,10 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     @Column(columnDefinition="bigint default 0")
 	private Long borrowTo;
 
-    private Boolean hasAsteriskNode;
+//    private Boolean hasAsteriskNode;
 
-	@Column(columnDefinition="float default 0.00")
-    private Float asteriskNodePoints;
+//	@Column(columnDefinition="float default 0.00")
+//    private Float asteriskNodePoints;
 
     private String levelLine;
 
@@ -76,25 +76,25 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
         this.gpv = gpv;
     }
 
-    public Boolean getHasAsteriskNode() {
-        return hasAsteriskNode;
-    }
-
-    public void setHasAsteriskNode(Boolean hasAsteriskNode) {
-        this.hasAsteriskNode = hasAsteriskNode;
-    }
-
-    public Float getAsteriskNodePoints() {
-        return asteriskNodePoints;
-    }
-
-    public void setAsteriskNodePoints(Float asteriskNodePoints) {
-        this.asteriskNodePoints = asteriskNodePoints;
-    }
-
-    public Float getBorrowPoints() {
-		return borrowPoints;
-	}
+//    public Boolean getHasAsteriskNode() {
+//        return hasAsteriskNode;
+//    }
+//
+//    public void setHasAsteriskNode(Boolean hasAsteriskNode) {
+//        this.hasAsteriskNode = hasAsteriskNode;
+//    }
+//
+//    public Float getAsteriskNodePoints() {
+//        return asteriskNodePoints;
+//    }
+//
+//    public void setAsteriskNodePoints(Float asteriskNodePoints) {
+//        this.asteriskNodePoints = asteriskNodePoints;
+//    }
+//
+//    public Float getBorrowPoints() {
+//		return borrowPoints;
+//	}
 
 	public void setBorrowPoints(Float borrowPoints) {
 		this.borrowPoints = borrowPoints;
