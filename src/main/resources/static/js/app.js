@@ -120,6 +120,20 @@
                 templateUrl: 'js/interface-passupgpvnet-node/list/passupgpvnettreenode.html',
                 controllerAs: 'vm'
             })
+
+            .when('/interface-qualifiedfivestarnet-node', {
+                controller: 'InterfaceQualifiedFiveStarNetTreeNode',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-qualifiedfivestarnet-node/interface-qualifiedfivestarnet-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-qualifiedfivestarnet-node/list', {
+                controller: 'InterfaceQualifiedFiveStarNetTreeNode',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-qualifiedfivestarnet-node/list/qualifiedfivestarnettreenode.html',
+                controllerAs: 'vm'
+            })
             
             .when('/interface-activenet-node', {
 	            controller: 'InterfaceActiveNetNodeController',

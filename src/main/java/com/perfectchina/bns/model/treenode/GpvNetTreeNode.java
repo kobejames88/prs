@@ -1,5 +1,6 @@
 package com.perfectchina.bns.model.treenode;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -16,6 +17,7 @@ public class GpvNetTreeNode extends TreeNode {
 	// Current month gpv
 	private Float ppv;  // personal PV
 
+    @Column(columnDefinition="float default 0.00")
 	private Float gpv;  // Individuals and subordinates do not reach the five-star total PPV sum
 
 	private Float opv;  // Opv for the current month, opv = child's opv + thisNode ppv
@@ -27,7 +29,39 @@ public class GpvNetTreeNode extends TreeNode {
 
 	private String pin;
 
-	public Float getPpv() {
+    public Float getOpv() {
+        return opv;
+    }
+
+    public void setOpv(Float opv) {
+        this.opv = opv;
+    }
+
+    public Float getAopv() {
+        return aopv;
+    }
+
+    public void setAopv(Float aopv) {
+        this.aopv = aopv;
+    }
+
+    public Float getAopvLastMonth() {
+        return aopvLastMonth;
+    }
+
+    public void setAopvLastMonth(Float aopvLastMonth) {
+        this.aopvLastMonth = aopvLastMonth;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public Float getPpv() {
 		return ppv;
 	}
 
@@ -43,37 +77,7 @@ public class GpvNetTreeNode extends TreeNode {
 		this.gpv = gpv;
 	}
 
-	public Float getOpv() {
-		return opv;
-	}
 
-	public void setOpv(Float opv) {
-		this.opv = opv;
-	}
-
-	public Float getAopv() {
-		return aopv;
-	}
-
-	public void setAopv(Float aopv) {
-		this.aopv = aopv;
-	}
-
-	public Float getAopvLastMonth() {
-		return aopvLastMonth;
-	}
-
-	public void setAopvLastMonth(Float aopvLastMonth) {
-		this.aopvLastMonth = aopvLastMonth;
-	}
-
-	public String getPin() {
-		return pin;
-	}
-
-	public void setPin(String pin) {
-		this.pin = pin;
-	}
 
 	@Override
 	public String toString() {

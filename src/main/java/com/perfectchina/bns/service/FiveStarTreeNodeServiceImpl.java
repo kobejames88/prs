@@ -70,7 +70,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	public void createFiveStarNetTree() {
 
 		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
-		Stack<GpvNetTreeNode> stk = new Stack<>();
+        Stack<GpvNetTreeNode> stk = new Stack<>();
 
 		stk.push(rootTreeNode);
 		while (!stk.empty()) {

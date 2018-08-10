@@ -151,7 +151,6 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 	private void updataLevel() {
 		int fromLevelNum = 0;
 		ActiveNetTreeNode rootTreeNode = activeNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
-		
 	    Stack<TreeNode> stk = new Stack<TreeNode>();
 	    rootTreeNode.setLevelNum(fromLevelNum);	    
 	    stk.push(rootTreeNode);

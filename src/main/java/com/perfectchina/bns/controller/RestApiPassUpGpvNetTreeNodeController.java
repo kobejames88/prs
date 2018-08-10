@@ -94,14 +94,17 @@ public class RestApiPassUpGpvNetTreeNodeController {
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/test/", method = RequestMethod.GET)
-	public ResponseEntity<?> test() {
-		String lastMonthSnapShotDate = DateUtils.getLastMonthSnapshotDate();
-        //int maxTreeLevel = treeNodeService.getMaxTreeLevel(lastMonthSnapShotDate);
-
-        HttpHeaders headers = new HttpHeaders();
-
-		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    @RequestMapping(value = "/passUpGpvNet/test", method = RequestMethod.GET)
+	public void test() {
+		long startTime = System.currentTimeMillis();    //获取开始时间
+		Date currentDate = new Date();
+		// Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
+		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
+		treeNodeService.setPreviousDateEndTime( DateUtils.getLastMonthEndDate(currentDate));
+		treeNodeService.updateWholeTree(snapshotDate);
+		treeNodeService.updateWholeTreePassUpGPV(snapshotDate);
+        long endTime = System.currentTimeMillis();    //获取结束时间
+        logger.info("计算紧缩gpv网络图运行时间： {} ms ",(endTime - startTime));
 	}
 
 }

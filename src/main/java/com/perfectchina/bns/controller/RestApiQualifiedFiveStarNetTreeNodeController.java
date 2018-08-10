@@ -76,16 +76,16 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 		
 		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
 		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
-		
+
+
 		treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
-		
-		logger.info("execute, finished updateSimpleNetPpv.");
+
 		 
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			headers.setLocation( new URI( "/api/passUpGpvNet/listAccounts" ) );
+			headers.setLocation( new URI( "/api/qualifiedFiveStar/listAccounts" ) );
 		} catch (URISyntaxException e) {
 			logger.error( e.toString(), e);
 		}
@@ -93,21 +93,18 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/qualifiedFiveStar/test/", method = RequestMethod.GET)
-	public ResponseEntity<?> test() {
+    @RequestMapping(value = "/qualifiedFiveStar/test", method = RequestMethod.GET)
+	public void test() {
 		Date currentDate = new Date();
+		long startTime = System.currentTimeMillis();    //获取开始时间
         // Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
 		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
 		String snapShotDate = DateUtils.getLastMonthSnapshotDate();
-        
-        
         treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
         treeNodeService.updateWholeTree(snapShotDate);
         treeNodeService.updateWholeTreeQualifiedFiveStar(snapShotDate);
-
-        HttpHeaders headers = new HttpHeaders();
-
-		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        long endTime = System.currentTimeMillis();    //获取结束时间
+        logger.info("计算合格五星网络图运行时间： {} ms ",(endTime - startTime));
 	}
 
 }

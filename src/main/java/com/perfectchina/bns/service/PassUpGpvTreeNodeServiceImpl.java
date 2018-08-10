@@ -3,6 +3,7 @@ package com.perfectchina.bns.service;
 
 import com.perfectchina.bns.model.treenode.*;
 import com.perfectchina.bns.repositories.*;
+import com.perfectchina.bns.service.pin.PinPoints;
 import com.perfectchina.bns.service.pin.PinPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	protected TreeNodeRepository<FiveStarNetTreeNode> getTreeNodeRepository() {
-		return fiveStarNetTreeNodeRepository;
+	protected TreeNodeRepository<PassUpGpvNetTreeNode> getTreeNodeRepository() {
+		return passUpGpvNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
@@ -62,7 +63,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	@Override
 	public void updateWholeTree(String snapshotDate) {
-		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode( snapshotDate );
+		TreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNode( snapshotDate );
 		updateChildTreeLevel( 0, rootNode );
 	}
 
@@ -71,10 +72,10 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		super.updateChildTreeLevel(fromLevelNum, fromNode);
 	}
 
-//	public int getMaxTreeLevel(String snapShotDate) {
-//       int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
-//        return maxLevelNum;
-//	}
+	public int getMaxTreeLevel(String snapShotDate) {
+       int maxLevelNum = fiveStarNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
+        return maxLevelNum;
+	}
 
 	/**
 	 * param node is SimpleNetTreeNode walking through
@@ -88,11 +89,11 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		//the uplinkId is SimpleNet
 		long uplinkId = fiveStarNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
-			FiveStarNetTreeNode one = getTreeNodeRepository().getOne(uplinkId);
-			String accountNum = one.getData().getAccountNum();
-			PassUpGpvNetTreeNode one2 = passUpGpvNetTreeNodeRepository.getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
+			FiveStarNetTreeNode fiveStarUplink = fiveStarNetTreeNodeRepository.getOne(uplinkId);
+			String accountNum = fiveStarUplink.getData().getAccountNum();
+			PassUpGpvNetTreeNode passUpGpvUplink = getTreeNodeRepository().getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
 					accountNum);
-			passUpGpvNetTreeNode.setUplinkId(one2.getId());
+			passUpGpvNetTreeNode.setUplinkId(passUpGpvUplink.getId());
 		}
 
 		passUpGpvNetTreeNode.setHasChild(fiveStarNetTreeNode.getHasChild());
@@ -109,37 +110,51 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	 * Update the entire tree's pass-up-gpv
 	 */
 	public void updateWholeTreePassUpGPV(String snapShotDate) {
-		// Get the level of the original tree
-		int treeLevel = passUpGpvNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
-//		int treeLevel = getTreeLevel();
+		// 获取passUpGpvNetTree的最大层级
+		int treeLevel = getMaxTreeLevel(snapShotDate);
 		if (treeLevel < 0)
 			return;
 		Map<Long,Float> map = new HashMap<>();
 		while (treeLevel >= 0) {
-			List<PassUpGpvNetTreeNode> thisTreeLevelTreeList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			// 获取这层中的所有节点
+			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
-			for (PassUpGpvNetTreeNode passUpGpvNetTreeNode : thisTreeLevelTreeList) {
+			for (PassUpGpvNetTreeNode passUpGpvNetTreeNode : thisTreeLevelList) {
 				long id = passUpGpvNetTreeNode.getId();
 				long uplinkId = passUpGpvNetTreeNode.getUplinkId();
 				Float gpv = passUpGpvNetTreeNode.getGpv();
+				// 获取紧缩上来的pass-up-gpv
 				Float tempPoint = map.get(id);
-				if ( tempPoint != null ){
-					passUpGpvNetTreeNode.setPassUpGpv(gpv+ tempPoint);
-				}else {
-					passUpGpvNetTreeNode.setPassUpGpv(gpv);
+                Float passUpGpv = 0F;
+                // 获取此节点的合格线
+                int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
+				if (gpv != null){
+                    if ( tempPoint != null ){
+                        passUpGpv = gpv+ tempPoint;
+                        if (isAboveRuby(passUpGpv,qualifiedLine)){
+                            if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (gpv >= PinPoints.COMMON_QUALIFY_POINTS || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
+                                passUpGpvNetTreeNode.setHasAsteriskNode(true);
+                                passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-PinPoints.COMMON_QUALIFY_POINTS);
+                                passUpGpv = PinPoints.COMMON_QUALIFY_POINTS;
+                            }
+                        }
+                    }else {
+                        passUpGpv = gpv;
+                    }
 				}
-				Float passUpGpv = passUpGpvNetTreeNode.getPassUpGpv();
-				int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
+                passUpGpvNetTreeNode.setPassUpGpv(passUpGpv);
 				List<PassUpGpvNetTreeNode> nodes = new ArrayList<>();
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
-					if (passUpGpv >= 18000F){
+					// 如果是合格五星或者红宝石，上级合格线加1
+					if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
 						upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 					}else {
 						if (isAboveRuby(passUpGpv,qualifiedLine)){
 							upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 						}else {
 							Float mapUplinkId = map.get(uplinkId);
+							// 如果不为空说明有共同的上级,因此需要叠加pass-up-gpv
 							if(mapUplinkId != null){
 								Float value = mapUplinkId;
 								Float newVal = value+passUpGpv;
@@ -160,10 +175,15 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	}
 
 	private Boolean isAboveRuby(Float passUpGpv,int qualifiedLine){
-		if ((passUpGpv >= 9000F && qualifiedLine > 0) || (qualifiedLine >= 2)){
+		if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine > 0) || (qualifiedLine >= 2)){
 			return true;
 		}
 		return false;
+	}
+
+	public TreeNode getRootNode(String snapshotDate) {
+		TreeNode rootNode = passUpGpvNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
+		return rootNode;
 	}
 
 }

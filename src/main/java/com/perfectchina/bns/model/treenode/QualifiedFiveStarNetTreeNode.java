@@ -14,15 +14,10 @@ import javax.persistence.Table;
 public class QualifiedFiveStarNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
-    // PassUpGpv
-    @Column(columnDefinition="float default 0.00")
     private Float passUpGpv;
 
-    // Lower level is a qualified five star or more
-    @Column(columnDefinition="int default 0")
     private int qualifiedLine;
 
-    @Column(columnDefinition="float default 0.00")
     private Float gpv;
 
     @Column(columnDefinition="float default 0.00")
@@ -39,8 +34,43 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private Boolean hasAsteriskNode;
 
-	@Column(columnDefinition="float default 0.00")
     private Float asteriskNodePoints;
+
+    private String levelLine;
+
+    private String pin;
+
+    public Boolean getHasAsteriskNode() {
+        return hasAsteriskNode;
+    }
+
+    public void setHasAsteriskNode(Boolean hasAsteriskNode) {
+        this.hasAsteriskNode = hasAsteriskNode;
+    }
+
+    public Float getAsteriskNodePoints() {
+        return asteriskNodePoints;
+    }
+
+    public void setAsteriskNodePoints(Float asteriskNodePoints) {
+        this.asteriskNodePoints = asteriskNodePoints;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public String getLevelLine() {
+        return levelLine;
+    }
+
+    public void setLevelLine(String levelLine) {
+        this.levelLine = levelLine;
+    }
 
     public Float getPassUpGpv() {
         return passUpGpv;
@@ -66,21 +96,21 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
         this.gpv = gpv;
     }
 
-    public Boolean getHasAsteriskNode() {
-        return hasAsteriskNode;
-    }
-
-    public void setHasAsteriskNode(Boolean hasAsteriskNode) {
-        this.hasAsteriskNode = hasAsteriskNode;
-    }
-
-    public Float getAsteriskNodePoints() {
-        return asteriskNodePoints;
-    }
-
-    public void setAsteriskNodePoints(Float asteriskNodePoints) {
-        this.asteriskNodePoints = asteriskNodePoints;
-    }
+//    public Boolean getHasAsteriskNode() {
+//        return hasAsteriskNode;
+//    }
+//
+//    public void setHasAsteriskNode(Boolean hasAsteriskNode) {
+//        this.hasAsteriskNode = hasAsteriskNode;
+//    }
+//
+//    public Float getAsteriskNodePoints() {
+//        return asteriskNodePoints;
+//    }
+//
+//    public void setAsteriskNodePoints(Float asteriskNodePoints) {
+//        this.asteriskNodePoints = asteriskNodePoints;
+//    }
 
     public Float getBorrowPoints() {
 		return borrowPoints;

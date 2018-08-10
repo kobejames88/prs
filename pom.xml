@@ -65,12 +65,12 @@
 			<version>${h2.version}</version>
 			<!-- default is compile time  <scope>runtime</scope>  -->
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-agroal</artifactId>
-			<version>5.3.3.Final</version>
-			<type>pom</type>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.hibernate</groupId>-->
+			<!--<artifactId>hibernate-agroal</artifactId>-->
+			<!--<version>5.3.3.Final</version>-->
+			<!--<type>pom</type>-->
+		<!--</dependency>-->
 		<!-- Add MySQL database support [for running with PRODUCTION profile] -->		
 		<dependency>
 			<groupId>mysql</groupId>
