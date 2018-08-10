@@ -3,6 +3,7 @@ package com.perfectchina.bns.service;
 
 import com.perfectchina.bns.model.treenode.*;
 import com.perfectchina.bns.repositories.*;
+import com.perfectchina.bns.service.pin.PinPoints;
 import com.perfectchina.bns.service.pin.PinPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,10 +72,10 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		super.updateChildTreeLevel(fromLevelNum, fromNode);
 	}
 
-//	public int getMaxTreeLevel(String snapShotDate) {
-//       int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
-//        return maxLevelNum;
-//	}
+	public int getMaxTreeLevel(String snapShotDate) {
+       int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+        return maxLevelNum;
+	}
 
 	/**
 	 * param node is SimpleNetTreeNode walking through
@@ -110,7 +111,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	 */
 	public void updateWholeTreePassUpGPV(String snapShotDate) {
 		// 获取passUpGpvNetTree的最大层级
-		int treeLevel = passUpGpvNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
+		int treeLevel = getMaxTreeLevel(snapShotDate);
 		if (treeLevel < 0)
 			return;
 		Map<Long,Float> map = new HashMap<>();
@@ -131,9 +132,9 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				if ( tempPoint != null ){
                     passUpGpv = gpv+ tempPoint;
                     if (isAboveRuby(passUpGpv,qualifiedLine)){
-                        if ((passUpGpv-18000F>0) && (gpv >= 18000F || passUpGpv >= 18000F)){
+                        if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (gpv >= PinPoints.COMMON_QUALIFY_POINTS || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
                             passUpGpvNetTreeNode.setHasAsteriskNode(true);
-                            passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-18000F);
+                            passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-PinPoints.COMMON_QUALIFY_POINTS);
                             passUpGpv = 18000F;
                         }
                     }
@@ -148,7 +149,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
 					// 如果是合格五星或者红宝石，上级合格线加1
-					if (passUpGpv >= 18000F){
+					if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
 						upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 					}else {
 						if (isAboveRuby(passUpGpv,qualifiedLine)){
@@ -177,7 +178,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	}
 
 	private Boolean isAboveRuby(Float passUpGpv,int qualifiedLine){
-		if ((passUpGpv >= 9000F && qualifiedLine > 0) || (qualifiedLine >= 2)){
+		if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine > 0) || (qualifiedLine >= 2)){
 			return true;
 		}
 		return false;

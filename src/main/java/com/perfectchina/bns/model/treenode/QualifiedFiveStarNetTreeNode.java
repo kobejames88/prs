@@ -22,7 +22,6 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     @Column(columnDefinition="int default 0")
     private int qualifiedLine;
 
-    @Column(columnDefinition="float default 0.00")
     private Float gpv;
 
     @Column(columnDefinition="float default 0.00")

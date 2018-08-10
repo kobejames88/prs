@@ -131,7 +131,6 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                         qualifiedFiveStarUplink.setQualifiedLine(qualifiedFiveStarUplink.getQualifiedLine()+passUpGpvNetTreeNode.getQualifiedLine());
                     }
                     // 将此元素的直接下级id与上级id放入map中
-                    // todo 此处计算HasChild没有考虑此节点的兄弟节点是否保留
                     if (childNodes.size()>0){
                         for (TreeNode childNode : childNodes){
                             PassUpGpvNetTreeNode passUpGpvNetTreeChildNode = (PassUpGpvNetTreeNode)childNode;

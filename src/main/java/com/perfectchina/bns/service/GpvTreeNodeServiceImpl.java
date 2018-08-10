@@ -132,27 +132,27 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 				long id = gpvNetTreeNode.getId();
 				Float pv = gpvNetTreeNode.getPpv();
 				long uplinkId = gpvNetTreeNode.getUplinkId();
-
-                Float tempPoint = map.get(id);
-                if ( tempPoint != null ){
-                    gpvNetTreeNode.setGpv(pv+ tempPoint);
-                }else {
-                    gpvNetTreeNode.setGpv(pv);
+                Float gpv = 0F;
+				if (pv!=null){
+                    Float tempPoint = map.get(id);
+                    if ( tempPoint != null ){
+                        gpv = pv+ tempPoint;
+                    }else {
+                        gpv = pv;
+                    }
                 }
-
+                gpvNetTreeNode.setGpv(gpv);
 				String pin = gpvNetTreeNode.getData().getPin();
 				// Determine if the member is more than the five stars
-
-				if ( !(( StringUtils.equals(pin,PinPosition.NEW_FIVE_STAR) ) ||
-						( StringUtils.equals(pin,PinPosition.FIVE_STAR) ) ||
-						( StringUtils.equals(pin,PinPosition.RUBY) ) ||
-						( StringUtils.equals(pin,PinPosition.EMERALD) ) ||
-						( StringUtils.equals(pin,PinPosition.DIAMOND) ) ||
-						( StringUtils.equals(pin,PinPosition.GOLD_DIAMOND) ) ||
-						( StringUtils.equals(pin,PinPosition.DOUBLE_GOLD_DIAMOND) ) ||
-						( StringUtils.equals(pin,PinPosition.TRIPLE_GOLD_DIAMOND) ))
-						){
-                    Float gpv = gpvNetTreeNode.getGpv();
+				if ( !(( StringUtils.equals(PinPosition.NEW_FIVE_STAR,pin) ) ||
+						( StringUtils.equals(PinPosition.FIVE_STAR,pin) ) ||
+						( StringUtils.equals(PinPosition.RUBY,pin) ) ||
+						( StringUtils.equals(PinPosition.EMERALD,pin) ) ||
+						( StringUtils.equals(PinPosition.DIAMOND,pin) ) ||
+						( StringUtils.equals(PinPosition.GOLD_DIAMOND,pin) ) ||
+						( StringUtils.equals(PinPosition.DOUBLE_GOLD_DIAMOND,pin) ) ||
+						( StringUtils.equals(PinPosition.TRIPLE_GOLD_DIAMOND,pin) ))){
+//                    Float gpv = gpvNetTreeNode.getGpv();
                     Float map_uplinkId = map.get(uplinkId);
                     if(map_uplinkId != null){
                         Float value = map_uplinkId;
