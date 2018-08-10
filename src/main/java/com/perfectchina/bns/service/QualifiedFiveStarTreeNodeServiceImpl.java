@@ -46,8 +46,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public PassUpGpvNetTreeNodeRepository getTreeNodeRepository() {
-		return passUpGpvNetTreeNodeRepository;
+	public TreeNodeRepository<QualifiedFiveStarNetTreeNode> getTreeNodeRepository() {
+		return qualifiedFiveStarNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
@@ -58,7 +58,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
-			PassUpGpvNetTreeNode rootNode = getTreeNodeRepository().getRootTreeNodeOfMonth(snapshotDate);
+			PassUpGpvNetTreeNode rootNode = passUpGpvNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
 
 			if (rootNode != null) {
 				isReady = true;
@@ -71,7 +71,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
 	@Override
 	public void updateWholeTree(String snapshotDate) {
-		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode(snapshotDate);
+		TreeNode rootNode = passUpGpvNetTreeNodeRepository.getRootTreeNode(snapshotDate);
 		updateChildTreeLevel( 0, rootNode );
 	}
 
@@ -81,7 +81,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	}
 
 	public int getMaxTreeLevel(String snapShotDate) {
-        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+        int maxLevelNum = passUpGpvNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
         return maxLevelNum;
 	}
 
@@ -106,9 +106,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         long passUpGpvUplinkId = mapPassUpGpvUplinkId != null ? mapPassUpGpvUplinkId : passUpGpvNetTreeNode.getUplinkId();
 
 		if(passUpGpvUplinkId!=0){
-			PassUpGpvNetTreeNode passUpGpvUplink = getTreeNodeRepository().getOne(passUpGpvUplinkId);
+			PassUpGpvNetTreeNode passUpGpvUplink = passUpGpvNetTreeNodeRepository.getOne(passUpGpvUplinkId);
 			String accountNum = passUpGpvUplink.getData().getAccountNum();
-			QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = qualifiedFiveStarNetTreeNodeRepository.getAccountByAccountNum(passUpGpvNetTreeNode.getSnapshotDate(),
+			QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = getTreeNodeRepository().getAccountByAccountNum(passUpGpvNetTreeNode.getSnapshotDate(),
 					accountNum);
             long qualifiedFiveStarUplinkId = qualifiedFiveStarUplink.getId();
             String uplinkLevelLine = qualifiedFiveStarUplink.getLevelLine();

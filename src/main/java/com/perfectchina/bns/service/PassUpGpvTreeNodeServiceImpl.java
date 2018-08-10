@@ -38,8 +38,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	protected TreeNodeRepository<FiveStarNetTreeNode> getTreeNodeRepository() {
-		return fiveStarNetTreeNodeRepository;
+	protected TreeNodeRepository<PassUpGpvNetTreeNode> getTreeNodeRepository() {
+		return passUpGpvNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
@@ -63,7 +63,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 
 	@Override
 	public void updateWholeTree(String snapshotDate) {
-		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode( snapshotDate );
+		TreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNode( snapshotDate );
 		updateChildTreeLevel( 0, rootNode );
 	}
 
@@ -73,7 +73,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	}
 
 	public int getMaxTreeLevel(String snapShotDate) {
-       int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+       int maxLevelNum = fiveStarNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
         return maxLevelNum;
 	}
 
@@ -89,9 +89,9 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		//the uplinkId is SimpleNet
 		long uplinkId = fiveStarNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
-			FiveStarNetTreeNode fiveStarUplink = getTreeNodeRepository().getOne(uplinkId);
+			FiveStarNetTreeNode fiveStarUplink = fiveStarNetTreeNodeRepository.getOne(uplinkId);
 			String accountNum = fiveStarUplink.getData().getAccountNum();
-			PassUpGpvNetTreeNode passUpGpvUplink = passUpGpvNetTreeNodeRepository.getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
+			PassUpGpvNetTreeNode passUpGpvUplink = getTreeNodeRepository().getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
 					accountNum);
 			passUpGpvNetTreeNode.setUplinkId(passUpGpvUplink.getId());
 		}

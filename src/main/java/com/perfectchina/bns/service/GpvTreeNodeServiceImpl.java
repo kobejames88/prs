@@ -142,7 +142,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
                     }
                 }
                 gpvNetTreeNode.setGpv(gpv);
-				String pin = gpvNetTreeNode.getData().getPin();
+				String pin = gpvNetTreeNode.getPin();
 				// Determine if the member is more than the five stars
 				if ( !(( StringUtils.equals(PinPosition.NEW_FIVE_STAR,pin) ) ||
 						( StringUtils.equals(PinPosition.FIVE_STAR,pin) ) ||
