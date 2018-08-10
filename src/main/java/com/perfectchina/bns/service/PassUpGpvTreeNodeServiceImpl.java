@@ -125,27 +125,25 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				Float gpv = passUpGpvNetTreeNode.getGpv();
 				// 获取紧缩上来的pass-up-gpv
 				Float tempPoint = map.get(id);
-                Float passUpGpv;
+                Float passUpGpv = 0F;
                 // 获取此节点的合格线
                 int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
-
-				if ( tempPoint != null ){
-                    passUpGpv = gpv+ tempPoint;
-                    if (isAboveRuby(passUpGpv,qualifiedLine)){
-                        if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (gpv >= PinPoints.COMMON_QUALIFY_POINTS || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
-                            passUpGpvNetTreeNode.setHasAsteriskNode(true);
-                            passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-PinPoints.COMMON_QUALIFY_POINTS);
-                            passUpGpv = 18000F;
+				if (gpv != null){
+                    if ( tempPoint != null ){
+                        passUpGpv = gpv+ tempPoint;
+                        if (isAboveRuby(passUpGpv,qualifiedLine)){
+                            if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (gpv >= PinPoints.COMMON_QUALIFY_POINTS || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
+                                passUpGpvNetTreeNode.setHasAsteriskNode(true);
+                                passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-PinPoints.COMMON_QUALIFY_POINTS);
+                                passUpGpv = PinPoints.COMMON_QUALIFY_POINTS;
+                            }
                         }
+                    }else {
+                        passUpGpv = gpv;
                     }
-				}else {
-                    passUpGpv = gpv;
 				}
                 passUpGpvNetTreeNode.setPassUpGpv(passUpGpv);
-
-
 				List<PassUpGpvNetTreeNode> nodes = new ArrayList<>();
-
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
 					// 如果是合格五星或者红宝石，上级合格线加1
@@ -168,7 +166,6 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 					}
 					nodes.add(upLinkNode);
 				}
-
 				nodes.add(passUpGpvNetTreeNode);
 				passUpGpvNetTreeNodeRepository.save(nodes);
 				passUpGpvNetTreeNodeRepository.flush();

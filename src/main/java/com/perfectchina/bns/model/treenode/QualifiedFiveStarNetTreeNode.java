@@ -14,12 +14,8 @@ import javax.persistence.Table;
 public class QualifiedFiveStarNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
-    // PassUpGpv
-    @Column(columnDefinition="float default 0.00")
     private Float passUpGpv;
 
-    // Lower level is a qualified five star or more
-    @Column(columnDefinition="int default 0")
     private int qualifiedLine;
 
     private Float gpv;
@@ -36,14 +32,29 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     @Column(columnDefinition="bigint default 0")
 	private Long borrowTo;
 
-//    private Boolean hasAsteriskNode;
+    private Boolean hasAsteriskNode;
 
-//	@Column(columnDefinition="float default 0.00")
-//    private Float asteriskNodePoints;
+    private Float asteriskNodePoints;
 
     private String levelLine;
 
     private String pin;
+
+    public Boolean getHasAsteriskNode() {
+        return hasAsteriskNode;
+    }
+
+    public void setHasAsteriskNode(Boolean hasAsteriskNode) {
+        this.hasAsteriskNode = hasAsteriskNode;
+    }
+
+    public Float getAsteriskNodePoints() {
+        return asteriskNodePoints;
+    }
+
+    public void setAsteriskNodePoints(Float asteriskNodePoints) {
+        this.asteriskNodePoints = asteriskNodePoints;
+    }
 
     public String getPin() {
         return pin;

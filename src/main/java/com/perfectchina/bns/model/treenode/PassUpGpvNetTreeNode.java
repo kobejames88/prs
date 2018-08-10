@@ -14,7 +14,6 @@ import javax.persistence.Table;
 public class PassUpGpvNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
-    @Column(columnDefinition="float default 0.00")
     private Float gpv;
 	// PassUpGpv
     @Column(columnDefinition="float default 0.00")
