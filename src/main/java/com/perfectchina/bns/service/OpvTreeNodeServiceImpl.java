@@ -145,7 +145,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				}
 				Float aopvLastMonth = opvNetTreeNode.getAopvLastMonth();
 				Float opv = opvNetTreeNode.getOpv();
-				
+				//become newFiveStar
 				opvNetTreeNode.setAopv(aopvLastMonth+opv);
 				if(opvNetTreeNode.getPin()==PinPosition.MEMBER&&opvNetTreeNode.getOpv()>=18000&&opvNetTreeNode.getAopv()>=36000){
 					opvNetTreeNode.setPin(PinPosition.NEW_FIVE_STAR);

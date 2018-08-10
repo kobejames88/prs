@@ -110,6 +110,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		gpvNetTreeNode.setOpv(opvNetTreeNode.getOpv());
 		gpvNetTreeNode.setAopv(opvNetTreeNode.getAopv());
 		gpvNetTreeNode.setAopvLastMonth(opvNetTreeNode.getAopvLastMonth());
+		gpvNetTreeNode.setPin(opvNetTreeNode.getPin());
 
 		gpvNetTreeNodeRepository.saveAndFlush(gpvNetTreeNode);
 	}
