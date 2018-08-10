@@ -125,22 +125,30 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				// 获取紧缩上来的pass-up-gpv
 				Float tempPoint = map.get(id);
                 Float passUpGpv;
+                // 获取此节点的合格线
+                int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
+
 				if ( tempPoint != null ){
                     passUpGpv = gpv+ tempPoint;
-					passUpGpvNetTreeNode.setPassUpGpv(passUpGpv);
+                    if (isAboveRuby(passUpGpv,qualifiedLine)){
+                        if ((passUpGpv-18000F>0) && (gpv >= 18000F || passUpGpv >= 18000F)){
+                            passUpGpvNetTreeNode.setHasAsteriskNode(true);
+                            passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-18000F);
+                            passUpGpv = 18000F;
+                        }
+                    }
 				}else {
                     passUpGpv = gpv;
-					passUpGpvNetTreeNode.setPassUpGpv(passUpGpv);
 				}
-                // 获取此节点的合格线
-				int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
+                passUpGpvNetTreeNode.setPassUpGpv(passUpGpv);
+
+
 				List<PassUpGpvNetTreeNode> nodes = new ArrayList<>();
-                Boolean isAbove18000 = passUpGpv >= 18000F;
 
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
 					// 如果是合格五星或者红宝石，上级合格线加1
-					if (isAbove18000){
+					if (passUpGpv >= 18000F){
 						upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 					}else {
 						if (isAboveRuby(passUpGpv,qualifiedLine)){
@@ -159,10 +167,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 					}
 					nodes.add(upLinkNode);
 				}
-                if (isAbove18000) {
-				    passUpGpvNetTreeNode.setHasAsteriskNode(true);
-                    passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-18000F);
-				}
+
 				nodes.add(passUpGpvNetTreeNode);
 				passUpGpvNetTreeNodeRepository.save(nodes);
 				passUpGpvNetTreeNodeRepository.flush();
