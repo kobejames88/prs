@@ -115,22 +115,20 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	 * Update the entire tree's pass-up-gpv
 	 */
 	public void updateWholeTreePassUpGPV(String snapShotDate) {
-		// 获取passUpGpvNetTree的最大层级
 		int treeLevel = getMaxTreeLevel(snapShotDate);
 		if (treeLevel < 0)
 			return;
 		while (treeLevel >= 0) {
-			// 获取这层中的所有节点
+			// Get all the nodes in this layer
 			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
 			for (PassUpGpvNetTreeNode passUpGpvNetTreeNode : thisTreeLevelList) {
 				long id = passUpGpvNetTreeNode.getId();
 				long uplinkId = passUpGpvNetTreeNode.getUplinkId();
 				Float gpv = passUpGpvNetTreeNode.getGpv();
-				// 获取紧缩上来的pass-up-gpv
                 Float tempPoint = map.get(id);
                 Float passUpGpv = 0F;
-                // 获取此节点的合格线
+                // Get the qualified line of this node
                 int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
 				if (gpv != null){
                     if ( tempPoint != null ){
@@ -150,7 +148,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				List<PassUpGpvNetTreeNode> nodes = new ArrayList<>();
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
-					// 如果是合格五星或者红宝石，上级合格线加1
+					// If it is a qualified five-star or ruby,Superior qualification line plus 1
 					if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
 						upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 					}else {
@@ -159,7 +157,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 						}else {
                             upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+qualifiedLine);
                             Float val = map.get(uplinkId);
-                            // 如果不为空说明有共同的上级,因此需要叠加pass-up-gpv
+                            // If there are no empty instructions, there are common superiors,Therefore, we need to add pass-up-gpv
 							if(val != null){
 								Float value = val;
 								Float newVal = value+passUpGpv;
