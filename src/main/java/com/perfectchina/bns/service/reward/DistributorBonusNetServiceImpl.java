@@ -61,9 +61,16 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
                         accountNum);
                 distributorBonus.setUplinkId(one2.getId());
             }
-            calculateReward(distributorBonus);
+            if(distributorBonus.getGpv()>=200){
+                calculateReward(distributorBonus);
+            }
             distributorBonusRepository.saveAndFlush(distributorBonus);
         }
+    }
+
+    @Override
+    public TreeNode getRootNode(String lastMonthSnapshotDate) {
+        return  distributorBonusRepository.getRootTreeNodeOfMonth(lastMonthSnapshotDate);
     }
 
     /**
@@ -76,7 +83,7 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
     private void calculateReward(DistributorBonus distributorBonus) {
         DistributorBonusRate bonusRate = distributorBonusRateRepository.findBonusRateByGpvAndDate(distributorBonus.getGpv(), new Date());
         //if newFiveStar
-        if(PinPosition.NEW_FIVE_STAR.equals(distributorBonus.getData().getPin())){
+        if(PinPosition.NEW_FIVE_STAR.equals(distributorBonus.getPin())){
             Float surplus = 18000 - distributorBonus.getAopvLastMonth();
             Float reward = (distributorBonus.getGpv() - surplus)* (bonusRate.getBonusRate() - 0.12F);
             distributorBonus.setReward(reward);

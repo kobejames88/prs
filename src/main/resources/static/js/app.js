@@ -163,7 +163,34 @@
                 controllerAs: 'vm'
             })
 
-            
+            .when('/interface-distributorbonus-node', {
+                controller: 'InterfaceDistributorBonusNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-distributorbonus-node/interface-distributorbonus-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-distributorbonus-node/list', {
+                controller: 'InterfaceDistributorBonusNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-distributorbonus-node/list/distributorbonus.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-distributordifferential-node', {
+                controller: 'InterfaceDistributorDifferentialBonusNetController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-distributordifferential-node/interface-distributordifferential-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-distributordifferential-node/list', {
+                controller: 'InterfaceDistributorDifferentialBonusNetController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-distributordifferential-node/list/distributordifferential.html',
+                controllerAs: 'vm'
+            })
+
             .otherwise({ redirectTo: '/login' });
                 
     }

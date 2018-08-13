@@ -22,6 +22,8 @@ public class DistributorBonus extends TreeNode {
 
     private float aopvLastMonth;
 
+    private String pin;
+
     // reward = gpv * (rate - 12%)
     private float reward;
 
@@ -119,5 +121,29 @@ public class DistributorBonus extends TreeNode {
 
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    @Override
+    public String toString() {
+        return "DistributorBonus{" +
+                "opv=" + opv +
+                ", gpv=" + gpv +
+                ", aopvLastMonth=" + aopvLastMonth +
+                ", reward=" + reward +
+                ", temporaryReward=" + temporaryReward +
+                ", rewardDate=" + rewardDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", creationDate=" + creationDate +
+                ", lastUpdatedBy='" + lastUpdatedBy + '\'' +
+                ", lastUpdatedDate=" + lastUpdatedDate +
+                '}';
     }
 }

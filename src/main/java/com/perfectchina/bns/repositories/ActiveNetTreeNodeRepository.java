@@ -12,7 +12,7 @@ public interface ActiveNetTreeNodeRepository extends TreeNodeRepository<ActiveNe
 
 	@Modifying
 	@Transactional
-	@Query("DELETE FROM ActiveNetTreeNode WHERE isActiveMember = false")
+	@Query("DELETE FROM ActiveNetTreeNode WHERE pv < 200 and levelNum > 0")
 	void deleteNOActiveMember();
 
 }

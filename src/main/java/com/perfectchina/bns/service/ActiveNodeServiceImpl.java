@@ -97,17 +97,12 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 			activeNetTreeNode.setSnapshotDate(top.getSnapshotDate());
 			activeNetTreeNode.setData(top.getData());
 			activeNetTreeNode.setPv(top.getPpv());
-			activeNetTreeNode.setIsActiveMember(top.getPpv()>=200);
 			//find and set upLinkId
 			if(top.getUplinkId()!=0){
 				SimpleNetTreeNode upLinkNode = simpleTreeNodeRepository.getOne(top.getUplinkId());
 				String accountNum = upLinkNode.getData().getAccountNum();
 				ActiveNetTreeNode upLinkNode2 = activeNetTreeNodeRepository.getAccountByAccountNum(top.getSnapshotDate(), accountNum);
 				activeNetTreeNode.setUplinkId(upLinkNode2.getId());
-			}
-			else{
-				//root
-				activeNetTreeNode.setIsActiveMember(true);
 			}
 			activeNetTreeNodeRepository.saveAndFlush(activeNetTreeNode);
 		}
@@ -123,9 +118,9 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 			//climb up  until root
 			while(upLinkNode!=null){
 				//if active find uplink node until the node is active or root;then set upLinkId
-				if(activeNetTreeNode.getIsActiveMember()){
+				if(activeNetTreeNode.getPv()>=200){
 					ActiveNetTreeNode upLinkNode2 = upLinkNode;
-					while(!upLinkNode2.getIsActiveMember()){
+					while(upLinkNode2.getPv()<200){
 						ActiveNetTreeNode upLinkNode2Up = activeNetTreeNodeRepository.findOne(upLinkNode2.getUplinkId());
 						if(upLinkNode2Up==null){break;}
 						upLinkNode2Up.setPv(upLinkNode2Up.getPv()+upLinkNode2.getPv());
