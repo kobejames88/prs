@@ -127,10 +127,10 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     // 获取此元素的直接下级
 					List<TreeNode> childNodes = passUpGpvNetTreeNodeRepository.getChildNodesByUpid(id);
 					// 将此元素的合格线给上级
-                    int passUpGpvQualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
-                    if (passUpGpvQualifiedLine>0){
-                        qualifiedFiveStarUplink.setQualifiedLine(qualifiedFiveStarUplink.getQualifiedLine()+passUpGpvNetTreeNode.getQualifiedLine());
-                    }
+//                    int passUpGpvQualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
+//                    if (passUpGpvQualifiedLine>0){
+//                        qualifiedFiveStarUplink.setQualifiedLine(qualifiedFiveStarUplink.getQualifiedLine()+passUpGpvNetTreeNode.getQualifiedLine());
+//                    }
                     // 将此元素的直接下级id与上级id放入map中
                     if (childNodes.size()>0){
                         for (TreeNode childNode : childNodes){

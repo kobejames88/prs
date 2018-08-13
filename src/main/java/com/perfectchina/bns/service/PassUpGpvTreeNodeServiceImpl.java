@@ -1,10 +1,13 @@
 package com.perfectchina.bns.service;
 
 
-import com.perfectchina.bns.model.treenode.*;
-import com.perfectchina.bns.repositories.*;
+import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
+import com.perfectchina.bns.model.treenode.PassUpGpvNetTreeNode;
+import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
+import com.perfectchina.bns.repositories.PassUpGpvNetTreeNodeRepository;
+import com.perfectchina.bns.repositories.TreeNodeRepository;
 import com.perfectchina.bns.service.pin.PinPoints;
-import com.perfectchina.bns.service.pin.PinPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +108,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		passUpGpvNetTreeNodeRepository.saveAndFlush(passUpGpvNetTreeNode);
 	}
 
+	private Map<Long,Float> map = new HashMap<>();
+
 	@Override
 	/**
 	 * Update the entire tree's pass-up-gpv
@@ -114,7 +119,6 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		int treeLevel = getMaxTreeLevel(snapShotDate);
 		if (treeLevel < 0)
 			return;
-		Map<Long,Float> map = new HashMap<>();
 		while (treeLevel >= 0) {
 			// 获取这层中的所有节点
 			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
@@ -124,7 +128,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				long uplinkId = passUpGpvNetTreeNode.getUplinkId();
 				Float gpv = passUpGpvNetTreeNode.getGpv();
 				// 获取紧缩上来的pass-up-gpv
-				Float tempPoint = map.get(id);
+                Float tempPoint = map.get(id);
                 Float passUpGpv = 0F;
                 // 获取此节点的合格线
                 int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
@@ -153,12 +157,13 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 						if (isAboveRuby(passUpGpv,qualifiedLine)){
 							upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 						}else {
-							Float mapUplinkId = map.get(uplinkId);
-							// 如果不为空说明有共同的上级,因此需要叠加pass-up-gpv
-							if(mapUplinkId != null){
-								Float value = mapUplinkId;
+                            upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+qualifiedLine);
+                            Float val = map.get(uplinkId);
+                            // 如果不为空说明有共同的上级,因此需要叠加pass-up-gpv
+							if(val != null){
+								Float value = val;
 								Float newVal = value+passUpGpv;
-								map.put(uplinkId,newVal);
+                                map.put(uplinkId,newVal);
 							}else {
 								map.put(uplinkId,passUpGpv);
 							}
