@@ -133,11 +133,13 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				if (gpv != null){
                     if ( tempPoint != null ){
                         passUpGpv = gpv+ tempPoint;
+                        Boolean isQualified =  (gpv >= PinPoints.COMMON_QUALIFY_POINTS);
                         if (isAboveRuby(passUpGpv,qualifiedLine)){
-                            if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (gpv >= PinPoints.COMMON_QUALIFY_POINTS || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
+                            if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (isQualified || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
                                 passUpGpvNetTreeNode.setHasAsteriskNode(true);
-                                passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-PinPoints.COMMON_QUALIFY_POINTS);
-                                passUpGpv = PinPoints.COMMON_QUALIFY_POINTS;
+                                Float asteriskNodePoints = isQualified ? tempPoint : passUpGpv-PinPoints.COMMON_QUALIFY_POINTS;
+                                passUpGpvNetTreeNode.setAsteriskNodePoints(asteriskNodePoints);
+                                passUpGpv = isQualified ? gpv : PinPoints.COMMON_QUALIFY_POINTS;
                             }
                         }
                     }else {
