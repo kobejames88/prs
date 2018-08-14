@@ -130,8 +130,8 @@
         switchObj.before(spaceStr);
         var editStr = '';
         editStr += '<div class="diy">' + (treeNode.data.name == null ? '&nbsp;' : treeNode.data.name) + '</div>';
-        editStr += '<div class="diy">' + (treeNode.ppv == null ? '&nbsp;' : treeNode.ppv ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.snapshotDate == null ? '&nbsp;' : treeNode.snapshotDate ) + '</div>';
+        editStr += '<div class="diy">' + (treeNode.ppv == null ? '&nbsp;' : treeNode.ppv ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.gpv == null ? '&nbsp;' : treeNode.gpv ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.pin == null ? '&nbsp;' : treeNode.pin ) + '</div>';
         aObj.append(editStr);
@@ -152,8 +152,8 @@
 			//initializtion tree 
 			$.fn.zTree.init($("#dataTree"), setting, zTreeNodes);
 			//add table head 
-			var li_head = ' <li class="head"><a><div class="diy">levelNum</div><div class="diy">accountName</div><div class="diy">PPV</div>' +
-				'<div class="diy">snapshotDate</div><div class="diy">GPV</div><div class="diy">PIN</div></a></li>';
+			var li_head = ' <li class="head"><a><div class="diy">levelNum</div><div class="diy">accountName</div><div class="diy">snapshotDate</div>' +
+				'<div class="diy">PPV</div><div class="diy">GPV</div><div class="diy">PIN</div></a></li>';
 			var rows = $("#dataTree").find('li');
 			if (rows.length > 0) {
 				rows.eq(0).before(li_head)

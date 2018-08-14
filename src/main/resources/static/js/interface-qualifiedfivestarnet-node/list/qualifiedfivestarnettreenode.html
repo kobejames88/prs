@@ -48,7 +48,7 @@
 
     .ztree div.diy {
         height: 100%;
-        width: 14.25%;
+        width: 11.11%;
         line-height: 30px;
         border-top: 1px dotted #ccc;
         border-left: 1px solid #eeeeee;
@@ -130,10 +130,12 @@
         switchObj.before(spaceStr);
         var editStr = '';
         editStr += '<div class="diy">' + (treeNode.data.name == null ? '&nbsp;' : treeNode.data.name) + '</div>';
-        editStr += '<div class="diy">' + (treeNode.gpv == null ? '&nbsp;' : treeNode.gpv ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.snapshotDate == null ? '&nbsp;' : treeNode.snapshotDate ) + '</div>';
+        editStr += '<div class="diy">' + (treeNode.gpv == null ? '&nbsp;' : treeNode.gpv ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.passUpGpv == null ? '&nbsp;' : treeNode.passUpGpv ) + '</div>';
-        editStr += '<div class="diy">' + (treeNode.qualifiedLine == null ? '&nbsp;' : treeNode.fiveStarIntegral ) + '</div>';
+        editStr += '<div class="diy">' + (treeNode.borrowPoints == null ? '&nbsp;' : treeNode.borrowPoints ) + '</div>';
+        editStr += '<div class="diy">' + (treeNode.borrowedPoints == null ? '&nbsp;' : treeNode.borrowedPoints ) + '</div>';
+        editStr += '<div class="diy">' + (treeNode.fiveStarIntegral == null ? '&nbsp;' : treeNode.fiveStarIntegral ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.pin == null ? '&nbsp;' : treeNode.pin ) + '</div>';
         aObj.append(editStr);
     }
@@ -153,8 +155,8 @@
 			//initializtion tree 
 			$.fn.zTree.init($("#dataTree"), setting, zTreeNodes);
 			//add table head 
-			var li_head = ' <li class="head"><a><div class="diy">levelNum</div><div class="diy">accountName</div><div class="diy">GPV</div>' +
-				'<div class="diy">snapshotDate</div><div class="diy">passUpGpv</div><div class="diy">fiveStarIntegral</div><div class="diy">pin</div></a></li>';
+			var li_head = ' <li class="head"><a><div class="diy">levelNum</div><div class="diy">accountName</div><div class="diy">snapshotDate</div>' +
+				'<div class="diy">GPV</div><div class="diy">passUpGpv</div><div class="diy">borrowPoints</div><div class="diy">borrowedPoints</div><div class="diy">fiveStarIntegral</div><div class="diy">pin</div></a></li>';
 			var rows = $("#dataTree").find('li');
 			if (rows.length > 0) {
 				rows.eq(0).before(li_head)

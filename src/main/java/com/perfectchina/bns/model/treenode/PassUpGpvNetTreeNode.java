@@ -22,6 +22,7 @@ public class PassUpGpvNetTreeNode extends TreeNode {
     @Column(columnDefinition="int default 0")
 	private int qualifiedLine;
 
+
     private Boolean hasAsteriskNode;
 
     @Column(columnDefinition="float default 0.00")

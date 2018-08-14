@@ -41,8 +41,8 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public QualifiedFiveStarNetTreeNodeRepository getTreeNodeRepository() {
-		return qualifiedFiveStarNetTreeNodeRepository;
+	public TreeNodeRepository<GoldDiamondNetTreeNode> getTreeNodeRepository() {
+		return goldDiamondNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
@@ -53,7 +53,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
-			QualifiedFiveStarNetTreeNode rootNode = getTreeNodeRepository().getRootTreeNodeOfMonth(snapshotDate);
+			QualifiedFiveStarNetTreeNode rootNode = qualifiedFiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
 
 			if (rootNode != null) {
 				isReady = true;
@@ -65,12 +65,12 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	}
 
 
-
 	@Override
 	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode) {
 		super.updateChildTreeLevel(fromLevelNum, fromNode);
 	}
 
+	private Map<Long,Long> relation = new HashMap<>();
 
 	/**
 	 * param node is SimpleNetTreeNode walking through
@@ -86,48 +86,56 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		//the uplinkId is SimpleNet
 		long uplinkId = qualifiedFiveStarNetTreeNode.getUplinkId();
         String pin = qualifiedFiveStarNetTreeNode.getData().getPin();
+        Long id = qualifiedFiveStarNetTreeNode.getId();
+        Long map_uplinkId = relation.get(id);
 
-        QualifiedFiveStarNetTreeNode uplink = getTreeNodeRepository().getOne(uplinkId);
-        String uplinkAccountNum = uplink.getData().getAccountNum();
-        GoldDiamondNetTreeNode uplink2 = goldDiamondNetTreeNodeRepository.getAccountByAccountNum(qualifiedFiveStarNetTreeNode.getSnapshotDate(),
-                uplinkAccountNum);
-        goldDiamondNetTreeNode.setUplinkId(uplink2.getId());
-
-        // 判断是否为金钻
-        if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
-            // 如果是金钻
-            // key => id , value => id
-            copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
-        }else{
-            // 如果不是金钻
-            // key => id , value => id
-//            if ((passUpGpv >= 9000 && qualifiedLine >= 1) || (qualifiedLine >= 2)){
-//                copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
-//            }else {
-//                // 过滤此元素
-//                // 获取此元素的直接下级
-//                List<TreeNode> childNodes = passUpGpvNetTreeNodeRepository.getChildNodesByUpid(passUpGpvNetTreeNode.getId());
-//                // 将此元素的合格线给上级
-//                QualifiedFiveStarNetTreeNode uplink = qualifiedFiveStarNetTreeNodeRepository.getOne(one2.getId());
-//                uplink.setQualifiedLine(uplink.getQualifiedLine()+passUpGpvNetTreeNode.getQualifiedLine());
-//                // 将此元素的直接下级并到上级
-//                for (TreeNode childNode : childNodes){
-//                    PassUpGpvNetTreeNode passUpGpvNetTreeChildNode = (PassUpGpvNetTreeNode)childNode;
-//                    passUpGpvNetTreeChildNode.setUplinkId(uplinkId);
-//                    passUpGpvNetTreeChildNode.setLevelNum(childNode.getLevelNum()-1);
-//                    passUpGpvNetTreeNodeRepository.saveAndFlush(passUpGpvNetTreeChildNode);
-//                }
-//                qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(one2);
-//            }
-        }
-	}
-
-	private void copyNetTree(QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,GoldDiamondNetTreeNode goldDiamondNetTreeNode){
         String accountNum = qualifiedFiveStarNetTreeNode.getData().getAccountNum();
         String snapshotDate = sdf.format(getPreviousDateEndTime());
         OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(accountNum,snapshotDate);
 
-        goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
+        // 判断是否为金钻
+        if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
+            // 如果是金钻
+            // key => 下级id , value => id
+            if (map_uplinkId != null){
+                goldDiamondNetTreeNode.setUplinkId(map_uplinkId);
+            }else {
+                goldDiamondNetTreeNode.setUplinkId(0);
+            }
+            goldDiamondNetTreeNode.setPassUpOpv(opvNetTreeNode.getOpv());
+            // 获取金钻的所有直接下级
+            List<TreeNode> childNodes = qualifiedFiveStarNetTreeNode.getChildNodes();
+            for (TreeNode childNode : childNodes){
+                QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
+                relation.put(qualifiedFiveChildNode.getId(),qualifiedFiveStarNetTreeNode.getId());
+            }
+            copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
+        }else{
+            // 如果不是金钻
+            // 判断是否根节点
+            // key => 下级id , value => G_id
+            if(uplinkId != 0){
+                if (map_uplinkId != null){
+                    // 有金钻上级
+                    QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = qualifiedFiveStarNetTreeNodeRepository.getOne(map_uplinkId);
+                    String uplinkAccountNum = qualifiedFiveStarUplink.getData().getAccountNum();
+                    GoldDiamondNetTreeNode goldDiamondUplink = getTreeNodeRepository().getAccountByAccountNum(qualifiedFiveStarNetTreeNode.getSnapshotDate(),
+                            uplinkAccountNum);
+                    goldDiamondUplink.setPassUpOpv(goldDiamondUplink.getOpv()+opvNetTreeNode.getOpv());
+                    // 获取当前元素的所有直接下级
+                    List<TreeNode> childNodes = qualifiedFiveStarNetTreeNode.getChildNodes();
+                    for (TreeNode childNode : childNodes){
+                        QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
+                        relation.put(qualifiedFiveChildNode.getId(),map_uplinkId);
+                    }
+                    goldDiamondNetTreeNodeRepository.saveAndFlush(goldDiamondUplink);
+                    relation.remove(id);
+                }
+            }
+        }
+	}
+
+	private void copyNetTree(QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,GoldDiamondNetTreeNode goldDiamondNetTreeNode){
         goldDiamondNetTreeNode.setHasChild(qualifiedFiveStarNetTreeNode.getHasChild());
         goldDiamondNetTreeNode.setLevelNum(qualifiedFiveStarNetTreeNode.getLevelNum());
         goldDiamondNetTreeNode.setSnapshotDate(qualifiedFiveStarNetTreeNode.getSnapshotDate());
