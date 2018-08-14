@@ -14,9 +14,18 @@ import javax.persistence.Table;
 public class GoldDiamondNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
-    // PassUpGpv
-    @Column(columnDefinition="float default 0.00")
     private Float opv;
+
+    @Column(columnDefinition="float default 0.00")
+    private Float passUpOpv;
+
+    public Float getPassUpOpv() {
+        return passUpOpv;
+    }
+
+    public void setPassUpOpv(Float passUpOpv) {
+        this.passUpOpv = passUpOpv;
+    }
 
     public Float getOpv() {
         return opv;
