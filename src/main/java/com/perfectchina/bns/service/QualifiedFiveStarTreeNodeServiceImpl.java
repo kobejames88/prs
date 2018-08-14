@@ -277,7 +277,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 }
                                 nodes.add(downLineNode);
                                 nodes.add(qualifiedFiveStarNetTreeNode);
-                                qualifiedFiveStarNetTreeNodeRepository.save(nodes);
+                                qualifiedFiveStarNetTreeNodeRepository.saveAll(nodes);
                                 qualifiedFiveStarNetTreeNodeRepository.flush();
                             }else {
                                 break;

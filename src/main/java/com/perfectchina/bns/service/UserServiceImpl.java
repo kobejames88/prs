@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     
 	public User findById(Long id) {
-		return userRepository.findOne(id);
+		return userRepository.findById(id).get();
 	}
 
 	public User findByUserName(String username) {
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public void deleteUserById(Long id){
-		userRepository.delete(id);
+		userRepository.deleteById(id);
 	}
 
 	public void deleteAllUsers(){

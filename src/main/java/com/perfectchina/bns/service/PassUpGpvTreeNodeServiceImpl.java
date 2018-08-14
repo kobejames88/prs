@@ -172,7 +172,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 					nodes.add(upLinkNode);
 				}
 				nodes.add(passUpGpvNetTreeNode);
-				passUpGpvNetTreeNodeRepository.save(nodes);
+				passUpGpvNetTreeNodeRepository.saveAll(nodes);
 				passUpGpvNetTreeNodeRepository.flush();
 			} // end for loop
 			treeLevel--;

@@ -54,7 +54,7 @@ public class DistributorDifferentialBonusNetServiceImpl implements DistributorDi
             //find and set uplinkId
             long uplinkId = top.getUplinkId();
             if (uplinkId != 0) {
-                DistributorBonus one = distributorBonusRepository.findOne(uplinkId);
+                DistributorBonus one = distributorBonusRepository.findById(uplinkId).get();
                 String accountNum = one.getData().getAccountNum();
                 DistributorDifferentialBonus one2 = distributorDifferentialBonusRepository.getAccountByAccountNum(top.getSnapshotDate(),
                         accountNum);
