@@ -55,7 +55,7 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
             //find and set uplinkId
             long uplinkId = top.getUplinkId();
             if (uplinkId != 0) {
-                FiveStarNetTreeNode one = fiveStarNetTreeNodeRepository.findOne(uplinkId);
+                FiveStarNetTreeNode one = fiveStarNetTreeNodeRepository.findById(uplinkId).get();
                 String accountNum = one.getData().getAccountNum();
                 DistributorBonus one2 = distributorBonusRepository.getAccountByAccountNum(top.getSnapshotDate(),
                         accountNum);
@@ -89,9 +89,9 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
             distributorBonus.setReward(reward);
             //surplus opv reward need pass up;will calculate in DistributorDifferentialBonus
             Float surplusReward = surplus * 0.12F;
-            DistributorBonus uplink = distributorBonusRepository.findOne(distributorBonus.getUplinkId());
+            DistributorBonus uplink = distributorBonusRepository.findById(distributorBonus.getUplinkId()).get();
             while(uplink!=null&&PinPosition.NEW_FIVE_STAR.equals(uplink.getData().getPin())){
-                uplink = distributorBonusRepository.findOne(uplink.getUplinkId());
+                uplink = distributorBonusRepository.findById(uplink.getUplinkId()).get();
             }
             if(uplink!=null){
                 uplink.setTemporaryReward(surplusReward);

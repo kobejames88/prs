@@ -1,23 +1,6 @@
 package com.perfectchina.bns.service;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import com.perfectchina.bns.common.utils.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
 import com.perfectchina.bns.common.utils.SortingUtils;
 import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountStatus;
@@ -28,6 +11,13 @@ import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.AccountRepository;
 import com.perfectchina.bns.repositories.InterfaceAccountInfoRepository;
 import com.perfectchina.bns.repositories.TreeNodeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class InterfaceAccountServiceImpl implements InterfaceAccountService {
@@ -48,7 +38,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
     private AccountRepository accountRepository;
 
     public InterfaceAccountInfo findById(Long id) {
-        return interfaceAccountInfoRepository.findOne(id);
+        return interfaceAccountInfoRepository.findById(id).get();
     }
 
     public List<InterfaceAccountInfo> storeInterfaceAccountInfo(List<InterfaceAccountInfo> interfaceAccountInfoList) {
@@ -61,7 +51,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         Collections.sort(interfaceAccountInfoList, InterfaceAccountInfo.Comparators.ACCOUNTNUM);
 
         // save model class data in DB
-        List<InterfaceAccountInfo> resultList = interfaceAccountInfoRepository.save(interfaceAccountInfoList);
+        List<InterfaceAccountInfo> resultList = interfaceAccountInfoRepository.saveAll(interfaceAccountInfoList);
 
         return resultList;
 
@@ -80,7 +70,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
     public void deleteInterfaceAccountInfoById(Long id) {
         logger.debug("deleteInterfaceAccountInfo, " + id);
         if (id != null) {
-            interfaceAccountInfoRepository.delete(id);
+            interfaceAccountInfoRepository.deleteById(id);
         }
     }
 
@@ -200,7 +190,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         updateHasChildField();
 
         // finally, need to update back the interfaceAccount
-        interfaceAccountInfoRepository.save(interfaceAccountInfoList);
+        interfaceAccountInfoRepository.saveAll(interfaceAccountInfoList);
 
         logger.debug("convertInterfaceAccountInfoToAccount, end");
 
@@ -311,7 +301,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         for (InterfaceAccountInfo interfaceAccount : interfaceAccountInfoList) {
             interfaceAccount.setRequestStatus(InterfaceInfoStatus.CONFIRMED);
         }
-        interfaceAccountInfoRepository.save(interfaceAccountInfoList);
+        interfaceAccountInfoRepository.saveAll(interfaceAccountInfoList);
         logger.debug("confirmInterfaceAccountInfo, end");
 
     }
@@ -321,7 +311,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
     public void removePendingInterfaceAccountInfo() {
         logger.debug("removePendingInterfaceAccountInfo, start");
         List<InterfaceAccountInfo> interfaceAccountInfoList = interfaceAccountInfoRepository.findByRequestStatus(InterfaceInfoStatus.PENDING);
-        interfaceAccountInfoRepository.delete(interfaceAccountInfoList);
+        interfaceAccountInfoRepository.deleteAll(interfaceAccountInfoList);
         logger.debug("removePendingInterfaceAccountInfo, end");
     }
 
@@ -332,14 +322,14 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         for (TreeNode account : hasChildAccounts) {
             account.setHasChild(true);
         }
-        treeNodeRepository.save(hasChildAccounts);
+        treeNodeRepository.saveAll(hasChildAccounts);
 
         List<SimpleNetTreeNode> leafAccounts = treeNodeRepository.retrieveInCorrectLeafAccounts();
         // update the fields
         for (SimpleNetTreeNode account : leafAccounts) {
             account.setHasChild(false);
         }
-        treeNodeRepository.save(leafAccounts);
+        treeNodeRepository.saveAll(leafAccounts);
 
 
         logger.debug("updateHasChildField, end");

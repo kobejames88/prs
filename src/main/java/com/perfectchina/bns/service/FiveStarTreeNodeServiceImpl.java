@@ -112,20 +112,20 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		//caculte gpv
 		List<FiveStarNetTreeNode> leafNodes = fiveStarNetTreeNodeRepository.findLeafNodes(DateUtils.getCurrentSnapshotDate());
 		for (FiveStarNetTreeNode fiveStarNetTreeNode : leafNodes) {
-			FiveStarNetTreeNode uplinkNode = fiveStarNetTreeNodeRepository.findOne(fiveStarNetTreeNode.getUplinkId());
+			FiveStarNetTreeNode uplinkNode = fiveStarNetTreeNodeRepository.findById(fiveStarNetTreeNode.getUplinkId()).get();
 			while(uplinkNode!=null){
 				if(PinPosition.MEMBER.equals(fiveStarNetTreeNode.getPin())){
 				}else{
 					FiveStarNetTreeNode uplinkNode2 = uplinkNode;
 					while(PinPosition.MEMBER.equals(uplinkNode2.getPin())){
-						uplinkNode2 = fiveStarNetTreeNodeRepository.findOne(uplinkNode2.getUplinkId());
+						uplinkNode2 = fiveStarNetTreeNodeRepository.findById(uplinkNode2.getUplinkId()).get();
 						if(uplinkNode2==null){break;}
 					}
 					fiveStarNetTreeNode.setUplinkId(uplinkNode2.getId());
 				}
 				fiveStarNetTreeNodeRepository.saveAndFlush(fiveStarNetTreeNode);
 				fiveStarNetTreeNode = uplinkNode;
-				uplinkNode = fiveStarNetTreeNodeRepository.findOne(uplinkNode.getUplinkId());
+				uplinkNode = fiveStarNetTreeNodeRepository.findById(uplinkNode.getUplinkId()).get();
 			}
 		}
 		//delete no 5star

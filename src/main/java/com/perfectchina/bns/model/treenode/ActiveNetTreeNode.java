@@ -28,7 +28,7 @@ public class ActiveNetTreeNode extends TreeNode {
 	private float gpv;
 	
 	private float opv;
-	
+
 	public String getSnapshotDate() {
 		return snapshotDate;
 	}

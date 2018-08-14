@@ -62,7 +62,7 @@ public class CustomerBonusNetServiceImpl  implements  CustomerBonusNetService{
             //find and set uplinkId
             long uplinkId = top.getUplinkId();
             if(uplinkId!=0){
-                OpvNetTreeNode one = opvNetTreeNodeRepository.findOne(uplinkId);
+                OpvNetTreeNode one = opvNetTreeNodeRepository.findById(uplinkId).get();
                 String accountNum = one.getData().getAccountNum();
                 CustomerBonusNet one2 = customerBonusNetRepository.getAccountByAccountNum(top.getSnapshotDate(),
                         accountNum);

@@ -31,9 +31,9 @@ public class CustomerDifferentialBonus implements Serializable {
 
 	private float bonusRateLvl2;  // 501 - 9000 = 6%
 
-	private float bonusRateLvl3;
+	private float bonusRateLvl3;  //9001 - 18000 = 9%
 	
-	private float bonusRateLvl4;
+	private float bonusRateLvl4;  //18001+ = 12%
 		
 	private Boolean hasBonus;  // flag for customer has bonus or not
 

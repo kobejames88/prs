@@ -1,10 +1,13 @@
 package com.perfectchina.bns.service;
 
 
-import com.perfectchina.bns.model.treenode.*;
-import com.perfectchina.bns.repositories.*;
+import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
+import com.perfectchina.bns.model.treenode.PassUpGpvNetTreeNode;
+import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
+import com.perfectchina.bns.repositories.PassUpGpvNetTreeNodeRepository;
+import com.perfectchina.bns.repositories.TreeNodeRepository;
 import com.perfectchina.bns.service.pin.PinPoints;
-import com.perfectchina.bns.service.pin.PinPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,37 +108,38 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		passUpGpvNetTreeNodeRepository.saveAndFlush(passUpGpvNetTreeNode);
 	}
 
+	private Map<Long,Float> map = new HashMap<>();
+
 	@Override
 	/**
 	 * Update the entire tree's pass-up-gpv
 	 */
 	public void updateWholeTreePassUpGPV(String snapShotDate) {
-		// 获取passUpGpvNetTree的最大层级
 		int treeLevel = getMaxTreeLevel(snapShotDate);
 		if (treeLevel < 0)
 			return;
-		Map<Long,Float> map = new HashMap<>();
 		while (treeLevel >= 0) {
-			// 获取这层中的所有节点
+			// Get all the nodes in this layer
 			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
 			for (PassUpGpvNetTreeNode passUpGpvNetTreeNode : thisTreeLevelList) {
 				long id = passUpGpvNetTreeNode.getId();
 				long uplinkId = passUpGpvNetTreeNode.getUplinkId();
 				Float gpv = passUpGpvNetTreeNode.getGpv();
-				// 获取紧缩上来的pass-up-gpv
-				Float tempPoint = map.get(id);
+                Float tempPoint = map.get(id);
                 Float passUpGpv = 0F;
-                // 获取此节点的合格线
+                // Get the qualified line of this node
                 int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
 				if (gpv != null){
                     if ( tempPoint != null ){
                         passUpGpv = gpv+ tempPoint;
+                        Boolean isQualified =  (gpv >= PinPoints.COMMON_QUALIFY_POINTS);
                         if (isAboveRuby(passUpGpv,qualifiedLine)){
-                            if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (gpv >= PinPoints.COMMON_QUALIFY_POINTS || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
+                            if ((passUpGpv- PinPoints.COMMON_QUALIFY_POINTS>0) && (isQualified || passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS)){
                                 passUpGpvNetTreeNode.setHasAsteriskNode(true);
-                                passUpGpvNetTreeNode.setAsteriskNodePoints(passUpGpv-PinPoints.COMMON_QUALIFY_POINTS);
-                                passUpGpv = PinPoints.COMMON_QUALIFY_POINTS;
+                                Float asteriskNodePoints = isQualified ? tempPoint : passUpGpv-PinPoints.COMMON_QUALIFY_POINTS;
+                                passUpGpvNetTreeNode.setAsteriskNodePoints(asteriskNodePoints);
+                                passUpGpv = isQualified ? gpv : PinPoints.COMMON_QUALIFY_POINTS;
                             }
                         }
                     }else {
@@ -146,19 +150,20 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 				List<PassUpGpvNetTreeNode> nodes = new ArrayList<>();
 				if(uplinkId != 0){
 					PassUpGpvNetTreeNode upLinkNode = passUpGpvNetTreeNodeRepository.getOne(uplinkId);
-					// 如果是合格五星或者红宝石，上级合格线加1
+					// If it is a qualified five-star or ruby,Superior qualification line plus 1
 					if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
 						upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 					}else {
 						if (isAboveRuby(passUpGpv,qualifiedLine)){
 							upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+1);
 						}else {
-							Float mapUplinkId = map.get(uplinkId);
-							// 如果不为空说明有共同的上级,因此需要叠加pass-up-gpv
-							if(mapUplinkId != null){
-								Float value = mapUplinkId;
+                            upLinkNode.setQualifiedLine(upLinkNode.getQualifiedLine()+qualifiedLine);
+                            Float val = map.get(uplinkId);
+                            // If there are no empty instructions, there are common superiors,Therefore, we need to add pass-up-gpv
+							if(val != null){
+								Float value = val;
 								Float newVal = value+passUpGpv;
-								map.put(uplinkId,newVal);
+                                map.put(uplinkId,newVal);
 							}else {
 								map.put(uplinkId,passUpGpv);
 							}
@@ -167,7 +172,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 					nodes.add(upLinkNode);
 				}
 				nodes.add(passUpGpvNetTreeNode);
-				passUpGpvNetTreeNodeRepository.save(nodes);
+				passUpGpvNetTreeNodeRepository.saveAll(nodes);
 				passUpGpvNetTreeNodeRepository.flush();
 			} // end for loop
 			treeLevel--;

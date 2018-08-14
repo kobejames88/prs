@@ -150,12 +150,12 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				if(PinPosition.MEMBER.equals(opvNetTreeNode.getPin())&&opvNetTreeNode.getOpv()>=18000&&opvNetTreeNode.getAopv()>=36000){
 					opvNetTreeNode.setPin(PinPosition.NEW_FIVE_STAR);
 					//pass up 5star
-					OpvNetTreeNode uplink = opvTreeNodeRepository.findOne(opvNetTreeNode.getUplinkId());
+					OpvNetTreeNode uplink = opvTreeNodeRepository.findById(opvNetTreeNode.getUplinkId()).get();
 					while(uplink!=null){
 						if(PinPosition.MEMBER.equals(uplink.getPin())){
 							uplink.setPin(PinPosition.FIVE_STAR);
 						}
-						uplink = opvTreeNodeRepository.findOne(uplink.getUplinkId());
+						uplink = opvTreeNodeRepository.findById(uplink.getUplinkId()).get();
 					}
 				}
 				opvTreeNodeRepository.saveAndFlush(opvNetTreeNode);

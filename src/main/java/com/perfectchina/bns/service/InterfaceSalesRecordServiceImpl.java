@@ -38,7 +38,7 @@ public class InterfaceSalesRecordServiceImpl implements InterfaceSalesRecordServ
 	@Override
 	public void uploadSalesRecords(List<InterfaceSalesRecordInfo> list) {
 		logger.debug("uploadPendingInterfaceSalesRecordInfo, start");
-		interfaceSalesRecordInfoRepository.save(list);
+		interfaceSalesRecordInfoRepository.saveAll(list);
 		logger.debug("uploadPendingInterfaceSalesRecordInfo, end");
 	}
 	
@@ -71,7 +71,7 @@ public class InterfaceSalesRecordServiceImpl implements InterfaceSalesRecordServ
 			}
 		}
 		// store the status back to DB
-		interfaceSalesRecordInfoRepository.save(interfaceSalesRecordInfoList);
+		interfaceSalesRecordInfoRepository.saveAll(interfaceSalesRecordInfoList);
 	}
 
 	private SalesRecord createNewSalesRecord(InterfaceSalesRecordInfo axSale, Account account ) {
@@ -100,7 +100,7 @@ public class InterfaceSalesRecordServiceImpl implements InterfaceSalesRecordServ
 		for (InterfaceSalesRecordInfo interfaceSalesRecord: interfaceSalesRecordInfoList ){
 			interfaceSalesRecord.setRequestStatus( InterfaceInfoStatus.CONFIRMED );
 		}		
-		interfaceSalesRecordInfoRepository.save( interfaceSalesRecordInfoList );
+		interfaceSalesRecordInfoRepository.saveAll( interfaceSalesRecordInfoList );
 		logger.debug("confirmInterfaceSalesRecordInfo, end");
 		
 	}
@@ -110,7 +110,7 @@ public class InterfaceSalesRecordServiceImpl implements InterfaceSalesRecordServ
 	public void removePendingInterfaceSalesRecordInfo() {
 		logger.debug("removePendingInterfaceSalesRecordInfo, start");
 		List<InterfaceSalesRecordInfo> interfaceSalesRecordInfoList = interfaceSalesRecordInfoRepository.findByRequestStatus(InterfaceInfoStatus.PENDING);
-		interfaceSalesRecordInfoRepository.delete(interfaceSalesRecordInfoList);
+		interfaceSalesRecordInfoRepository.deleteAll(interfaceSalesRecordInfoList);
 		logger.debug("removePendingInterfaceSalesRecordInfo, end");
 	}
 	
