@@ -3,14 +3,24 @@ server:
   port: 8080
   servlet:
     contextPath: /bns
----
 spring:
-  profiles: local, default
   messages:
     basename: validation
   security:
     ignored:
       - "*.bundle.*"
+  cloud:
+    discovery:
+      enabled: false
+eureka:
+  instance:
+    registerWithEureka: false
+  client:
+    enabled: false
+
+---
+spring:
+  profiles: local, default
 
 datasource:
   bns:
@@ -29,11 +39,6 @@ datasource:
 ---
 spring:
   profiles: prod
-  messages:
-    basename: validation
-  security:
-    ignored:
-      - "*.bundle.*"
 
 datasource:
   bns:
@@ -47,17 +52,11 @@ datasource:
       hbm2ddl.method: update
       show_sql: false
       format_sql: true
-      dialect: org.hibernate.dialect.MySQLDialect
+      dialect: org.hibernate.dialect.MySQL5Dialect
 
 ---
 spring:
   profiles: beta
-  messages:
-    basename: validation
-  security:
-    ignored:
-      - "*.bundle.*"
-
 datasource:
   bns:
     url: "jdbc:mysql://localhost:3306/bns_db"
@@ -70,4 +69,69 @@ datasource:
       hbm2ddl.method: update
       show_sql: true
       format_sql: true
-      dialect: org.hibernate.dialect.MySQLDialect
+      dialect: org.hibernate.dialect.MySQL5Dialect
+
+---
+spring:
+  profiles: cloud-chinaunicom
+  application:
+    name: bns
+  cloud:
+    discovery:
+      enabled: true
+datasource:
+  bns:
+    url: "jdbc:mysql://10.125.128.18:3306/bns_db"
+    username: bns
+    password: bns
+    driverClassName: com.mysql.jdbc.Driver
+    defaultSchema:
+    maxPoolSize: 10
+    hibernate:
+      hbm2ddl.method: update
+      show_sql: false
+      format_sql: true
+      dialect: org.hibernate.dialect.MySQL5Dialect
+eureka:
+  instance:
+    registerWithEureka: true
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 9
+  client:
+    enabled: true
+    service-url:
+      defaultZone: "http://10.125.128.127:13260/eureka/,http://10.125.128.128:13260/eureka/,http://10.125.128.129:13260/eureka/"
+
+
+---
+spring:
+  profiles: cloud-local
+  application:
+    name: bns
+  cloud:
+    discovery:
+      enabled: true
+datasource:
+  bns:
+    url: "jdbc:mysql://test.zs.perfect:3306/bns?useSSL=false"
+    username: bns
+    password: bnsperfect
+    driverClassName: com.mysql.jdbc.Driver
+    defaultSchema:
+    maxPoolSize: 10
+    hibernate:
+      hbm2ddl.method: update
+      show_sql: false
+      format_sql: true
+      dialect: org.hibernate.dialect.MySQL5Dialect
+eureka:
+  instance:
+    registerWithEureka: true
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 9
+  client:
+    enabled: true
+    fetchRegistry: true
+    service-url:
+      defaultZone: "http://dev1.zs.perfect:8761/eureka/,http://dev2.zs.perfect:8761/eureka/,http://dev3.zs.perfect:8761/eureka/"
+#      defaultZone: "http://test.zs.perfect:8761/eureka/"
