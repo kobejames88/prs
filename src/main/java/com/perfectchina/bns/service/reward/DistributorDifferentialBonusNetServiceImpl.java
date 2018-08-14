@@ -65,6 +65,11 @@ public class DistributorDifferentialBonusNetServiceImpl implements DistributorDi
         }
     }
 
+    @Override
+    public TreeNode getRootNode(String lastMonthSnapshotDate) {
+        return distributorDifferentialBonusRepository.getRootTreeNodeOfMonth(lastMonthSnapshotDate);
+    }
+
     /**
      * 1、have down line reward = (opv*rate - all child.opv*child.rate) + temporaryReward  - distributorBonus
      * 2、no have down line reward = 0

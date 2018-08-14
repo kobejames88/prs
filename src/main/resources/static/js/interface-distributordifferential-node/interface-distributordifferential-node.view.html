@@ -1,0 +1,27 @@
+<h1>Interface distributordifferential net TreeNode</h1>
+
+
+<button onclick="updata()">updata customernet</button>
+<a href="#!/interface-distributordifferential-node/list"><button >list distributordifferential</button></a>
+
+ <script type="text/javascript">
+ function updata(){
+	 $.ajax({
+         url:"/bns/api/reward/create/distributordifferential/bonusnet",
+         type:"get",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+
