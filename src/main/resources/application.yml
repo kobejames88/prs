@@ -1,19 +1,20 @@
 ---
 server:
   port: 8080
-  contextPath: /bns
+  servlet:
+    contextPath: /bns
 ---
 spring:
   profiles: local, default
   messages:
     basename: validation
-security:
-  ignored:
-    - "*.bundle.*"
-      
+  security:
+    ignored:
+      - "*.bundle.*"
+
 datasource:
   bns:
-    url: jdbc:h2:~/bns
+    url: "jdbc:h2:~/bns"
     username: BNS_APP
     password: password1
     driverClassName: org.h2.Driver
@@ -24,21 +25,21 @@ datasource:
       show_sql: true
       format_sql: true
       dialect: org.hibernate.dialect.H2Dialect
-  
+
 ---
 spring:
   profiles: prod
   messages:
     basename: validation
-security:
-  ignored:
-    - "*.bundle.*"   
-    
+  security:
+    ignored:
+      - "*.bundle.*"
+
 datasource:
   bns:
-    url: jdbc:mysql://localhost:3306/BNS_DB
-    username: root
-    password: root
+    url: "jdbc:mysql://10.125.128.18:3306/bns_db"
+    username: bns
+    password: bns
     driverClassName: com.mysql.jdbc.Driver
     defaultSchema:
     maxPoolSize: 10
@@ -53,13 +54,13 @@ spring:
   profiles: beta
   messages:
     basename: validation
-security:
-  ignored:
-    - "*.bundle.*"
+  security:
+    ignored:
+      - "*.bundle.*"
 
 datasource:
   bns:
-    url: jdbc:mysql://localhost:3306/bns_db
+    url: "jdbc:mysql://localhost:3306/bns_db"
     username: bns_db
     password: ka8TfnZJRrFYtDwY
     driverClassName: com.mysql.jdbc.Driver
@@ -70,4 +71,3 @@ datasource:
       show_sql: true
       format_sql: true
       dialect: org.hibernate.dialect.MySQLDialect
-
