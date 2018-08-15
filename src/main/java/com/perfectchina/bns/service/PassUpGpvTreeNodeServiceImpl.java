@@ -76,7 +76,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	}
 
 	public int getMaxTreeLevel(String snapShotDate) {
-       int maxLevelNum = fiveStarNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
+       int maxLevelNum = passUpGpvNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
         return maxLevelNum;
 	}
 

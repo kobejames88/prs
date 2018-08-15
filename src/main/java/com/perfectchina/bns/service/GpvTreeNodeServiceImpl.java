@@ -47,8 +47,8 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 
 	// Need to walk through simple net, therefore, return simple net tree node
 	// repository
-	public OpvNetTreeNodeRepository getTreeNodeRepository() {
-		return opvNetTreeNodeRepository;
+	public GpvNetTreeNodeRepository getTreeNodeRepository() {
+		return gpvNetTreeNodeRepository;
 	}
 
 	public boolean isReadyToUpdate() {
@@ -59,7 +59,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		String snapshotDate = null;
 		try {
 			snapshotDate = sdf.format(getPreviousDateEndTime());
-			OpvNetTreeNode rootNode = getTreeNodeRepository().getRootTreeNodeOfMonth(snapshotDate);
+			OpvNetTreeNode rootNode = opvNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
 			if (rootNode != null) {
 				isReady = true;
 			}
@@ -71,7 +71,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 	@Override
 	public void updateWholeTree(String snapshotDate) {
 		// Get child nodes
-		TreeNode rootNode = getTreeNodeRepository().getRootTreeNode(snapshotDate);
+		TreeNode rootNode = opvNetTreeNodeRepository.getRootTreeNode(snapshotDate);
 		updateChildTreeLevel( 0, rootNode );
 	}
 	@Override
@@ -95,9 +95,9 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		//the uplinkId is SimpleNet
 		long uplinkId = opvNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
-			OpvNetTreeNode one = getTreeNodeRepository().getOne(uplinkId);
+			OpvNetTreeNode one = opvNetTreeNodeRepository.getOne(uplinkId);
 			String accountNum = one.getData().getAccountNum();
-			GpvNetTreeNode one2 = gpvNetTreeNodeRepository.getAccountByAccountNum(DateUtils.getLastMonthSnapshotDate(),
+			GpvNetTreeNode one2 = getTreeNodeRepository().getAccountByAccountNum(DateUtils.getLastMonthSnapshotDate(),
 					accountNum);
 			gpvNetTreeNode.setUplinkId(one2.getId());
 		}
