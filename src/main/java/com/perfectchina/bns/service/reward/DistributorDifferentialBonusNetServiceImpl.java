@@ -7,6 +7,7 @@ import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.reward.DistributorBonusRateRepository;
 import com.perfectchina.bns.repositories.reward.DistributorBonusRepository;
+import com.perfectchina.bns.repositories.reward.DistributorDifferentialBonusRateRepository;
 import com.perfectchina.bns.repositories.reward.DistributorDifferentialBonusRepository;
 import org.hibernate.dialect.pagination.TopLimitHandler;
 import org.springframework.beans.BeanUtils;
@@ -34,7 +35,7 @@ public class DistributorDifferentialBonusNetServiceImpl implements DistributorDi
     private DistributorBonusRepository distributorBonusRepository;
 
     @Autowired
-    private DistributorBonusRateRepository distributorBonusRateRepository;
+    private DistributorDifferentialBonusRateRepository distributorDifferentialBonusRateRepository;
 
     /**
      * calculate distributorDifferentialBonus base on distributorBonus
@@ -78,13 +79,13 @@ public class DistributorDifferentialBonusNetServiceImpl implements DistributorDi
      * @param distributorBonus
      */
     private void calculateReward(DistributorDifferentialBonus distributorDifferentialBonus,DistributorBonus distributorBonus) {
-        if(distributorBonus.getHasChild()){
+        if(distributorBonus.getChildNodes()!=null&&distributorBonus.getChildNodes().size()>0){
             Float childReward = 0F;
             for(TreeNode childNode : distributorBonus.getChildNodes()){
                 DistributorBonus child = (DistributorBonus)childNode;
-                childReward += child.getOpv()*(distributorBonusRateRepository.findBonusRateByGpvAndDate(child.getOpv(),new Date()).getBonusRate());
+                childReward += child.getOpv()*(distributorDifferentialBonusRateRepository.findBonusRateByOpvAndDateAsc(child.getOpv(),new Date()).getBonusRate());
             }
-            Float reward = distributorDifferentialBonus.getOpv()*(distributorBonusRateRepository.findBonusRateByGpvAndDate(distributorDifferentialBonus.getOpv(),new Date()).getBonusRate());
+            Float reward = distributorDifferentialBonus.getOpv()*(distributorDifferentialBonusRateRepository.findBonusRateByOpvAndDateAsc(distributorDifferentialBonus.getOpv(),new Date()).getBonusRate());
             reward = reward - childReward + distributorBonus.getTemporaryReward() -distributorBonus.getReward();
             distributorDifferentialBonus.setReward(reward);
         }
