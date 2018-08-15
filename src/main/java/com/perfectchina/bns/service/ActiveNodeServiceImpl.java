@@ -3,6 +3,7 @@ package com.perfectchina.bns.service;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.GetOpt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,11 +121,16 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 				if(activeNetTreeNode.getPv()>=200){
 					ActiveNetTreeNode upLinkNode2 = upLinkNode;		
 					while(upLinkNode2.getPv()<200){
-						Optional<ActiveNetTreeNode> upLinkNode2Up = activeNetTreeNodeRepository.findById(upLinkNode2.getUplinkId());
-						if(upLinkNode2Up.get() == null){break;}
-						upLinkNode2Up.get().setPv(upLinkNode2Up.get().getPv()+upLinkNode2.getPv());
+						ActiveNetTreeNode upLinkNode2Up = null;
+						try {
+							upLinkNode2Up = activeNetTreeNodeRepository.findById(upLinkNode2.getUplinkId()).get();
+						} catch (Exception e) {
+							break;
+						}
+						if(upLinkNode2Up == null){break;}
+						upLinkNode2Up.setPv(upLinkNode2Up.getPv()+upLinkNode2.getPv());
 						upLinkNode2.setPv(0F);
-						upLinkNode2 = upLinkNode2Up.get();
+						upLinkNode2 = upLinkNode2Up;
 						activeNetTreeNode.setUplinkId(upLinkNode2.getId());
 					}
 				//pass gpv to uplinkNode;then set gpv=0,avoid repeatb calculate gpv
@@ -134,7 +140,11 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 				}
 				//loop
 				activeNetTreeNode = upLinkNode;
-				upLinkNode = activeNetTreeNodeRepository.findById(activeNetTreeNode.getUplinkId()).get();
+				try {
+					upLinkNode = activeNetTreeNodeRepository.findById(activeNetTreeNode.getUplinkId()).get();
+				} catch (Exception e) {
+					break;
+				}
 			}
 		}
 		//delete no active member

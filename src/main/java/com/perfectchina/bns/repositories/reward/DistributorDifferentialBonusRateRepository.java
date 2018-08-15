@@ -19,7 +19,7 @@ public interface DistributorDifferentialBonusRateRepository extends JpaRepositor
 
     //find bonus rate by opv
     @Query("SELECT br FROM DistributorDifferentialBonusRate br WHERE (:opv between br.minOpv and br.maxOpv ) and ( :checkAsAtDate between br.effectiveFrom and br.effectiveTo )  ")
-    DistributorBonusRate findBonusRateByOpvAndDateAsc(
+    DistributorDifferentialBonusRate findBonusRateByOpvAndDateAsc(
             @Param("opv") float opv,
             @Param("checkAsAtDate") Date checkAsAtDate);
 
