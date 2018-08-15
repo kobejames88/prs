@@ -1,6 +1,5 @@
 package com.perfectchina.bns.repositories.reward;
 
-import com.perfectchina.bns.model.reward.DistributorBonusRate;
 import com.perfectchina.bns.model.reward.DistributorDifferentialBonusRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

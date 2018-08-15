@@ -1,0 +1,27 @@
+<h1>Interface customer net TreeNode</h1>
+
+
+<button onclick="update()">update LeaderBonus</button>
+<a href="#!/interface-rubybonus-node/list"><button >list LeaderBonus</button></a>
+
+ <script type="text/javascript">
+ function update(){
+	 $.ajax({
+         url:"/bns/api/reward/create/leader/bonus",
+         type:"get",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+
