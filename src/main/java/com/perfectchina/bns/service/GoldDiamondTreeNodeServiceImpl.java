@@ -121,7 +121,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                 goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
                 goldDiamondNetTreeNode.setPassUpOpv(opvNetTreeNode.getOpv());
                 // 获取金钻的所有直接下级
-                List<TreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
+                List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
                 for (TreeNode childNode : childNodes){
                     QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
                     relation.put(qualifiedFiveChildNode.getId(),qualifiedFiveStarNetTreeNode.getId());
@@ -147,7 +147,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                 goldDiamondNetTreeNode.setLevelLine(String.valueOf(0));
                 goldDiamondNetTreeNode.setLevelNum(0);
                 // 获取金钻的所有直接下级
-                List<TreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
+                List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
                 for (TreeNode childNode : childNodes){
                     QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
                     relation.put(qualifiedFiveChildNode.getId(),qualifiedFiveStarNetTreeNode.getId());
@@ -187,7 +187,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 			// loop for the children to calculate OPV at the lowest level
 			for (GoldDiamondNetTreeNode goldDiamondNetTreeNode : thisTreeLevelTreeList) {
                 long id = goldDiamondNetTreeNode.getId();
-                List<TreeNode> childs = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
+                List<GoldDiamondNetTreeNode> childs = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
                 if (childs.size()>0){
                     goldDiamondNetTreeNode.setHasChild(true);
                 }else {
