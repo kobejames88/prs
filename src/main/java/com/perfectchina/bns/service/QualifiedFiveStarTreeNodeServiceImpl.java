@@ -114,12 +114,12 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
             String uplinkLevelLine = qualifiedFiveStarUplink.getLevelLine();
             qualifiedFiveStarNetTreeNode.setUplinkId(qualifiedFiveStarUplinkId);
 			// To judge if it is a qualified five-star
-			if (passUpGpv >= 18000F){
+			if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
                 setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
 				copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
 			}else{
 			    // To judge if it is a ruby
-				if ((passUpGpv >= 9000 && qualifiedLine >= 1) || (qualifiedLine >= 2)){
+				if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine >= 1) || (qualifiedLine >= 2)){
                     setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
                     copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
 				}else {
@@ -301,25 +301,22 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
             logger.error("passUpGpv为空");
             return null;
         }
-        String pin;
-        if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine >= 1)||(qualifiedLine >= 2)){
-            if ((qualifiedLine >= 3 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)||(qualifiedLine >= 4)){
-                if ((qualifiedLine >= 5 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)||(qualifiedLine >= 6)){
-                    if ((qualifiedLine >= 7 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)||(qualifiedLine >= 8)){
-                        pin = PinPosition.GOLD_DIAMOND;
-                    }else {
-                        pin = PinPosition.DIAMOND;
-                    }
-                }else {
-                    pin = PinPosition.EMERALD;
-                }
-            }else {
-                pin = PinPosition.RUBY;
-            }
-        }else {
-            pin = PinPosition.QUALIFIED_FIVE_STAR;
+        if ((qualifiedLine >= 8) || (qualifiedLine >= 7 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
+            return PinPosition.GOLD_DIAMOND;
         }
-        return pin;
+        if ((qualifiedLine >= 6) || (qualifiedLine >= 5 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
+            return PinPosition.DIAMOND;
+        }
+        if ((qualifiedLine >= 4) || (qualifiedLine >= 3 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
+            return PinPosition.EMERALD;
+        }
+        if ((qualifiedLine >= 2) || (qualifiedLine >= 1 && passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS)){
+            return PinPosition.RUBY;
+        }
+        if (passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS){
+            return PinPosition.QUALIFIED_FIVE_STAR;
+        }
+        return null;
     }
 
 	private String changeAndGetPin(Float currentFiveStarIntegral,Float passUpGpv,int qualifiedLine,Long id){
@@ -328,31 +325,32 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
             return null;
         }
         Account account = accountRepository.getAccountById(id);
-        String pin;
-        if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine >= 1)||(qualifiedLine >= 2)){
-            if ((qualifiedLine >= 3 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)||(qualifiedLine >= 4)){
-                if ((qualifiedLine >= 5 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)||(qualifiedLine >= 6)){
-                    if ((qualifiedLine >= 7 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)||(qualifiedLine >= 8)){
-                        account.setPin(PinPosition.GOLD_DIAMOND);
-                        pin = PinPosition.GOLD_DIAMOND;
-                    }else {
-                        account.setPin(PinPosition.DIAMOND);
-                        pin = PinPosition.DIAMOND;
-                    }
-                }else {
-                    account.setPin(PinPosition.EMERALD);
-                    pin = PinPosition.EMERALD;
-                }
-            }else {
-                account.setPin(PinPosition.RUBY);
-                pin = PinPosition.RUBY;
-            }
-        }else {
-            account.setPin(PinPosition.QUALIFIED_FIVE_STAR);
-            pin = PinPosition.QUALIFIED_FIVE_STAR;
+        if ((qualifiedLine >= 8) || (qualifiedLine >= 7 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
+            account.setPin(PinPosition.GOLD_DIAMOND);
+            accountRepository.saveAndFlush(account);
+            return PinPosition.GOLD_DIAMOND;
         }
-        accountRepository.saveAndFlush(account);
-        return pin;
+        if ((qualifiedLine >= 6) || (qualifiedLine >= 5 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
+            account.setPin(PinPosition.DIAMOND);
+            accountRepository.saveAndFlush(account);
+            return PinPosition.DIAMOND;
+        }
+        if ((qualifiedLine >= 4) || (qualifiedLine >= 3 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
+            account.setPin(PinPosition.EMERALD);
+            accountRepository.saveAndFlush(account);
+            return PinPosition.EMERALD;
+        }
+        if ((qualifiedLine >= 2) || (qualifiedLine >= 1 && passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS)){
+            account.setPin(PinPosition.RUBY);
+            accountRepository.saveAndFlush(account);
+            return PinPosition.RUBY;
+        }
+        if (passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS){
+            account.setPin(PinPosition.QUALIFIED_FIVE_STAR);
+            accountRepository.saveAndFlush(account);
+            return PinPosition.QUALIFIED_FIVE_STAR;
+        }
+        return null;
     }
 
 	private List<PassUpGpv> SortFiveStarIntegral(List<PassUpGpv> passUpGpvs){
