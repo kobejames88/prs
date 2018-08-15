@@ -134,6 +134,20 @@
                 templateUrl: 'js/interface-qualifiedfivestarnet-node/list/qualifiedfivestarnettreenode.html',
                 controllerAs: 'vm'
             })
+
+            .when('/interface-golddiamondnet-node', {
+                controller: 'InterfaceGoldDiamondNetTreeNode',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-golddiamondnet-node/interface-golddiamondnet-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-golddiamondnet-node/list', {
+                controller: 'InterfaceGoldDiamondNetTreeNode',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-golddiamondnet-node/list/golddiamondnettreenode.html',
+                controllerAs: 'vm'
+            })
             
             .when('/interface-activenet-node', {
 	            controller: 'InterfaceActiveNetNodeController',

@@ -19,6 +19,16 @@ public class GoldDiamondNetTreeNode extends TreeNode {
     @Column(columnDefinition="float default 0.00")
     private Float passUpOpv;
 
+    private String levelLine;
+
+    public String getLevelLine() {
+        return levelLine;
+    }
+
+    public void setLevelLine(String levelLine) {
+        this.levelLine = levelLine;
+    }
+
     public Float getPassUpOpv() {
         return passUpOpv;
     }
