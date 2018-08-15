@@ -90,10 +90,15 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
             //surplus opv reward need pass up;will calculate in DistributorDifferentialBonus
             Float surplusReward = surplus * 0.12F;
             DistributorBonus uplink = distributorBonusRepository.findById(distributorBonus.getUplinkId()).get();
-            while(uplink!=null&&PinPosition.NEW_FIVE_STAR.equals(uplink.getData().getPin())){
+
+            DistributorBonus uplinkLM = distributorBonusRepository.getAccountByAccountNum(
+                    DateUtils.getLastMonthSnapshotDate(uplink.getSnapshotDate()),
+                    uplink.getData().getAccountNum());
+
+            while(uplink!=null&&uplinkLM!=null&&!PinPosition.MEMBER.equals(uplinkLM.getPin())&&PinPosition.QUALIFIED_FIVE_STAR.equals(uplink.getData().getPin())){
                 uplink = distributorBonusRepository.findById(uplink.getUplinkId()).get();
             }
-            if(uplink!=null){
+            if(uplink!=null&&uplinkLM!=null){
                 uplink.setTemporaryReward(surplusReward);
             }
         }
@@ -101,6 +106,9 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
             Float reward = distributorBonus.getGpv() * (bonusRate.getBonusRate() - 0.12F);
             distributorBonus.setReward(reward);
         }
+        //算直销员级差时需要
+        Float temporaryBonus = distributorBonus.getGpv() * (bonusRate.getBonusRate());
+        distributorBonus.setTemporaryBonus(temporaryBonus);
     }
 
 }

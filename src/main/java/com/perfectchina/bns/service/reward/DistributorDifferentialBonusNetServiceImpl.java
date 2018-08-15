@@ -81,12 +81,13 @@ public class DistributorDifferentialBonusNetServiceImpl implements DistributorDi
     private void calculateReward(DistributorDifferentialBonus distributorDifferentialBonus,DistributorBonus distributorBonus) {
         if(distributorBonus.getChildNodes()!=null&&distributorBonus.getChildNodes().size()>0){
             Float childReward = 0F;
-            for(TreeNode childNode : distributorBonus.getChildNodes()){
-                DistributorBonus child = (DistributorBonus)childNode;
+
+            for(DistributorBonus childNode :  distributorBonusRepository.getChildNodesByUpid(distributorBonus.getId())){
+                DistributorBonus child = childNode;
                 childReward += child.getOpv()*(distributorDifferentialBonusRateRepository.findBonusRateByOpvAndDateAsc(child.getOpv(),new Date()).getBonusRate());
             }
             Float reward = distributorDifferentialBonus.getOpv()*(distributorDifferentialBonusRateRepository.findBonusRateByOpvAndDateAsc(distributorDifferentialBonus.getOpv(),new Date()).getBonusRate());
-            reward = reward - childReward + distributorBonus.getTemporaryReward() -distributorBonus.getReward();
+            reward = reward - childReward + distributorBonus.getTemporaryReward() -distributorBonus.getTemporaryBonus();
             distributorDifferentialBonus.setReward(reward);
         }
         else{

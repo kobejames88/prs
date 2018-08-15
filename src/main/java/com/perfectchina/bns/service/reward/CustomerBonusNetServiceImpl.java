@@ -94,7 +94,7 @@ public class CustomerBonusNetServiceImpl  implements  CustomerBonusNetService{
                         amountTotal += opv * customerBonusRate.getBonusRate();
                         float reward =  amountTotal;
                        // List<TreeNode> childNodes = customerBonusNet.getChildNodes();
-                        List<TreeNode> childNodes = customerBonusNetRepository.getChildNodesByUpid(customerBonusNet.getId());
+                        List<CustomerBonusNet> childNodes = customerBonusNetRepository.getChildNodesByUpid(customerBonusNet.getId());
                         //reduce all child.amountTotal
                         for(TreeNode treeNode : childNodes){
                             reward = reward-((CustomerBonusNet)treeNode).getAmountTotal();

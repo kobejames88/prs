@@ -74,6 +74,11 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
      */
     private void calculateRubyReward(LeaderBonus leaderBonus,QualifiedFiveStarNetTreeNode fiveStar) {
         RubyBonusRate rubyBonusRate = rubyRateRepository.findBonusRate(new Date()).get(0);
+        //*节点
+        if(leaderBonus.getAsteriskNodePoints()!=null){
+            Float asteriskReward = leaderBonus.getAsteriskNodePoints()*rubyBonusRate.getFirstRate();
+            leaderBonus.setRubyReward(leaderBonus.getRubyReward()+asteriskReward);
+        }
         //先算第一代
         for(TreeNode first : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(fiveStar.getId())){
             QualifiedFiveStarNetTreeNode firstChild = (QualifiedFiveStarNetTreeNode)first;

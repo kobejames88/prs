@@ -137,7 +137,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				//calculate OPV
 				opvNetTreeNode.setOpv(opvNetTreeNode.getPpv());
 				//List<TreeNode> childNodes = opvNetTreeNode.getChildNodes();
-				List<TreeNode> childNodes = opvTreeNodeRepository.getChildNodesByUpid(opvNetTreeNode.getId());
+				List<OpvNetTreeNode> childNodes = opvTreeNodeRepository.getChildNodesByUpid(opvNetTreeNode.getId());
 				for (TreeNode treeNode : childNodes) {
 					OpvNetTreeNode opvChildNode = (OpvNetTreeNode) treeNode;
 					Float opv = opvNetTreeNode.getOpv();

@@ -191,6 +191,20 @@
                 controllerAs: 'vm'
             })
 
+            .when('/interface-rubybonus-node', {
+                controller: 'InterfaceRubyBonusNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-rubybonus-node/interface-rubybonus-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-rubybonus-node/list', {
+                controller: 'InterfaceRubyBonusNetNodeController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-rubybonus-node/list/rubybonus.html',
+                controllerAs: 'vm'
+            })
+
             .otherwise({ redirectTo: '/login' });
                 
     }

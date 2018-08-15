@@ -27,6 +27,9 @@ public class DistributorBonus extends TreeNode {
     // reward = gpv * (rate - 12%)
     private float reward;
 
+    //temporary = gpv * rate 为计直销员级差准备
+    private float temporaryBonus;
+
     // new 5star pass up
     private float temporaryReward;
 
@@ -129,6 +132,14 @@ public class DistributorBonus extends TreeNode {
 
     public void setPin(String pin) {
         this.pin = pin;
+    }
+
+    public float getTemporaryBonus() {
+        return temporaryBonus;
+    }
+
+    public void setTemporaryBonus(float temporary) {
+        this.temporaryBonus = temporary;
     }
 
     @Override

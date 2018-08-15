@@ -125,7 +125,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 				}else {
 					// Filter this element
                     // Gets the direct subordinate of this element
-					List<TreeNode> childNodes = passUpGpvNetTreeNodeRepository.getChildNodesByUpid(id);
+					List<PassUpGpvNetTreeNode> childNodes = passUpGpvNetTreeNodeRepository.getChildNodesByUpid(id);
 
                     // The direct subordinate ID of this element and the higher level ID are placed in map
                     if (childNodes.size()>0){
@@ -187,7 +187,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 Float passUpGpv = qualifiedFiveStarNetTreeNode.getPassUpGpv();
                 int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
                 long id = qualifiedFiveStarNetTreeNode.getId();
-                List<TreeNode> childs = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
+                List<QualifiedFiveStarNetTreeNode> childs = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
                 if (childs.size()>0){
                     qualifiedFiveStarNetTreeNode.setHasChild(true);
                 }else {

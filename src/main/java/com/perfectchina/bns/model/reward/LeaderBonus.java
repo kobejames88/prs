@@ -38,6 +38,7 @@ public class LeaderBonus extends TreeNode{
 
     private Boolean hasAsteriskNode;
 
+    @Column(columnDefinition="float default 0")
     private Float asteriskNodePoints;
 
     private String levelLine;
