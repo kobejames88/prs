@@ -28,8 +28,10 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 
 	@Autowired
 	private GoldDiamondNetTreeNodeRepository goldDiamondNetTreeNodeRepository;
+
 	@Autowired
 	private QualifiedFiveStarNetTreeNodeRepository qualifiedFiveStarNetTreeNodeRepository;
+
 	@Autowired
     private OpvNetTreeNodeRepository opvNetTreeNodeRepository;
 
@@ -81,7 +83,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	}
 
     public int getMaxTreeLevel(String snapShotDate) {
-        int maxLevelNum = goldDiamondNetTreeNodeRepository.getMaxLevelNum(snapShotDate);
+        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
         return maxLevelNum;
     }
 
@@ -166,7 +168,6 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
     }
 
 	private void copyNetTree(QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,GoldDiamondNetTreeNode goldDiamondNetTreeNode){
-	    goldDiamondNetTreeNode.setHasChild(qualifiedFiveStarNetTreeNode.getHasChild());
         goldDiamondNetTreeNode.setSnapshotDate(qualifiedFiveStarNetTreeNode.getSnapshotDate());
         goldDiamondNetTreeNode.setData(qualifiedFiveStarNetTreeNode.getData());
 		goldDiamondNetTreeNodeRepository.saveAndFlush(goldDiamondNetTreeNode);
