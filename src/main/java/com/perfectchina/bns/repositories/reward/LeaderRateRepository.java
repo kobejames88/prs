@@ -1,6 +1,6 @@
 package com.perfectchina.bns.repositories.reward;
 
-import com.perfectchina.bns.model.reward.RubyBonusRate;
+import com.perfectchina.bns.model.reward.LeaderBonusRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,11 +15,11 @@ import java.util.List;
  * @Desc:
  */
 @Repository
-public interface RubyRateRepository extends JpaRepository<RubyBonusRate,Long> {
+public interface LeaderRateRepository extends JpaRepository<LeaderBonusRate,Long> {
 
     //find bonus rate by checkAsAtDate
-    @Query("SELECT br FROM RubyBonusRate br WHERE  ( :checkAsAtDate between br.effectiveFrom and br.effectiveTo )")
-    List<RubyBonusRate> findBonusRate(
+    @Query("SELECT br FROM LeaderBonusRate br WHERE  ( :checkAsAtDate between br.effectiveFrom and br.effectiveTo )")
+    List<LeaderBonusRate> findBonusRate(
             @Param("checkAsAtDate") Date checkAsAtDate);
 
 }

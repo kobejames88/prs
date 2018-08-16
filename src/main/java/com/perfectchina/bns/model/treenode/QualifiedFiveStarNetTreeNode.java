@@ -35,7 +35,7 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     private Boolean hasAsteriskNode;
 
     @Column(columnDefinition="float default 0.00")
-    private Float asteriskNodePoints;
+    private float asteriskNodePoints;
 
     private String levelLine;
 

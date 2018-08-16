@@ -6,21 +6,35 @@ import java.util.Date;
 /**
  * @Author: chenhuahai
  * @Date: 2018/8/14
- * @Desc: 红宝石奖 计算比率
+ * @Desc: 领导奖 计算比率
  */
 @Entity
-@NamedQuery(name="RubyBonusRate.findAll", query="SELECT b FROM RubyBonusRate b")
-public class RubyBonusRate {
+@NamedQuery(name="LeaderBonusRate.findAll", query="SELECT b FROM LeaderBonusRate b")
+public class LeaderBonusRate {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
+    //红宝石第一代比率
     @Column(columnDefinition = "Float default 0.11")
-    private  float firstRate;
+    private  float rubyFirstRate;
 
+    //红宝石第二代比率
     @Column(columnDefinition = "Float default 0.02")
-    private  float secondRate;
+    private  float rubySecondRate;
+
+    //翡翠第二+代比率
+    @Column(columnDefinition = "Float default 0.07")
+    private float emeraldRate;
+
+    //钻石第二+代比率
+    @Column(columnDefinition = "Float default 0.03")
+    private  float diamondRate;
+
+    //金钻第二+代比率
+    @Column(columnDefinition = "Float default 0.01")
+    private float goldenDiamondgRate;
 
     private String createdBy;
 
@@ -47,21 +61,6 @@ public class RubyBonusRate {
         this.id = id;
     }
 
-    public float getFirstRate() {
-        return firstRate;
-    }
-
-    public void setFirstRate(float firstRate) {
-        this.firstRate = firstRate;
-    }
-
-    public float getSecondRate() {
-        return secondRate;
-    }
-
-    public void setSecondRate(float secondRate) {
-        this.secondRate = secondRate;
-    }
 
     public String getCreatedBy() {
         return createdBy;
@@ -109,5 +108,45 @@ public class RubyBonusRate {
 
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public float getRubyFirstRate() {
+        return rubyFirstRate;
+    }
+
+    public void setRubyFirstRate(float rubyFirstRate) {
+        this.rubyFirstRate = rubyFirstRate;
+    }
+
+    public float getRubySecondRate() {
+        return rubySecondRate;
+    }
+
+    public void setRubySecondRate(float rubySecondRate) {
+        this.rubySecondRate = rubySecondRate;
+    }
+
+    public float getEmeraldRate() {
+        return emeraldRate;
+    }
+
+    public void setEmeraldRate(float emeraldRate) {
+        this.emeraldRate = emeraldRate;
+    }
+
+    public float getDiamondRate() {
+        return diamondRate;
+    }
+
+    public void setDiamondRate(float diamondRate) {
+        this.diamondRate = diamondRate;
+    }
+
+    public float getGoldenDiamondgRate() {
+        return goldenDiamondgRate;
+    }
+
+    public void setGoldenDiamondgRate(float goldenDiamondgRate) {
+        this.goldenDiamondgRate = goldenDiamondgRate;
     }
 }

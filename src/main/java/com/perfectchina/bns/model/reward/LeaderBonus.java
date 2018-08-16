@@ -17,6 +17,11 @@ public class LeaderBonus extends TreeNode{
 
     private float rubyReward;
 
+    private float emerald;
+
+    private float diamondReward;
+
+    private  float goldDiamondReward;
 
     private Float passUpGpv;
 
@@ -195,5 +200,61 @@ public class LeaderBonus extends TreeNode{
 
     public void setRubyReward(float rubyReward) {
         this.rubyReward = rubyReward;
+    }
+
+    public float getEmerald() {
+        return emerald;
+    }
+
+    public void setEmerald(float emerald) {
+        this.emerald = emerald;
+    }
+
+    public float getDiamondReward() {
+        return diamondReward;
+    }
+
+    public void setDiamondReward(float diamondReward) {
+        this.diamondReward = diamondReward;
+    }
+
+    public boolean isHasAsteriskNode() {
+        return hasAsteriskNode;
+    }
+
+    public void setHasAsteriskNode(boolean hasAsteriskNode) {
+        this.hasAsteriskNode = hasAsteriskNode;
+    }
+
+    public float getGoldDiamondReward() {
+        return goldDiamondReward;
+    }
+
+    public void setGoldDiamondReward(float goldDiamondReward) {
+        this.goldDiamondReward = goldDiamondReward;
+    }
+
+    @Override
+    public String toString() {
+        return "LeaderBonus{" +
+                "rubyReward=" + rubyReward +
+                ", emerald=" + emerald +
+                ", passUpGpv=" + passUpGpv +
+                ", qualifiedLine=" + qualifiedLine +
+                ", gpv=" + gpv +
+                ", fiveStarIntegral=" + fiveStarIntegral +
+                ", borrowPoints=" + borrowPoints +
+                ", borrowedPoints=" + borrowedPoints +
+                ", borrowTo=" + borrowTo +
+                ", hasAsteriskNode=" + hasAsteriskNode +
+                ", asteriskNodePoints=" + asteriskNodePoints +
+                ", levelLine='" + levelLine + '\'' +
+                ", pin='" + pin + '\'' +
+                ", rewardDate=" + rewardDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", creationDate=" + creationDate +
+                ", lastUpdatedBy='" + lastUpdatedBy + '\'' +
+                ", lastUpdatedDate=" + lastUpdatedDate +
+                '}';
     }
 }
