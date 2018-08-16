@@ -108,13 +108,13 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
             // 如果有 x>=7 个直接下级，尝试合并
             Float mergingPoints = calculateMergingPoints(7, count, childNodes);
             if (mergingPoints >= 1000000F){
-
+                // 4重奖励，双金钻
             }
             if (mergingPoints >= 500000F){
-
+                // 3重奖励，双金钻
             }
             if (mergingPoints >= 200000F){
-
+                // 2重奖励，双金钻
             }
             if (mergingPoints < 200000F){
                 flag = true;
@@ -123,7 +123,12 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
         if (flag || (count >= 4 && count < 7)){
             // 如果有 x>=7 个直接下级但是合并失败 或 4<= x <7, 尝试合并
-
+            Float mergingPoints = calculateMergingPoints(4, count, childNodes);
+            // 4条100万金钻线，且本人OPV达1000万
+            // todo 本人OPV是不是指余留opv
+            if (mergingPoints >= 1000000F ){
+                // 1重奖励，双金钻
+            }
         }
 
         Long map_uplinkId = relation.get(id);

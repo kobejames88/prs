@@ -95,13 +95,10 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	protected void process(TreeNode node) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
-		// Copy the node of the original network map plus the uplinkId to GpvNetTreeNode
 		// 当前元素
 		QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode = (QualifiedFiveStarNetTreeNode) node;
 		// 待装载元素
 		GoldDiamondNetTreeNode goldDiamondNetTreeNode = new GoldDiamondNetTreeNode();
-		//the uplinkId is SimpleNet
-//		long uplinkId = qualifiedFiveStarNetTreeNode.getUplinkId();
         String pin = qualifiedFiveStarNetTreeNode.getPin();
         Long id = qualifiedFiveStarNetTreeNode.getId();
         Long map_uplinkId = relation.get(id);
