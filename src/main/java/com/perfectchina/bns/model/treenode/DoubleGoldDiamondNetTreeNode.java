@@ -19,6 +19,26 @@ public class DoubleGoldDiamondNetTreeNode extends TreeNode {
 
     private String levelLine;
 
+    private String pin;
+
+    private String reward;
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public String getReward() {
+        return reward;
+    }
+
+    public void setReward(String reward) {
+        this.reward = reward;
+    }
+
     public String getLevelLine() {
         return levelLine;
     }
