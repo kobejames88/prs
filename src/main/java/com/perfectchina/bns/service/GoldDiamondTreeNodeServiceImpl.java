@@ -1,14 +1,8 @@
 package com.perfectchina.bns.service;
 
 import com.perfectchina.bns.model.PassUpGpv;
-import com.perfectchina.bns.model.treenode.GoldDiamondNetTreeNode;
-import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
-import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
-import com.perfectchina.bns.model.treenode.TreeNode;
-import com.perfectchina.bns.repositories.GoldDiamondNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.QualifiedFiveStarNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.TreeNodeRepository;
+import com.perfectchina.bns.model.treenode.*;
+import com.perfectchina.bns.repositories.*;
 import com.perfectchina.bns.service.pin.PinPosition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,6 +28,9 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 
 	@Autowired
     private OpvNetTreeNodeRepository opvNetTreeNodeRepository;
+
+	@Autowired
+	private SimpleNetTreeNodeRepository simpleNetTreeNodeRepository;
 
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -106,6 +103,8 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
         String accountNum = qualifiedFiveStarNetTreeNode.getData().getAccountNum();
         String snapshotDate = sdf.format(getPreviousDateEndTime());
         OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
+        SimpleNetTreeNode simpleNetTreeNode = simpleNetTreeNodeRepository.findByAccountNum(snapshotDate, accountNum);
+
 
         if (map_uplinkId != null){
             QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = qualifiedFiveStarNetTreeNodeRepository.getOne(map_uplinkId);
@@ -118,7 +117,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
             if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
                 goldDiamondNetTreeNode.setUplinkId(goldDiamondUplink.getId());
                 goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
-                goldDiamondNetTreeNode.setPassUpOpv(opvNetTreeNode.getOpv());
+                goldDiamondNetTreeNode.setPassUpOpv(simpleNetTreeNode.getPpv());
                 // 获取金钻的所有直接下级
                 List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
                 for (TreeNode childNode : childNodes){
@@ -128,7 +127,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                 setuplinkLevelLineAndLevel(uplinkLevelLine,goldDiamondNetTreeNode,qualifiedFiveStarUplinkId);
                 copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
             }else {
-                goldDiamondUplink.setPassUpOpv(goldDiamondUplink.getPassUpOpv()+opvNetTreeNode.getOpv());
+                goldDiamondUplink.setPassUpOpv(goldDiamondUplink.getPassUpOpv()+simpleNetTreeNode.getPpv());
                 // 获取当前元素的所有直接下级
                 List<TreeNode> childNodes = qualifiedFiveStarNetTreeNode.getChildNodes();
                 for (TreeNode childNode : childNodes){
@@ -142,7 +141,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
             if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
                 goldDiamondNetTreeNode.setUplinkId(0);
                 goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
-                goldDiamondNetTreeNode.setPassUpOpv(opvNetTreeNode.getOpv());
+                goldDiamondNetTreeNode.setPassUpOpv(simpleNetTreeNode.getPpv());
                 goldDiamondNetTreeNode.setLevelLine(String.valueOf(0));
                 goldDiamondNetTreeNode.setLevelNum(0);
                 // 获取金钻的所有直接下级

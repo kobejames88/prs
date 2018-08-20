@@ -105,27 +105,29 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         // 获取当前元素的所有直接下级
         List<GoldDiamondNetTreeNode> childNodes = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
         int count = childNodes.size();
-        Boolean flag = false;
-        Boolean isDoubleGoldDiamond = false;
-        if (count >= 7){
-            // 如果有 x>=7 个直接下级，尝试合并
-            Float mergingPoints = calculateMergingPoints(7, count, childNodes);
-            isDoubleGoldDiamond = judgeAndSaveReward(7, mergingPoints, goldDiamondNetTreeNode, doubleGoldDiamondNetTreeNode, null,id);
-            if (mergingPoints < 200000F){
-                flag = true;
+        if (count !=0 ){
+            Boolean flag = false;
+            Boolean isDoubleGoldDiamond = false;
+            if (count >= 7){
+                // 如果有 x>=7 个直接下级，尝试合并
+                Float mergingPoints = calculateMergingPoints(7, count, childNodes);
+                isDoubleGoldDiamond = judgeAndSaveReward(7, mergingPoints, goldDiamondNetTreeNode, doubleGoldDiamondNetTreeNode, null,id);
+                if (mergingPoints < 200000F){
+                    flag = true;
+                }
             }
-        }
-        if (flag || (count >= 4 && count < 7)){
-            // 如果有 x>=7 个直接下级但是合并失败 或 4<= x <7, 尝试合并
-            Float mergingPoints = calculateMergingPoints(4, count, childNodes);
-            isDoubleGoldDiamond = judgeAndSaveReward(4,mergingPoints,goldDiamondNetTreeNode,doubleGoldDiamondNetTreeNode,opvNetTreeNode,id);
-        }
-        // 如果不是双金钻
-        for (GoldDiamondNetTreeNode childNode : childNodes){
-            if (!isDoubleGoldDiamond){
-                relation.put(childNode.getId(),uplinkId);
-            }else {
-                relation.put(childNode.getId(), id);
+            if (flag || (count >= 4 && count < 7)){
+                // 如果有 x>=7 个直接下级但是合并失败 或 4<= x <7, 尝试合并
+                Float mergingPoints = calculateMergingPoints(4, count, childNodes);
+                isDoubleGoldDiamond = judgeAndSaveReward(4,mergingPoints,goldDiamondNetTreeNode,doubleGoldDiamondNetTreeNode,opvNetTreeNode,id);
+            }
+            // 如果不是双金钻
+            for (GoldDiamondNetTreeNode childNode : childNodes){
+                if (!isDoubleGoldDiamond){
+                    relation.put(childNode.getId(), uplinkId);
+                }else {
+                    relation.put(childNode.getId(), id);
+                }
             }
         }
         relation.remove(id);
@@ -222,10 +224,9 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
 	@Override
 	/**
-	 * Update the entire tree's pass-up-gpv
+	 * Update the entire tree's DoubleGoldDiamond
 	 */
 	public void updateWholeTreeDoubleGoldDiamond(String snapshotDate) {
-		// Get the level of the original tree
 		int treeLevel = getMaxTreeLevel(snapshotDate);
 		if (treeLevel < 0)
 			return;
