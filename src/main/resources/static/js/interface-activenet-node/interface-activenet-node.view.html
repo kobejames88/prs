@@ -1,13 +1,15 @@
 <h1>InterfaceActiveNetTreeNode</h1>
 
 
-<button onclick="updata()">updata activeNet</button>
+<button onclick="createNet('201807')">create activeNet 201807</button></br>
+<button onclick="createNet('201808')">create activeNet 201808</button></br>
+<button onclick="createNet('201809')">create activeNet 201809</button></br>
 <a href="#!/interface-activenet-node/list"><button >list activeNet</button></a>
 
  <script type="text/javascript">
- function updata(){
+ function createNet(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/activeNet/201807",
+         url:"/bns/api/activeNet/" + snahshotDate ,
          type:"put",
          data:"",
          async:true, 
