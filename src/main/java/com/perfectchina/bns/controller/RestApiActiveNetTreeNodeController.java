@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,10 +38,13 @@ public class RestApiActiveNetTreeNodeController {
 	
 
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
-	@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
-	public ResponseEntity<List<TreeNode>> listAccounts() {
+	//@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
+	//public ResponseEntity<List<TreeNode>> listAccounts() {
+	@RequestMapping(value = "/activeNet/listAccounts/{snapshotDate}", method = RequestMethod.GET)
+	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 		// Retrieve tree from node ; find activeTreeRootNode by last month snapshotDate
-		TreeNode rootNode = activeNodeService.getRootNode( DateUtils.getLastMonthSnapshotDate() );
+		logger.info("Fetching User with snapshotDate {}", snapshotDate);
+		TreeNode rootNode = activeNodeService.getRootNode( snapshotDate );
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
@@ -62,9 +66,10 @@ public class RestApiActiveNetTreeNodeController {
 	 * Create a ActiveNetTree base on simpleNetTree
 	 * @return
 	 */
-	@RequestMapping(value = "/activeNet/", method = RequestMethod.PUT)
-	public ResponseEntity<?> createFiveStarNet() {
-		String lastMonthSnapShotDate = DateUtils.getLastMonthSnapshotDate();
+	@RequestMapping(value = "/activeNet/{snapshotDate}", method = RequestMethod.PUT)
+	public ResponseEntity<?> createFiveStarNet(@PathVariable("snapshotDate") String snapshotDate) {
+		//String lastMonthSnapShotDate = DateUtils.getLastMonthSnapshotDate();
+		String lastMonthSnapShotDate = snapshotDate;
 		activeNodeService.createActiveNetTree(lastMonthSnapShotDate);
 		HttpHeaders headers = new HttpHeaders();
 		try {
