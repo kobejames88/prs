@@ -67,13 +67,20 @@ public class RestApiInterfaceAccountController {
 	        String jsonStr = json.toString();
 	        List<InterfaceAccountInfo> interfaceAccounts =  (List<InterfaceAccountInfo>)mapper.readValue(jsonStr, javaType); 
 	        List<String> dupAccountNum = new ArrayList<String>();
+	        List<InterfaceAccountInfo> noDupAccounts = new ArrayList<>();
 			for ( InterfaceAccountInfo interfaceAccount : interfaceAccounts ){
 				if ( simpleNetTreeNodeService.isNodeDataExist(interfaceAccount.getAccountNum() )) {
 					dupAccountNum.add( interfaceAccount.getAccountNum() );
 				} else {
 					// set the status of the account
-					interfaceAccount.setStatus( InterfaceInfoStatus.PENDING );				
+					interfaceAccount.setStatus( InterfaceInfoStatus.PENDING );
+					noDupAccounts.add(interfaceAccount);
 				}
+			}
+			//根据原始树，去掉重复的节点
+			if(noDupAccounts.size()>0){
+				interfaceAccountService.storeInterfaceAccountInfo(noDupAccounts);
+				return new ResponseEntity<>(HttpStatus.OK);
 			}
 			if (dupAccountNum.size() > 0 ) {
 				logger.error("Unable to create. A InterfaceAccountInfo with interfaceAccounts {} already exist", 
@@ -82,14 +89,15 @@ public class RestApiInterfaceAccountController {
 				return new ResponseEntity(new CustomErrorType("Unable to create. A InterfaceAccountInfo with account numbers " + 
 						dupAccountNum.toString() + " already exist."),HttpStatus.CONFLICT);
 			}
-			// No duplicate, can save
-			interfaceAccountService.storeInterfaceAccountInfo(interfaceAccounts);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-    
-	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
+	/**
+	 * 列出在interfaceAccount中状态为pending的account
+	 * @return
+	 */
+	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 	@RequestMapping(value = "/interfaceAccount/listPendingAccounts", method = RequestMethod.GET)
 	public ResponseEntity<List<InterfaceAccountInfo>> listAllInterfaceAccountInfos() {
 		List<InterfaceAccountInfo> interfaceAccounts = interfaceAccountService.retrievePendingInterfaceAccountInfo();
@@ -222,6 +230,7 @@ public class RestApiInterfaceAccountController {
 	}
 	
 	/**
+	 * 保存并添加到account中并添加到原始树
 	 * confirm those newly added interface accounts and import to core bonus system
 	 * and convert InterfaceAccountInfo To SimpleNetTreeNode
 	 * @param ucBuilder

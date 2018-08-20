@@ -8,6 +8,7 @@ import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
+import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.reward.DistributorBonusRateRepository;
 import com.perfectchina.bns.repositories.reward.DistributorBonusRepository;
 import com.perfectchina.bns.service.pin.PinPosition;
@@ -34,6 +35,9 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
 
     @Autowired
     private FiveStarNetTreeNodeRepository fiveStarNetTreeNodeRepository;
+
+    @Autowired
+    private OpvNetTreeNodeRepository opvNetTreeNodeRepository;
 
     /**
      * create rewardNetTree base fiveStarNetTree
@@ -83,30 +87,44 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
     private void calculateReward(DistributorBonus distributorBonus) {
         DistributorBonusRate bonusRate = distributorBonusRateRepository.findBonusRateByGpvAndDate(distributorBonus.getGpv(), new Date());
         //if newFiveStar
-        if(PinPosition.NEW_FIVE_STAR.equals(distributorBonus.getPin())){
+        if(PinPosition.NEW_FIVE_STAR.equals(distributorBonus.getPin())&&distributorBonus.getAopvLastMonth()<18000){
             Float surplus = 18000 - distributorBonus.getAopvLastMonth();
             Float reward = (distributorBonus.getGpv() - surplus)* (bonusRate.getBonusRate() - 0.12F);
             distributorBonus.setReward(reward);
             //surplus opv reward need pass up;will calculate in DistributorDifferentialBonus
             Float surplusReward = surplus * 0.12F;
-            DistributorBonus uplink = distributorBonusRepository.findById(distributorBonus.getUplinkId()).get();
 
+            DistributorBonus uplink = distributorBonusRepository.findById(distributorBonus.getUplinkId()).get();
             DistributorBonus uplinkLM = distributorBonusRepository.getAccountByAccountNum(
                     DateUtils.getLastMonthSnapshotDate(uplink.getSnapshotDate()),
                     uplink.getData().getAccountNum());
 
-            while(uplink!=null&&uplinkLM!=null&&!PinPosition.MEMBER.equals(uplinkLM.getPin())&&PinPosition.QUALIFIED_FIVE_STAR.equals(uplink.getData().getPin())){
-                uplink = distributorBonusRepository.findById(uplink.getUplinkId()).get();
+            while(uplink!=null){
+                if(uplinkLM!=null){
+                    if(!(PinPosition.MEMBER.equals(uplinkLM.getPin())//上月不是五星
+                            ||(PinPosition.MEMBER.equals(uplink.getData().getPin())//当月是合格五星以下
+                            ||PinPosition.NEW_FIVE_STAR.equals(uplink.getData().getPin())
+                            ||PinPosition.FIVE_STAR.equals(uplink.getData().getPin())) //当月是合格五星以下
+                    )){
+                        break;
+                    }
+                }
+                uplink = distributorBonusRepository.findById(uplink.getUplinkId()).get();//当月
+                uplinkLM =  distributorBonusRepository.getAccountByAccountNum(//上月
+                        DateUtils.getLastMonthSnapshotDate(uplink.getSnapshotDate()),
+                        uplink.getData().getAccountNum());
             }
+
+            //算直销员级差是需要加的前18000所得
             if(uplink!=null&&uplinkLM!=null){
-                uplink.setTemporaryReward(surplusReward);
+                uplink.setTemporaryReward(uplink.getTemporaryReward()+surplusReward);
             }
         }
         else {// if no newFiveStar
             Float reward = distributorBonus.getGpv() * (bonusRate.getBonusRate() - 0.12F);
             distributorBonus.setReward(reward);
         }
-        //算直销员级差时需要
+        //算直销员级差时需要减的直销员奖
         Float temporaryBonus = distributorBonus.getGpv() * (bonusRate.getBonusRate());
         distributorBonus.setTemporaryBonus(temporaryBonus);
     }

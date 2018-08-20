@@ -105,10 +105,10 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				DateUtils.getLastMonthSnapshotDate(activeNetTreeNode.getSnapshotDate()),
 				activeNetTreeNode.getData().getAccountNum());
 		
-		if(prevMonthNode==null){
+		if(prevMonthNode==null||PinPosition.MEMBER.equals(prevMonthNode.getPin())){
 			opvNetTreeNode.setPin(PinPosition.MEMBER);
 		}else{
-			opvNetTreeNode.setPin(prevMonthNode.getPin());
+			opvNetTreeNode.setPin(PinPosition.FIVE_STAR);
 		}
 		
 		Float aopvLastMonth = 0F;
@@ -124,6 +124,10 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		opvTreeNodeRepository.saveAndFlush(opvNetTreeNode);
 	}
 
+	/**
+	 * 更新opvNetTree 的信息并判断成为五星或推上五星
+	 * @param snapshotDate
+	 */
 	@Override
 	public void updateWholeTreeOPV(String snapshotDate) {
 		int treeLevel = getMaxTreeLevel( snapshotDate );

@@ -39,6 +39,12 @@ public class RestApiInterfaceSalesRecordController {
 	@Autowired
 	InterfaceSalesRecordService interfaceSalesRecordService;
 
+	/**
+	 * 把interfaceSalesRecord.json 文件上传
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("/interfaceSalesRecord/upload")
 	public ResponseEntity<?> singleFileUpload(@RequestParam MultipartFile file) throws Exception {
 		if (!file.isEmpty()) {
@@ -56,6 +62,10 @@ public class RestApiInterfaceSalesRecordController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	/**
+	 * 列出所有状态为pending的salesRecord
+	 * @return
+	 */
 	// -------------------Retrieve All InterfacelistPendingSalesRecordInfos---------------------------------------------
 	@RequestMapping(value = "/interfaceSalesRecord/listPendingSalesRecord", method = RequestMethod.GET)
 	public ResponseEntity<List<InterfaceSalesRecordInfo>> listAllInterfaceSalesRecordInfos() {
@@ -68,6 +78,11 @@ public class RestApiInterfaceSalesRecordController {
 		return new ResponseEntity<List<InterfaceSalesRecordInfo>>(SalesRecords, HttpStatus.OK);
 	}
 
+	/**
+	 * 改变interfaceSalesRecord 的状态，并保存到salesRecord
+	 * @param ucBuilder
+	 * @return
+	 */
 	// confirm those newly added interface sales record and import to core bonus system
 	@RequestMapping(value = "/interfaceSalesRecord/confirmBatch/", method = RequestMethod.POST)
 	public ResponseEntity<?> confirmBatchInterfaceAccountInfo(UriComponentsBuilder ucBuilder) {

@@ -39,12 +39,12 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
     @Override
     public void createRewardNet() {
         QualifiedFiveStarNetTreeNode fromNode = qualifiedFiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
-        Stack<TreeNode> stk = new Stack<>();
+        Stack<QualifiedFiveStarNetTreeNode> stk = new Stack<>();
         stk.push(fromNode);
         while (!stk.isEmpty()){
-            TreeNode top = stk.pop();
+            QualifiedFiveStarNetTreeNode top = stk.pop();
             for(TreeNode child : top.getChildNodes()){
-                stk.push(child);
+                stk.push((QualifiedFiveStarNetTreeNode)child);
             }
             LeaderBonus leaderBonus = new LeaderBonus();
             BeanUtils.copyProperties(top, leaderBonus);
