@@ -1,5 +1,6 @@
 package com.perfectchina.bns.service;
 
+import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.PassUpGpv;
 import com.perfectchina.bns.model.treenode.*;
 import com.perfectchina.bns.repositories.*;
@@ -29,6 +30,9 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
     @Autowired
     private OpvNetTreeNodeRepository opvNetTreeNodeRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -230,23 +234,37 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		int treeLevel = getMaxTreeLevel(snapshotDate);
 		if (treeLevel < 0)
 			return;
-		Map<Long,List<PassUpGpv>> downLines = new HashMap<>();
 		while (treeLevel >= 0) {
 			List<DoubleGoldDiamondNetTreeNode> thisTreeLevelTreeList = doubleGoldDiamondNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
-			// loop for the children to calculate OPV at the lowest level
+			// 从下往上循环获取每个节点
 			for (DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode : thisTreeLevelTreeList) {
-                long id = doubleGoldDiamondNetTreeNode.getId();
+			    long id = doubleGoldDiamondNetTreeNode.getId();
+                long accountId = doubleGoldDiamondNetTreeNode.getData().getId();
                 List<GoldDiamondNetTreeNode> childs = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
-                if (childs.size()>0){
+                int counnt = childs.size();
+                // 判断是否有子节点
+                if (counnt>0){
                     doubleGoldDiamondNetTreeNode.setHasChild(true);
                 }else {
                     doubleGoldDiamondNetTreeNode.setHasChild(false);
+                }
+                if (counnt >= 7){
+                    changePin(doubleGoldDiamondNetTreeNode,accountId,PinPosition.TRIPLE_GOLD_DIAMOND);
+                }else {
+                    changePin(doubleGoldDiamondNetTreeNode,accountId,PinPosition.DOUBLE_GOLD_DIAMOND);
                 }
                 doubleGoldDiamondNetTreeNodeRepository.saveAndFlush(doubleGoldDiamondNetTreeNode);
 			} // end for loop
 			treeLevel--;
 		}
 	}
+
+	private void changePin(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode, Long id, String pin){
+        doubleGoldDiamondNetTreeNode.setPin(pin);
+        Account account = accountRepository.getAccountById(id);
+        account.setPin(pin);
+        accountRepository.saveAndFlush(account);
+    }
 
 	public TreeNode getRootNode(String snapshotDate) {
 		TreeNode rootNode = doubleGoldDiamondNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );

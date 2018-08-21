@@ -62,5 +62,8 @@ public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T,
 	
 	@Query("SELECT a FROM #{#entityName} a WHERE a.uplinkId = :uplinkId order by a.id")
 	public List<T> getChildNodesByUpid(@Param("uplinkId")long uplinkId);
+
+	@Query("SELECT count(a) FROM #{#entityName} a WHERE a.uplinkId = :uplinkId")
+	public Integer findChildNodesNumberByUpid(@Param("uplinkId")long uplinkId);
 	
 }
