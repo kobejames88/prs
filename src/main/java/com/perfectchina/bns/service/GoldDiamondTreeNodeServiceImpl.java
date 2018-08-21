@@ -80,8 +80,8 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	}
 
     public int getMaxTreeLevel(String snapShotDate) {
-        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
-        return maxLevelNum;
+        Integer maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+        return maxLevelNum == null ? 0 : maxLevelNum;
     }
 
 	private Map<Long,Long> relation = new HashMap<>();

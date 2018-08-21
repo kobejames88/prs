@@ -155,8 +155,10 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     }
 
 	private void copyNetTree(PassUpGpvNetTreeNode passUpGpvNetTreeNode,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode){
-		qualifiedFiveStarNetTreeNode.setAsteriskNodePoints(passUpGpvNetTreeNode.getAsteriskNodePoints());
-		qualifiedFiveStarNetTreeNode.setHasAsteriskNode(passUpGpvNetTreeNode.getHasAsteriskNode());
+        Float asteriskNodePoints = passUpGpvNetTreeNode.getAsteriskNodePoints();
+        Boolean hasAsteriskNode = passUpGpvNetTreeNode.getHasAsteriskNode();
+        qualifiedFiveStarNetTreeNode.setAsteriskNodePoints(asteriskNodePoints == null ? 0F : asteriskNodePoints);
+		qualifiedFiveStarNetTreeNode.setHasAsteriskNode(hasAsteriskNode == null ? false : hasAsteriskNode);
         qualifiedFiveStarNetTreeNode.setPassUpGpv(passUpGpvNetTreeNode.getPassUpGpv());
         qualifiedFiveStarNetTreeNode.setGpv(passUpGpvNetTreeNode.getGpv());
 		qualifiedFiveStarNetTreeNode.setQualifiedLine(passUpGpvNetTreeNode.getQualifiedLine());

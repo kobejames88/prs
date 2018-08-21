@@ -176,11 +176,11 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
     private Float calculateMergingPoints(int line,int count,List<GoldDiamondNetTreeNode> childNodes){
         int avg = count/line;
         int mod = count%line;
-        Float[] every = new Float[line];
-        Float total = 0F;
+        float[] every = new float[line];
+        float total = 0F;
         for (int i=0;i<line;i++){
             int step = (i==line-1) ? avg+mod : avg;
-            for (int j=i*avg;j<step;j++){
+            for (int j=i*avg;j<(i*avg+step);j++){
                 every[i] += childNodes.get(j).getPassUpOpv();
             }
             total = (i==0) ? every[i] : every[i]+total;

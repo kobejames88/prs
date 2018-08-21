@@ -52,7 +52,7 @@ public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T,
 	public T getRootTreeNode(@Param("snapshotDate") String snapshotDate);
 
 	@Query("SELECT max(a.levelNum) FROM #{#entityName} a WHERE a.snapshotDate = :snapshotDate")
-	public int getMaxLevelNum(@Param("snapshotDate") String snapshotDate);
+	public Integer getMaxLevelNum(@Param("snapshotDate") String snapshotDate);
 
 	@Query("SELECT a FROM #{#entityName} a WHERE a.levelNum = 0 and a.snapshotDate = :snapshotDate order by a.id")
 	public T getRootTreeNodeOfMonth(@Param("snapshotDate") String snapshotDate);
