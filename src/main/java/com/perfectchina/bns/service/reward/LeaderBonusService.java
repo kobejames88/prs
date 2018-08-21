@@ -9,7 +9,7 @@ import com.perfectchina.bns.model.treenode.TreeNode;
  */
 
 public interface LeaderBonusService {
-    void createRewardNet();
+    void createRewardNet(String snapshotDate);
 
-    TreeNode getRootNode(String lastMonthSnapshotDate);
+    TreeNode getRootNode(String snapshotDate);
 }

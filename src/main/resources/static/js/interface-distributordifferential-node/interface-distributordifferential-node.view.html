@@ -1,13 +1,15 @@
 <h1>Interface distributordifferential net TreeNode</h1>
 
 
-<button onclick="updata()">updata distributordifferential</button>
+<button onclick="updata('201807')">updata distributordifferential 201807</button>
+<button onclick="updata('201808')">updata distributordifferential 201808</button>
+<button onclick="updata('201809')">updata distributordifferential 201809</button>
 <a href="#!/interface-distributordifferential-node/list"><button >list distributordifferential</button></a>
 
  <script type="text/javascript">
- function updata(){
+ function updata(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/reward/create/distributordifferential/bonusnet",
+         url:"/bns/api/reward/create/distributordifferential/bonusnet/"+snahshotDate,
          type:"get",
          data:"",
          async:true, 

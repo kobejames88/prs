@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,12 +37,11 @@ public class RestApiCustomerDifferentialRewardController {
      * create customer gradation reward net tree
      * @return
      */
-    @GetMapping(value = "/create/rewardnet")
-    public ResponseEntity<?> createRewardNet() {
+    @GetMapping(value = "/create/rewardnet/{snapshotDate}")
+    public ResponseEntity<?> createRewardNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-    	String lastMonthSnapShotDate = DateUtils.getLastMonthSnapshotDate();
-        customerBonusNetService.createRewardNet();
-        customerBonusNetService.calculateReward(lastMonthSnapShotDate);
+        customerBonusNetService.createRewardNet(snapshotDate);
+        customerBonusNetService.calculateReward(snapshotDate);
 
         logger.info("execute, finished calculate customer reward.");
 
@@ -52,9 +52,9 @@ public class RestApiCustomerDifferentialRewardController {
      * list all reward net tree information
      * @return
      */
-    @GetMapping(value = "/list/rewardnet")
-    public ResponseEntity<List<TreeNode>> listAccounts() {
-        TreeNode rootNode = customerBonusNetService.getRootNode(DateUtils.getLastMonthSnapshotDate()); // pass root node id to retrieve whole tree
+    @GetMapping(value = "/list/rewardnet/{snapshotDate}")
+    public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
+        TreeNode rootNode = customerBonusNetService.getRootNode(snapshotDate); // pass root node id to retrieve whole tree
         if ( rootNode == null ) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }

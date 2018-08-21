@@ -1,13 +1,15 @@
 <h1>Interface LeaderBonus net TreeNode</h1>
 
 
-<button onclick="update()">update LeaderBonus</button>
+<button onclick="update('201807')">update LeaderBonus 201807</button>
+<button onclick="update('201808')">update LeaderBonus 201808</button>
+<button onclick="update('201809')">update LeaderBonus 201809</button>
 <a href="#!/interface-rubybonus-node/list"><button >list LeaderBonus</button></a>
 
  <script type="text/javascript">
- function update(){
+ function update(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/reward/create/leader/bonus",
+         url:"/bns/api/reward/create/leader/bonus/"+snahshotDate,
          type:"get",
          data:"",
          async:true, 

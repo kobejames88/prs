@@ -11,7 +11,7 @@ import com.perfectchina.bns.service.TreeNodeService;
  */
 
 public interface CustomerBonusNetService  {
-    void createRewardNet();
+    void createRewardNet(String snapShotDate);
 
     void calculateReward(String snapShotDate);
     TreeNode getRootNode(String snapShotDate);

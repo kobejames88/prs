@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,10 +36,10 @@ public class RestApiDistributorBonusNetController {
      * create distributorBonusNet
      * @return
      */
-    @GetMapping(value = "/create/distributor/bonusnet")
-    public ResponseEntity<?> createRewardNet() {
+    @GetMapping(value = "/create/distributor/bonusnet/{snapshotDate}")
+    public ResponseEntity<?> createRewardNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-        distributorBonusNetService.createRewardNet();
+        distributorBonusNetService.createRewardNet(snapshotDate);
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }
@@ -47,9 +48,9 @@ public class RestApiDistributorBonusNetController {
      * list all distributorBonus net tree information
      * @return
      */
-    @GetMapping(value = "/list/distributorBonus")
-    public ResponseEntity<List<TreeNode>> listAccounts() {
-        TreeNode rootNode = distributorBonusNetService.getRootNode(DateUtils.getLastMonthSnapshotDate());
+    @GetMapping(value = "/list/distributorBonus/{snapshotDate}")
+    public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
+        TreeNode rootNode = distributorBonusNetService.getRootNode(snapshotDate);
         if ( rootNode == null ) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }

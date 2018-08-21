@@ -67,7 +67,7 @@ public class RestApiActiveNetTreeNodeController {
 	 * @return
 	 */
 	@RequestMapping(value = "/activeNet/{snapshotDate}", method = RequestMethod.PUT)
-	public ResponseEntity<?> createFiveStarNet(@PathVariable("snapshotDate") String snapshotDate) {
+	public ResponseEntity<?> createActiveNet(@PathVariable("snapshotDate") String snapshotDate) {
 		//String lastMonthSnapShotDate = DateUtils.getLastMonthSnapshotDate();
 		String lastMonthSnapShotDate = snapshotDate;
 		activeNodeService.createActiveNetTree(lastMonthSnapShotDate);

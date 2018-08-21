@@ -41,8 +41,8 @@ public class DistributorDifferentialBonusNetServiceImpl implements DistributorDi
      * calculate distributorDifferentialBonus base on distributorBonus
      */
     @Override
-    public void createRewardNet() {
-        DistributorBonus fromNode = distributorBonusRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
+    public void createRewardNet(String snapshotDate) {
+        DistributorBonus fromNode = distributorBonusRepository.getRootTreeNodeOfMonth(snapshotDate);
         Stack<TreeNode> stk = new Stack<>();
         stk.push(fromNode);
         while (!stk.empty()){

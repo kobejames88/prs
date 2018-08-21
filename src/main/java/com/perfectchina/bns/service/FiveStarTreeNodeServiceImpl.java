@@ -67,9 +67,9 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	 * copy value form gpvNetTree
 	 */
 	@Override
-	public void createFiveStarNetTree() {
+	public void createFiveStarNetTree(String snapshotDate) {
 
-		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
+		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
         Stack<GpvNetTreeNode> stk = new Stack<>();
 
 		stk.push(rootTreeNode);
@@ -108,9 +108,9 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	 */
 	@Override
 	@Transactional
-	public void updateWholeTreeFiveStar() {
+	public void updateWholeTreeFiveStar(String snapShotDate) {
 		//caculte gpv
-		List<FiveStarNetTreeNode> leafNodes = fiveStarNetTreeNodeRepository.findLeafNodes(DateUtils.getCurrentSnapshotDate());
+		List<FiveStarNetTreeNode> leafNodes = fiveStarNetTreeNodeRepository.findLeafNodes(snapShotDate);
 		for (FiveStarNetTreeNode fiveStarNetTreeNode : leafNodes) {
 			FiveStarNetTreeNode uplinkNode = fiveStarNetTreeNodeRepository.findById(fiveStarNetTreeNode.getUplinkId()).get();
 			while(uplinkNode!=null){
@@ -130,12 +130,12 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		}
 		//delete no 5star
 		fiveStarNetTreeNodeRepository.deleteLevel();
-		updataLevel();
+		updataLevel(snapShotDate);
 	}
 
-	private void updataLevel() {
+	private void updataLevel(String snapShotDate) {
 		int fromLevelNum = 0;
-		FiveStarNetTreeNode rootTreeNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
+		FiveStarNetTreeNode rootTreeNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(snapShotDate);
 		
 	    Stack<TreeNode> stk = new Stack<TreeNode>();
 	    rootTreeNode.setLevelNum(fromLevelNum);	    

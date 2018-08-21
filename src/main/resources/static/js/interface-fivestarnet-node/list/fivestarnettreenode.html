@@ -138,9 +138,9 @@
     /**
      * query data 
      */
-    function query() {		
+    function query(snapshotDate) {
 		$.ajax({
-         url:"/bns/api/fiveStarNet/listAccounts",
+         url:"/bns/api/fiveStarNet/listAccounts/"+snapshotDate,
          type:"get",
          data:"",
          async:true, 
@@ -169,7 +169,9 @@
    
 
     $(function () {
-        query();
+        query('201807');
+        // query('201808');
+        // query('201809');
     })
 </script>
 </body>

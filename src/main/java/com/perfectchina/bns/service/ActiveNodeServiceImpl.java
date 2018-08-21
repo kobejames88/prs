@@ -107,12 +107,12 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 			activeNetTreeNodeRepository.saveAndFlush(activeNetTreeNode);
 		}
 		//then build activeNetTree
-		updateWholeTreeActiveNet();
+		updateWholeTreeActiveNet(snapShotDate);
 	}
 
-	public void updateWholeTreeActiveNet() {
+	public void updateWholeTreeActiveNet(String snapShotDate) {
 		//find all last month snapshot date leafNodes;from leadNode climb up
-		List<ActiveNetTreeNode> leafNodes = activeNetTreeNodeRepository.findLeafNodes(DateUtils.getLastMonthSnapshotDate());
+		List<ActiveNetTreeNode> leafNodes = activeNetTreeNodeRepository.findLeafNodes(snapShotDate);
 		for (ActiveNetTreeNode activeNetTreeNode : leafNodes) {
 			ActiveNetTreeNode upLinkNode = activeNetTreeNodeRepository.getOne(activeNetTreeNode.getUplinkId());
 			//climb up  until root
@@ -149,12 +149,12 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 		}
 		//delete no active member
 		activeNetTreeNodeRepository.deleteNOActiveMember();
-		updataLevel();
+		updataLevel(snapShotDate);
 	  }
 
-	private void updataLevel() {
+	private void updataLevel(String snapShotDate) {
 		int fromLevelNum = 0;
-		ActiveNetTreeNode rootTreeNode = activeNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
+		ActiveNetTreeNode rootTreeNode = activeNetTreeNodeRepository.getRootTreeNodeOfMonth(snapShotDate);
 	    Stack<TreeNode> stk = new Stack<TreeNode>();
 	    rootTreeNode.setLevelNum(fromLevelNum);	    
 	    stk.push(rootTreeNode);

@@ -46,8 +46,8 @@ public class CustomerBonusNetServiceImpl  implements  CustomerBonusNetService{
      * create rewardNetTree base opvNetTree
      */
     @Override
-    public void createRewardNet() {
-        OpvNetTreeNode fromNode = opvNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
+    public void createRewardNet(String snapShotDate) {
+        OpvNetTreeNode fromNode = opvNetTreeNodeRepository.getRootTreeNodeOfMonth(snapShotDate);
 
         Stack<TreeNode> stk = new Stack<TreeNode>();
         stk.push(fromNode);

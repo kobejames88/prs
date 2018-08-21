@@ -43,8 +43,8 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
      * create rewardNetTree base fiveStarNetTree
      */
     @Override
-    public void createRewardNet() {
-        FiveStarNetTreeNode fromNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
+    public void createRewardNet(String snapshotDate) {
+        FiveStarNetTreeNode fromNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
 
         Stack<TreeNode> stk = new Stack<TreeNode>();
         stk.push(fromNode);
@@ -73,8 +73,8 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
     }
 
     @Override
-    public TreeNode getRootNode(String lastMonthSnapshotDate) {
-        return  distributorBonusRepository.getRootTreeNodeOfMonth(lastMonthSnapshotDate);
+    public TreeNode getRootNode(String snapshotDate) {
+        return  distributorBonusRepository.getRootTreeNodeOfMonth(snapshotDate);
     }
 
     /**

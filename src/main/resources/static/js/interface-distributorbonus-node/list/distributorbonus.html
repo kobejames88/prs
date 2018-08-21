@@ -141,9 +141,9 @@
     /**
      * query data 
      */
-    function query() {		
+    function query(snapshotDate) {
 		$.ajax({
-         url:"/bns/api/reward/list/distributorBonus",
+         url:"/bns/api/reward/list/distributorBonus/"+snapshotDate,
          type:"get",
          data:"",
          async:true, 
@@ -172,7 +172,9 @@
    
 
     $(function () {
-        query();
+        query('201807');
+        // query('201808');
+        // query('201809');
     })
 </script>
 </body>

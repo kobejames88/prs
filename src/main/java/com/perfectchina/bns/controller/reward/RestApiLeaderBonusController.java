@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,10 +36,10 @@ public class RestApiLeaderBonusController {
      * create and calculate leader bonus net tree
      * @return
      */
-    @GetMapping(value = "/create/leader/bonus")
-    public ResponseEntity<?> createRewardNet() {
+    @GetMapping(value = "/create/leader/bonus/{snapshotDate}")
+    public ResponseEntity<?> createRewardNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-        leaderBonusService.createRewardNet();
+        leaderBonusService.createRewardNet(snapshotDate);
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }
@@ -48,9 +49,9 @@ public class RestApiLeaderBonusController {
      * list all leader bonus net tree information
      * @return
      */
-    @GetMapping(value = "/list/leader/bonus")
-    public ResponseEntity<List<TreeNode>> listAccounts() {
-        TreeNode rootNode = leaderBonusService.getRootNode(DateUtils.getLastMonthSnapshotDate()); // pass root node id to retrieve whole tree
+    @GetMapping(value = "/list/leader/bonus/{snapshotDate}")
+    public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
+        TreeNode rootNode = leaderBonusService.getRootNode(snapshotDate); // pass root node id to retrieve whole tree
         if ( rootNode == null ) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }

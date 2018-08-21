@@ -1,13 +1,15 @@
 <h1>Interface distributorbonus net TreeNode</h1>
 
 
-<button onclick="updata()">updata distributorbonus</button>
+<button onclick="updata('201807')">updata distributorbonus 201807</button>
+<button onclick="updata('201807')">updata distributorbonus 201808</button>
+<button onclick="updata('201807')">updata distributorbonus 201809</button>
 <a href="#!/interface-distributorbonus-node/list"><button >list distributorbonus</button></a>
 
  <script type="text/javascript">
- function updata(){
+ function updata(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/reward/create/distributor/bonusnet",
+         url:"/bns/api/reward/create/distributor/bonusnet/"+snahshotDate,
          type:"get",
          data:"",
          async:true, 

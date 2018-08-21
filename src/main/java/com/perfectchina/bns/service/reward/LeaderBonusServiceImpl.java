@@ -37,8 +37,8 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
      * first copy value from qualifiedFiveStarNet
      */
     @Override
-    public void createRewardNet() {
-        QualifiedFiveStarNetTreeNode fromNode = qualifiedFiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(DateUtils.getLastMonthSnapshotDate());
+    public void createRewardNet(String snapshotDate) {
+        QualifiedFiveStarNetTreeNode fromNode = qualifiedFiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
         Stack<QualifiedFiveStarNetTreeNode> stk = new Stack<>();
         stk.push(fromNode);
         while (!stk.isEmpty()){

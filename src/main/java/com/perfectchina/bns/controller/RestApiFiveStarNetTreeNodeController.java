@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,10 +45,10 @@ public class RestApiFiveStarNetTreeNodeController {
 	 * retrieve all fiveStarNet information by last month snapshotDate
 	 * @return
 	 */
-	@RequestMapping(value = "/fiveStarNet/listAccounts", method = RequestMethod.GET)
-	public ResponseEntity<List<TreeNode>> listAccounts() {
+	@RequestMapping(value = "/fiveStarNet/listAccounts/{snapshotDate}", method = RequestMethod.GET)
+	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 		//find fiveStarTreeNode root by last month snapshotDate
-		TreeNode rootNode = fiveStarTreeNodeService.getRootNode(DateUtils.getLastMonthSnapshotDate());
+		TreeNode rootNode = fiveStarTreeNodeService.getRootNode(snapshotDate);
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		}
@@ -79,14 +80,11 @@ public class RestApiFiveStarNetTreeNodeController {
 	 * Create a fiveStarNetTree base on gpvNetTree
 	 * @return
 	 */
-	@RequestMapping(value = "/fiveStarNet/", method = RequestMethod.PUT)
-	public ResponseEntity<?> createFiveStarNet() {
+	@RequestMapping(value = "/fiveStarNet/{snapshotDate}", method = RequestMethod.PUT)
+	public ResponseEntity<?> createFiveStarNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-		Date currentDate = new Date();
-		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-		//fiveStarTreeNodeService.setPreviousDateEndTime(previousDateEndTime);
-		fiveStarTreeNodeService.createFiveStarNetTree();
-		fiveStarTreeNodeService.updateWholeTreeFiveStar();
+		fiveStarTreeNodeService.createFiveStarNetTree(snapshotDate);
+		fiveStarTreeNodeService.updateWholeTreeFiveStar(snapshotDate);
 		
 		logger.info("execute, finished Create a fiveStarNetTree.");
 		 

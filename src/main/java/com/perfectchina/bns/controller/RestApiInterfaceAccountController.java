@@ -239,7 +239,9 @@ public class RestApiInterfaceAccountController {
 	@RequestMapping(value = "/interfaceAccount/confirmBatch/", method = RequestMethod.POST)
 	public ResponseEntity<?> confirmBatchInterfaceAccountInfo(UriComponentsBuilder ucBuilder) {
 		logger.info("Confirm batch InterfaceAccountInfo : ");
+		//修改interfaceAccount的状态
 		interfaceAccountService.confirmInterfaceAccountInfo();
+		//添加到原始树
 		interfaceAccountService.convertInterfaceAccountInfoToSimpleNetTreeNode();
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 		
