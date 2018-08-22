@@ -1,13 +1,17 @@
 <h1>InterfaceGPVNetTreeNode</h1>
 
 
-<button onclick="updata()">updata gpvNet</button>
-<a href="#!/interface-gpvnet-node/list"><button >list gpvNet</button></a>
+<button onclick="createNet('201807')">create gpvNet 201807</button>
+<button onclick="createNet('201808')">create gpvNet 201808</button></br>
+<button onclick="createNet('201809')">create gpvNet 201809</button></br>
+<a href="#!/interface-gpvnet-node/list?201807"><button >list gpvNet 201807</button></a>
+<a href="#!/interface-gpvnet-node/list?201808"><button >list gpvNet 201808</button></a>
+<a href="#!/interface-gpvnet-node/list?201809"><button >list gpvNet 201809</button></a>
 
  <script type="text/javascript">
- function updata(){
+ function createNet(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/gpvNet/",
+         url:"/bns/api/gpvNet/" + snahshotDate ,
          type:"put",
          data:"",
          async:true, 

@@ -1,13 +1,17 @@
 <h1>InterfacePassUpGPVNetTreeNode</h1>
 
 
-<button onclick="updata()">updata passUpGpvNet</button>
-<a href="#!/interface-passupgpvnet-node/list"><button >list passUpGpvNet</button></a>
+<button onclick="createNet('201807')">create passUpGpvNet 201807</button>
+<button onclick="createNet('201808')">create passUpGpvNet 201808</button></br>
+<button onclick="createNet('201809')">create passUpGpvNet 201809</button></br>
+<a href="#!/interface-passupgpvnet-node/list?201807"><button >list passUpGpvNet 201807</button></a>
+<a href="#!/interface-passupgpvnet-node/list?201808"><button >list passUpGpvNet 201808</button></a>
+<a href="#!/interface-passupgpvnet-node/list?201809"><button >list passUpGpvNet 201809</button></a>
 
  <script type="text/javascript">
- function updata(){
+ function createNet(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/passUpGpvNet/",
+         url:"/bns/api/passUpGpvNet/" + snahshotDate ,
          type:"put",
          data:"",
          async:true, 

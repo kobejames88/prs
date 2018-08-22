@@ -141,9 +141,9 @@
     /**
      * query data 
      */
-    function query() {		
+    function query(snapshotDate) {
 		$.ajax({
-         url:"/bns/api/passUpGpvNet/listAccounts",
+         url:"/bns/api/passUpGpvNet/listAccounts" + snapshotDate ,
          type:"get",
          data:"",
          async:true, 
@@ -169,10 +169,12 @@
          }
      });
     }
-   
+
 
     $(function () {
-        query();
+        var length = window.location.href.length - 6;
+        var snapshotDate = window.location.href.substr(length);
+        query(snapshotDate);
     })
 </script>
 </body>

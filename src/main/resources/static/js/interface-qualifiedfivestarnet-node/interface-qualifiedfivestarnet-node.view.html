@@ -1,13 +1,17 @@
 <h1>InterfaceQualifiedFiveStarNetTreeNode</h1>
 
 
-<button onclick="updata()">updata passUpGpvNet</button>
-<a href="#!/interface-qualifiedfivestarnet-node/list"><button >list passUpGpvNet</button></a>
+<button onclick="createNet('201807')">create qualifiedFiveStarNet 201807</button>
+<button onclick="createNet('201808')">create qualifiedFiveStarNet 201808</button></br>
+<button onclick="createNet('201809')">create qualifiedFiveStarNet 201809</button></br>
+<a href="#!/interface-qualifiedfivestarnet-node/list?201807"><button >list qualifiedFiveStarNet 201807</button></a>
+<a href="#!/interface-qualifiedfivestarnet-node/list?201808"><button >list qualifiedFiveStarNet 201808</button></a>
+<a href="#!/interface-qualifiedfivestarnet-node/list?201809"><button >list qualifiedFiveStarNet 201809</button></a>
 
  <script type="text/javascript">
- function updata(){
+ function createNet(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/qualifiedFiveStar/",
+         url:"/bns/api/qualifiedFiveStar/" + snahshotDate ,
          type:"put",
          data:"",
          async:true, 
