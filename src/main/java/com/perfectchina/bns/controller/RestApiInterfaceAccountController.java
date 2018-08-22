@@ -58,8 +58,8 @@ public class RestApiInterfaceAccountController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping("/interfaceAccount/upload") 
-	public ResponseEntity<?> singleFileUpload(@RequestParam MultipartFile file) throws Exception {
+	@PostMapping("/interfaceAccount/upload/{snapshotDate}")
+	public ResponseEntity<?> singleFileUpload(@RequestParam MultipartFile file,@PathVariable("snapshotDate") String snapshotDate) throws Exception {
 		if (!file.isEmpty()) {
 	        ObjectMapper mapper = new ObjectMapper();
 	        JavaType javaType = mapper.getTypeFactory().constructParametricType(ArrayList.class, InterfaceAccountInfo.class);
@@ -69,7 +69,7 @@ public class RestApiInterfaceAccountController {
 	        List<String> dupAccountNum = new ArrayList<String>();
 	        List<InterfaceAccountInfo> noDupAccounts = new ArrayList<>();
 			for ( InterfaceAccountInfo interfaceAccount : interfaceAccounts ){
-				if ( simpleNetTreeNodeService.isNodeDataExist(interfaceAccount.getAccountNum() )) {
+				if ( simpleNetTreeNodeService.isNodeDataExist(interfaceAccount.getAccountNum(),snapshotDate)) {
 					dupAccountNum.add( interfaceAccount.getAccountNum() );
 				} else {
 					// set the status of the account
@@ -236,13 +236,13 @@ public class RestApiInterfaceAccountController {
 	 * @param ucBuilder
 	 * @return
 	 */
-	@RequestMapping(value = "/interfaceAccount/confirmBatch/", method = RequestMethod.POST)
-	public ResponseEntity<?> confirmBatchInterfaceAccountInfo(UriComponentsBuilder ucBuilder) {
+	@RequestMapping(value = "/interfaceAccount/confirmBatch/{snapshotDate}", method = RequestMethod.POST)
+	public ResponseEntity<?> confirmBatchInterfaceAccountInfo(UriComponentsBuilder ucBuilder,@PathVariable("snapshotDate") String snapshotDate) {
 		logger.info("Confirm batch InterfaceAccountInfo : ");
 		//修改interfaceAccount的状态
 		interfaceAccountService.confirmInterfaceAccountInfo();
 		//添加到原始树
-		interfaceAccountService.convertInterfaceAccountInfoToSimpleNetTreeNode();
+		interfaceAccountService.convertInterfaceAccountInfoToSimpleNetTreeNode(snapshotDate);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 		
 	}	

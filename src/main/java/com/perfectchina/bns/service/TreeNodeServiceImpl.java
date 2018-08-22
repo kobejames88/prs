@@ -27,11 +27,17 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	public boolean isNodeDataExist(String accountNum) {
 		return findByAccountNum( accountNum ) != null && findByAccountNum( accountNum ).size()>0;
 	}
-	
+
+	public boolean isNodeDataExist(String accountNum,String snapshotDate) {
+		return findByAccountNum( accountNum ,snapshotDate) != null;
+	}
+
 	private List<TreeNode> findByAccountNum(String accountNum) {
 		return getTreeNodeRepository().findByAccountNum(accountNum);
 	}
-	
+	private TreeNode findByAccountNum(String accountNum,String snapshotDate) {
+		return getTreeNodeRepository().findByAccountNum(snapshotDate,accountNum);
+	}
 	public TreeNode getTreeNode(Long id) {
 		return (TreeNode) getTreeNodeRepository().getOne(id);
 	}

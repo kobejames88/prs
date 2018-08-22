@@ -8,7 +8,8 @@ import com.perfectchina.bns.model.treenode.TreeNode;
 public interface TreeNodeService<T> {
 		
 	boolean isNodeDataExist(String accountNum);
-	
+	boolean isNodeDataExist(String accountNum,String snapshotDate);
+
 	TreeNode getTreeNode(Long id);
 	TreeNode getRootTreeNode(String snapshotDate);
 	

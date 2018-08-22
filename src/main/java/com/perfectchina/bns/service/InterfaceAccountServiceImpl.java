@@ -79,10 +79,8 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
     }
 
     @Override
-    public void convertInterfaceAccountInfoToSimpleNetTreeNode() {
+    public void convertInterfaceAccountInfoToSimpleNetTreeNode(String snapshotDate) {
         logger.debug("convertInterfaceAccountInfoToSimpleNetTreeNode, start");
-
-        String snapshotDate = DateUtils.getLastMonthSnapshotDate();
 
         // only retrieve the requestStatus corresponding to operationDate
         List<InterfaceAccountInfo> interfaceAccountInfoList = interfaceAccountInfoRepository.findByRequestStatus(InterfaceInfoStatus.CONFIRMED);

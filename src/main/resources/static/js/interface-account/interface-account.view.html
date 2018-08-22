@@ -31,10 +31,14 @@
     
   <form id="tf"  enctype="multipart/form-data">  
     <input type="file" name="file" id="file" />  
-    <input type="button" value="Upload" onclick="upload()"/>   
+    <input type="button" value="Upload 201807" onclick="upload('201807')"/>
+    <input type="button" value="Upload 201808" onclick="upload('201808')"/>
+    <input type="button" value="Upload 201809" onclick="upload('201809')"/>
   </form>
-  <button onclick="listPending()">listPending</button>
-  <button onclick="confirm()">confirm</button>
+  <button onclick="listPending()">listPending</button><br/>
+  <button onclick="confirm('201807')">confirm 201807</button>
+  <button onclick="confirm('201808')">confirm 201808</button>
+  <button onclick="confirm('201809')">confirm 201809</button>
 </div>
 
 <table id="accountsTB" style="display:none;text-align:center;FONT-SIZE: 11pt; WIDTH: 600px; BORDER-COLLAPSE: collapse" borderColor=#3399ff cellSpacing=0 cellPadding=0 align=center border=1>   
@@ -61,10 +65,10 @@
 
 
  <script type="text/javascript">
- function confirm(){
+ function confirm(snapshotDate){
 	 document.getElementById("accountsTB").style.display='none';
 	 $.ajax({
-         url:"/bns/api/interfaceAccount/confirmBatch/",
+         url:"/bns/api/interfaceAccount/confirmBatch/"+snapshotDate,
          type:"post",
          data:"",
          async:true, 
@@ -124,10 +128,10 @@
      });  
      document.getElementById("accountsTB").style.display='';
  }
-  function upload(){
+  function upload(snapshotDate){
       var form = new FormData(document.getElementById("tf"));
       $.ajax({
-          url:"/bns/api/interfaceAccount/upload",
+          url:"/bns/api/interfaceAccount/upload/"+snapshotDate,
           type:"post",
           data:form,
           async:true, 

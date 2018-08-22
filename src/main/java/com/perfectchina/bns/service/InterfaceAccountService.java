@@ -34,7 +34,7 @@ public interface InterfaceAccountService {
 	public void removePendingInterfaceAccountInfo();
 	
 	// This function import new account from InterfaceAccountInfo to SimpleNetTreeNote
-	public void convertInterfaceAccountInfoToSimpleNetTreeNode();
+	public void convertInterfaceAccountInfoToSimpleNetTreeNode(String snapshotDate);
 	
 	public List<InterfaceAccountInfo> enquireInterfaceAccountStatusInfo(Date dateFrom, Date dateTo);
 	

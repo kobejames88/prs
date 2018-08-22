@@ -1,13 +1,17 @@
 <h1>InterfaceSimpleNetTreeNode</h1>
 
 
-<button onclick="updata()">updata simpleNet</button>
-<a href="#!/interface-simplenet-node/list"><button onclick="list()">list simpleNet</button></a>
+<button onclick="updata('201807')">updata simpleNet 201807</button><br/>
+<button onclick="updata('201808')">updata simpleNet 201808</button><br/>
+<button onclick="updata('201809')">updata simpleNet 201809</button><br/>
+<a href="#!/interface-simplenet-node/list?201807"><button>list simpleNet 201807</button></a><br/>
+<a href="#!/interface-simplenet-node/list?201808"><button>list simpleNet 201808</button></a><br/>
+<a href="#!/interface-simplenet-node/list?201809"><button>list simpleNet 201809</button></a><br/>
 
  <script type="text/javascript">
- function updata(){
+ function updata(snahshotDate){
 	 $.ajax({
-         url:"/bns/api/simpleNet/",
+         url:"/bns/api/simpleNet/"+snahshotDate,
          type:"put",
          data:"",
          async:true, 

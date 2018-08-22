@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,12 +43,10 @@ public class RestApiSimpleNetTreeNodeController {
     
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
-	@RequestMapping(value = "/simpleNet/listAccounts", method = RequestMethod.GET)
-	public ResponseEntity<List<TreeNode>> listAccounts() {
+	@RequestMapping(value = "/simpleNet/listAccounts/{snapshotDate}", method = RequestMethod.GET)
+	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 		
-		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
-		
-		// pass root node id to retrieve whole tree 
+		// pass root node id to retrieve whole tree
 		//TreeNode rootNode = simpleTreeNodeService.getTreeNode(1L); 
 		TreeNode rootNode = simpleTreeNodeService.getRootTreeNode(snapshotDate);
 		
@@ -84,14 +83,9 @@ public class RestApiSimpleNetTreeNodeController {
 	 * This method update the PPV of the simpleNetTreeNode based on the SalesRecord
 	 * @return
 	 */
-	@RequestMapping(value = "/simpleNet/", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateSimpleNetPpv() {
+	@RequestMapping(value = "/simpleNet/{snapshotDate}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateSimpleNetPpv(@PathVariable("snapshotDate") String snapshotDate) {
 
-		Date currentDate = new Date();
-		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
-		
-		simpleTreeNodeService.setPreviousDateEndTime(previousDateEndTime);
 		simpleTreeNodeService.updateWholeTree(snapshotDate);
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 
