@@ -40,6 +40,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 			@Param("accountNum") String accountNum,
 			@Param("requireDate") String requireDate);
 
-	
-
 }

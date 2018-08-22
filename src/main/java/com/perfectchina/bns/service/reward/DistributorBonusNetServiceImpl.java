@@ -109,10 +109,17 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
                         break;
                     }
                 }
-                uplink = distributorBonusRepository.findById(uplink.getUplinkId()).get();//当月
-                uplinkLM =  distributorBonusRepository.getAccountByAccountNum(//上月
-                        DateUtils.getLastMonthSnapshotDate(uplink.getSnapshotDate()),
-                        uplink.getData().getAccountNum());
+                if(uplink.getUplinkId()==0){
+                    uplink =null;
+                    uplinkLM = null;
+                }
+                else {
+                    uplink = distributorBonusRepository.findById(uplink.getUplinkId()).get();//当月
+                    uplinkLM =  distributorBonusRepository.getAccountByAccountNum(//上月
+                            DateUtils.getLastMonthSnapshotDate(uplink.getSnapshotDate()),
+                            uplink.getData().getAccountNum());
+                }
+
             }
 
             //算直销员级差是需要加的前18000所得

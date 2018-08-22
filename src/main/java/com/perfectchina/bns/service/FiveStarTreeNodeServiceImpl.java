@@ -125,7 +125,11 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 				}
 				fiveStarNetTreeNodeRepository.saveAndFlush(fiveStarNetTreeNode);
 				fiveStarNetTreeNode = uplinkNode;
-				uplinkNode = fiveStarNetTreeNodeRepository.findById(uplinkNode.getUplinkId()).get();
+				if(uplinkNode.getUplinkId()==0){
+					uplinkNode = null;
+				}else {
+					uplinkNode = fiveStarNetTreeNodeRepository.findById(uplinkNode.getUplinkId()).get();
+				}
 			}
 		}
 		//delete no 5star

@@ -88,7 +88,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         // for each InterfaceAccountInfo, need to check if the action is new, edit or delete
         for (InterfaceAccountInfo interfaceAccount : interfaceAccountInfoList) {
             String test =  interfaceAccount.getAccountNum();
-            SimpleNetTreeNode temp = treeNodeRepository.getAccountByAccountNum(interfaceAccount.getAccountNum());
+            SimpleNetTreeNode temp = treeNodeRepository.getAccountByAccountNum(snapshotDate,interfaceAccount.getAccountNum());
             // check the action
             logger.debug("convertInterfaceAccountInfoToSimpleNetTreeNode, interfaceAccount=[" + interfaceAccount + "]");
 
@@ -105,7 +105,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
                         // update the InterfaceAccountInfo request status to imported
                         interfaceAccount.setRequestStatus(InterfaceInfoStatus.IMPORTED);
                     } else { // there are uplink
-                        TreeNode uplink = treeNodeRepository.getAccountByAccountNum(interfaceAccount.getUplinkAccount());
+                        TreeNode uplink = treeNodeRepository.getAccountByAccountNum(snapshotDate,interfaceAccount.getUplinkAccount());
                         if (uplink == null) {
                             // not a valid interfaceAccount information
                             logger.warn("convertInterfaceAccountInfoToAccount, skip invalid uplink Account for interfaceAccount [" + interfaceAccount + "].");
@@ -127,7 +127,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
                         interfaceAccount.setRequestStatus(InterfaceInfoStatus.SKIPPED);
                     } else {
                         // check if it is valid uplinkId
-                        SimpleNetTreeNode axAccountUplink = treeNodeRepository.getAccountByAccountNum(interfaceAccount.getUplinkAccount());
+                        SimpleNetTreeNode axAccountUplink = treeNodeRepository.getAccountByAccountNum(snapshotDate,interfaceAccount.getUplinkAccount());
                         if (axAccountUplink == null) {
                             // not a valid interfaceAccount information
                             logger.warn("convertInterfaceAccountInfoToAccount, skip invalid uplink Account for interfaceAccount [" + interfaceAccount + "].");
@@ -209,7 +209,13 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         // account.setPromotionDate( interfaceAccount.getPromotionDate() );
 
         account.setStatus(interfaceAccount.getStatus());
-        accountRepository.save(account);
+        Account oldAccount = accountRepository.getAccountByAccountNum(account.getAccountNum());
+        if(oldAccount==null){
+            accountRepository.save(account);
+
+        }else{
+            account = oldAccount;
+        }
         logger.debug("createNewAccount, account=" + account);
 
         SimpleNetTreeNode newNode = new SimpleNetTreeNode();
