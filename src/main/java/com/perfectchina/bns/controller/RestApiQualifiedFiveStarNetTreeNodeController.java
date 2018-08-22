@@ -72,7 +72,7 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 	@RequestMapping(value = "/qualifiedFiveStar/{snapshotDate}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updatePassUpGpvNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
+//		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
 
@@ -90,7 +90,7 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
     @RequestMapping(value = "/qualifiedFiveStar/test/{snapshotDate}", method = RequestMethod.GET)
 	public void test(@PathVariable("snapshotDate") String snapshotDate) {
 		long startTime = System.currentTimeMillis();    //获取开始时间
-        treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
+//        treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
         treeNodeService.updateWholeTree(snapshotDate);
         treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
         long endTime = System.currentTimeMillis();    //获取结束时间

@@ -74,7 +74,7 @@ public class RestApiGpvNetTreeNodeController {
 	@RequestMapping(value = "/gpvNet/{snapshotDate}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateGpvNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
+//		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeGPV(snapshotDate);
 		

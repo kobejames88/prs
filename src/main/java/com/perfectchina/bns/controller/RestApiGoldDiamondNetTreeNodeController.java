@@ -74,7 +74,7 @@ public class RestApiGoldDiamondNetTreeNodeController {
 	@RequestMapping(value = "/goldDiamond/{snapshotDate}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updatePassUpGpvNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
+//		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeGoldDiamond(snapshotDate);
 

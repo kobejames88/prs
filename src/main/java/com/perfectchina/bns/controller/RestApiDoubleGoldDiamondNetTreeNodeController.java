@@ -92,7 +92,7 @@ public class RestApiDoubleGoldDiamondNetTreeNodeController {
 	@RequestMapping(value = "/doubleGoldDiamond/test/{snapshotDate}", method = RequestMethod.GET)
 	public ResponseEntity<?> test(@PathVariable("snapshotDate") String snapshotDate) {
 
-		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
+//		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeDoubleGoldDiamond(snapshotDate);
 
