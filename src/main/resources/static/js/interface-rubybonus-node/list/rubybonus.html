@@ -142,9 +142,9 @@
     /**
      * query data 
      */
-    function query() {		
+    function query(snapshotDate) {
 		$.ajax({
-         url:"/bns/api/reward/list/leader/bonus",
+         url:"/bns/api/reward/list/leader/bonus/"+snapshotDate,
          type:"get",
          data:"",
          async:true, 
@@ -171,10 +171,13 @@
          }
      });
     }
-   
+
+
 
     $(function () {
-        query();
+        var length = window.location.href.length - 6;
+        var  snapshotDate=window.location.href.substr(length);
+        query(snapshotDate);
     })
 </script>
 </body>

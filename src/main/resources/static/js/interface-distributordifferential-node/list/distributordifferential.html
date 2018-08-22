@@ -169,12 +169,13 @@
          }
      });
     }
-   
+
+
 
     $(function () {
-        query('201807');
-        // query('201808');
-        // query('201809');
+        var length = window.location.href.length - 6;
+        var  snapshotDate=window.location.href.substr(length);
+        query(snapshotDate);
     })
 </script>
 </body>
