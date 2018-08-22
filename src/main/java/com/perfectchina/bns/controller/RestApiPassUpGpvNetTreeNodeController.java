@@ -79,7 +79,7 @@ public class RestApiPassUpGpvNetTreeNodeController {
 		 
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			headers.setLocation( new URI( "/api/passUpGpvNet/listAccounts" ) );
+			headers.setLocation( new URI( "/api/passUpGpvNet/listAccounts/{snapshotDate}" ) );
 		} catch (URISyntaxException e) {
 			logger.error( e.toString(), e);
 		}

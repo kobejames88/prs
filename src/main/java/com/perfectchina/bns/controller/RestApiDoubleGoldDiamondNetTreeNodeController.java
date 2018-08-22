@@ -81,7 +81,7 @@ public class RestApiDoubleGoldDiamondNetTreeNodeController {
 
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			headers.setLocation( new URI( "/api/doubleGoldDiamond/listAccounts" ) );
+			headers.setLocation( new URI( "/api/doubleGoldDiamond/listAccounts/{snapshotDate}" ) );
 		} catch (URISyntaxException e) {
 			logger.error( e.toString(), e);
 		}
