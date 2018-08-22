@@ -79,7 +79,7 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 		 
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			headers.setLocation( new URI( "/api/qualifiedFiveStar/listAccounts/{snapshotDate}" ) );
+			headers.setLocation( new URI( "/api/qualifiedFiveStar/listAccounts/" + snapshotDate ) );
 		} catch (URISyntaxException e) {
 			logger.error( e.toString(), e);
 		}

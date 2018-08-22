@@ -82,7 +82,7 @@ public class RestApiGpvNetTreeNodeController {
 		 
 		HttpHeaders headers = new HttpHeaders();
 		try {
-			headers.setLocation( new URI( "/api/gpvNet/listAccounts/{snapshotDate}" ) );
+			headers.setLocation( new URI( "/api/gpvNet/listAccounts/" + snapshotDate ) );
 		} catch (URISyntaxException e) {
 			logger.error( e.toString(), e);
 		}
