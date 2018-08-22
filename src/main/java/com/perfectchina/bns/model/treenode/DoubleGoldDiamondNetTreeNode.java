@@ -13,10 +13,6 @@ import javax.persistence.Table;
 public class DoubleGoldDiamondNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
-    private Float opv;
-
-    private Float passUpOpv;
-
     private String levelLine;
 
     private String pin;
@@ -47,19 +43,4 @@ public class DoubleGoldDiamondNetTreeNode extends TreeNode {
         this.levelLine = levelLine;
     }
 
-    public Float getPassUpOpv() {
-        return passUpOpv;
-    }
-
-    public void setPassUpOpv(Float passUpOpv) {
-        this.passUpOpv = passUpOpv;
-    }
-
-    public Float getOpv() {
-        return opv;
-    }
-
-    public void setOpv(Float opv) {
-        this.opv = opv;
-    }
 }

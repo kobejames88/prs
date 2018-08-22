@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,10 +38,9 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
     
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
-	@RequestMapping(value = "/qualifiedFiveStar/listAccounts", method = RequestMethod.GET)
-	public ResponseEntity<List<TreeNode>> listAccounts() {
+	@RequestMapping(value = "/qualifiedFiveStar/listAccounts/{snapshotDate}", method = RequestMethod.GET)
+	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 		
-		String snapshotDate	= DateUtils.getLastMonthSnapshotDate();	
 		TreeNode rootNode = treeNodeService.getRootTreeNode(snapshotDate); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -69,16 +69,10 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 	 * Update pass-up-gpv based on five-star-net-tree
 	 * @return
 	 */
-	@RequestMapping(value = "/qualifiedFiveStar/", method = RequestMethod.PUT)
-	public ResponseEntity<?> updatePassUpGpvNet() {
-		Date currentDate = new Date();
-		Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-		
-		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
-		String snapshotDate = DateUtils.getLastMonthSnapshotDate();
+	@RequestMapping(value = "/qualifiedFiveStar/{snapshotDate}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updatePassUpGpvNet(@PathVariable("snapshotDate") String snapshotDate) {
 
-
-		treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
+		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
 
@@ -93,16 +87,12 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	}
 
-    @RequestMapping(value = "/qualifiedFiveStar/test", method = RequestMethod.GET)
-	public void test() {
-		Date currentDate = new Date();
+    @RequestMapping(value = "/qualifiedFiveStar/test/{snapshotDate}", method = RequestMethod.GET)
+	public void test(@PathVariable("snapshotDate") String snapshotDate) {
 		long startTime = System.currentTimeMillis();    //获取开始时间
-        // Date previousDateEndTime = DateUtils.getPreviousDateEndTime( currentDate );
-		Date lastMonthEndTime = DateUtils.getLastMonthEndDate( currentDate );
-		String snapShotDate = DateUtils.getLastMonthSnapshotDate();
-        treeNodeService.setPreviousDateEndTime(lastMonthEndTime);
-        treeNodeService.updateWholeTree(snapShotDate);
-        treeNodeService.updateWholeTreeQualifiedFiveStar(snapShotDate);
+        treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
+        treeNodeService.updateWholeTree(snapshotDate);
+        treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
         long endTime = System.currentTimeMillis();    //获取结束时间
         logger.info("计算合格五星网络图运行时间： {} ms ",(endTime - startTime));
 	}

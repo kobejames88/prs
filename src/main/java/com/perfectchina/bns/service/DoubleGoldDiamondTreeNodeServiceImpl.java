@@ -250,8 +250,6 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 }
                 if (counnt >= 7){
                     changePin(doubleGoldDiamondNetTreeNode,accountId,PinPosition.TRIPLE_GOLD_DIAMOND);
-                }else {
-                    changePin(doubleGoldDiamondNetTreeNode,accountId,PinPosition.DOUBLE_GOLD_DIAMOND);
                 }
                 doubleGoldDiamondNetTreeNodeRepository.saveAndFlush(doubleGoldDiamondNetTreeNode);
 			} // end for loop

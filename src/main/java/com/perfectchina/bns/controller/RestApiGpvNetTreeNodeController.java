@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,10 +40,10 @@ public class RestApiGpvNetTreeNodeController {
 
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
-	@RequestMapping(value = "/gpvNet/listAccounts", method = RequestMethod.GET)
-	public ResponseEntity<List<TreeNode>> listAccounts() {
+	@RequestMapping(value = "/gpvNet/listAccounts/{snapshotDate}", method = RequestMethod.GET)
+	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 		//get gpvNetTree root by last month snapshotDate
-		TreeNode rootNode = treeNodeService.getRootNode(DateUtils.getLastMonthSnapshotDate()); // pass root node id to retrieve whole tree
+		TreeNode rootNode = treeNodeService.getRootNode(snapshotDate); // pass root node id to retrieve whole tree
 		if ( rootNode == null ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
@@ -70,12 +71,10 @@ public class RestApiGpvNetTreeNodeController {
 	 * Update gpv based on SalesRecord
 	 * @return
 	 */
-	@RequestMapping(value = "/gpvNet/", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateGpvNet() {
-		Date previousDateEndTime = DateUtils.getLastMonthEndDate( new Date() );
-		String snapshotDate = DateUtils.convertToSnapShotDate(previousDateEndTime);
-		
-		treeNodeService.setPreviousDateEndTime(previousDateEndTime);
+	@RequestMapping(value = "/gpvNet/{snapshotDate}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateGpvNet(@PathVariable("snapshotDate") String snapshotDate) {
+
+		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
 		treeNodeService.updateWholeTree(snapshotDate);
 		treeNodeService.updateWholeTreeGPV(snapshotDate);
 		

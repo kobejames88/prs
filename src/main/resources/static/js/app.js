@@ -148,6 +148,20 @@
                 templateUrl: 'js/interface-golddiamondnet-node/list/golddiamondnettreenode.html',
                 controllerAs: 'vm'
             })
+
+            .when('/interface-doublegolddiamondnet-node', {
+                controller: 'InterfaceDoubleGoldDiamondNetTreeNode',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-doublegolddiamondnet-node/interface-doublegolddiamondnet-node.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-doublegolddiamondnet-node/list', {
+                controller: 'InterfaceDoubleGoldDiamondNetTreeNode',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-doublegolddiamondnet-node/list/doublegolddiamondnettreenode.html',
+                controllerAs: 'vm'
+            })
             
             .when('/interface-activenet-node', {
 	            controller: 'InterfaceActiveNetNodeController',
