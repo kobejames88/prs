@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Stack;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -73,11 +73,19 @@ public class RestApiGoldDiamondNetTreeNodeController {
 	 */
 	@RequestMapping(value = "/goldDiamond/{snapshotDate}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updatePassUpGpvNet(@PathVariable("snapshotDate") String snapshotDate) {
-
-//		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
-		treeNodeService.updateWholeTree(snapshotDate);
-		treeNodeService.updateWholeTreeGoldDiamond(snapshotDate);
-
+        DateFormat format1 = new SimpleDateFormat("yyyyMM");
+        Date date = null;
+        try {
+            date = format1.parse(snapshotDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( date ));
+        boolean readyToUpdate = treeNodeService.isReadyToUpdate();
+        if (readyToUpdate){
+            treeNodeService.updateWholeTree(snapshotDate);
+            treeNodeService.updateWholeTreeGoldDiamond(snapshotDate);
+        }
 
 		HttpHeaders headers = new HttpHeaders();
 		try {
