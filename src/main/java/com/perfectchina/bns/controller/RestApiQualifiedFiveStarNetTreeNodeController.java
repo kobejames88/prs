@@ -81,7 +81,7 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( date ));
+		treeNodeService.setPreviousDateEndTime(DateUtils.getCurrentDateEndTime( date ));
         boolean readyToUpdate = treeNodeService.isReadyToUpdate();
         if (readyToUpdate){
             treeNodeService.updateWholeTree(snapshotDate);

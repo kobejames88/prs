@@ -83,10 +83,8 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		return getTreeNodeRepository().getMaxLevelNum(snapShotDate);
 	}
 
-	/**
-	 * param node is SimpleNetTreeNode walking through
-	 */
-	protected void process(TreeNode node) {
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 		// Copy the node of the original network map plus the uplinkId to GpvNetTreeNode
@@ -97,7 +95,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		if(uplinkId!=0){
 			OpvNetTreeNode one = opvNetTreeNodeRepository.getOne(uplinkId);
 			String accountNum = one.getData().getAccountNum();
-			GpvNetTreeNode one2 = getTreeNodeRepository().getAccountByAccountNum(opvNetTreeNode.getSnapshotDate(),
+			GpvNetTreeNode one2 = getTreeNodeRepository().getAccountByAccountNum(snapshotDate,
 					accountNum);
 			gpvNetTreeNode.setUplinkId(one2.getId());
 		}
@@ -111,14 +109,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 		gpvNetTreeNode.setPin(opvNetTreeNode.getPin());
 		gpvNetTreeNode.setSnapshotDate(opvNetTreeNode.getSnapshotDate());
 		gpvNetTreeNode.setData(opvNetTreeNode.getData());
-
-
 		gpvNetTreeNodeRepository.saveAndFlush(gpvNetTreeNode);
-	}
-
-	@Override
-	protected void process(TreeNode node, String snapshotDate) {
-
 	}
 
 	@Override

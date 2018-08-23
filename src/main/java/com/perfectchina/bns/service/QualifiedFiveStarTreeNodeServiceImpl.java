@@ -87,45 +87,43 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
 	private Map<Long,Long> relation = new HashMap<>();
 
-	/**
-	 * param node is SimpleNetTreeNode walking through
-	 */
-	protected void process(TreeNode node) {
-		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
-				+ ", level [" + node.getLevelNum() + "].");
-		// Current element
-		PassUpGpvNetTreeNode passUpGpvNetTreeNode = (PassUpGpvNetTreeNode) node;
-		// Element to be loaded
-		QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode = new QualifiedFiveStarNetTreeNode();
+    @Override
+    protected void process(TreeNode node, String snapshotDate) {
+        logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
+                + ", level [" + node.getLevelNum() + "].");
+        // Current element
+        PassUpGpvNetTreeNode passUpGpvNetTreeNode = (PassUpGpvNetTreeNode) node;
+        // Element to be loaded
+        QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode = new QualifiedFiveStarNetTreeNode();
 
-		Float passUpGpv = passUpGpvNetTreeNode.getPassUpGpv();
-		int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
+        Float passUpGpv = passUpGpvNetTreeNode.getPassUpGpv();
+        int qualifiedLine = passUpGpvNetTreeNode.getQualifiedLine();
         long id = passUpGpvNetTreeNode.getId();
         Long mapPassUpGpvUplinkId = relation.get(id);
 
         long passUpGpvUplinkId = mapPassUpGpvUplinkId != null ? mapPassUpGpvUplinkId : passUpGpvNetTreeNode.getUplinkId();
 
-		if(passUpGpvUplinkId!=0){
-			PassUpGpvNetTreeNode passUpGpvUplink = passUpGpvNetTreeNodeRepository.getOne(passUpGpvUplinkId);
-			String accountNum = passUpGpvUplink.getData().getAccountNum();
-			QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = getTreeNodeRepository().getAccountByAccountNum(passUpGpvNetTreeNode.getSnapshotDate(),
-					accountNum);
+        if(passUpGpvUplinkId!=0){
+            PassUpGpvNetTreeNode passUpGpvUplink = passUpGpvNetTreeNodeRepository.getOne(passUpGpvUplinkId);
+            String accountNum = passUpGpvUplink.getData().getAccountNum();
+            QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = getTreeNodeRepository().getAccountByAccountNum(snapshotDate,
+                    accountNum);
             long qualifiedFiveStarUplinkId = qualifiedFiveStarUplink.getId();
             String uplinkLevelLine = qualifiedFiveStarUplink.getLevelLine();
             qualifiedFiveStarNetTreeNode.setUplinkId(qualifiedFiveStarUplinkId);
-			// To judge if it is a qualified five-star
-			if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
+            // To judge if it is a qualified five-star
+            if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
                 setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
-				copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
-			}else{
-			    // To judge if it is a ruby
-				if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine >= 1) || (qualifiedLine >= 2)){
+                copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
+            }else{
+                // To judge if it is a ruby
+                if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine >= 1) || (qualifiedLine >= 2)){
                     setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
                     copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
-				}else {
-					// Filter this element
+                }else {
+                    // Filter this element
                     // Gets the direct subordinate of this element
-					List<PassUpGpvNetTreeNode> childNodes = passUpGpvNetTreeNodeRepository.getChildNodesByUpid(id);
+                    List<PassUpGpvNetTreeNode> childNodes = passUpGpvNetTreeNodeRepository.getChildNodesByUpid(id);
 
                     // The direct subordinate ID of this element and the higher level ID are placed in map
                     if (childNodes.size()>0){
@@ -135,20 +133,15 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                         }
                     }
 
-				}
-			}
+                }
+            }
             qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarUplink);
         }else {
             qualifiedFiveStarNetTreeNode.setLevelLine(String.valueOf(passUpGpvUplinkId));
             qualifiedFiveStarNetTreeNode.setLevelNum(0);
             copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
-		}
-		relation.remove(id);
-	}
-
-    @Override
-    protected void process(TreeNode node, String snapshotDate) {
-
+        }
+        relation.remove(id);
     }
 
     private void setuplinkLevelLineAndLevel(String uplinkLevelLine,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,Long qualifiedFiveStarUplinkId){

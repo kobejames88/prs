@@ -81,14 +81,13 @@ public class RestApiPassUpGpvNetTreeNodeController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-		treeNodeService.setPreviousDateEndTime( DateUtils.getLastMonthEndDate(date));
+		treeNodeService.setPreviousDateEndTime( DateUtils.getCurrentDateEndTime(date));
         boolean readyToUpdate = treeNodeService.isReadyToUpdate();
         if (readyToUpdate){
             treeNodeService.updateWholeTree(snapshotDate);
             treeNodeService.updateWholeTreePassUpGPV(snapshotDate);
         }
 
-		
 		logger.info("execute, finished updateSimpleNetPpv.");
 		 
 		HttpHeaders headers = new HttpHeaders();

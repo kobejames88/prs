@@ -80,10 +80,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
         return maxLevelNum;
 	}
 
-	/**
-	 * param node is SimpleNetTreeNode walking through
-	 */
-	protected void process(TreeNode node) {
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 		// Copy the node of the original network map plus the uplinkId to GpvNetTreeNode
@@ -94,7 +92,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		if(uplinkId!=0){
 			FiveStarNetTreeNode fiveStarUplink = fiveStarNetTreeNodeRepository.getOne(uplinkId);
 			String accountNum = fiveStarUplink.getData().getAccountNum();
-			PassUpGpvNetTreeNode passUpGpvUplink = getTreeNodeRepository().getAccountByAccountNum(fiveStarNetTreeNode.getSnapshotDate(),
+			PassUpGpvNetTreeNode passUpGpvUplink = getTreeNodeRepository().getAccountByAccountNum(snapshotDate,
 					accountNum);
 			passUpGpvNetTreeNode.setUplinkId(passUpGpvUplink.getId());
 		}
@@ -106,11 +104,6 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		passUpGpvNetTreeNode.setData(fiveStarNetTreeNode.getData());
 
 		passUpGpvNetTreeNodeRepository.saveAndFlush(passUpGpvNetTreeNode);
-	}
-
-	@Override
-	protected void process(TreeNode node, String snapshotDate) {
-
 	}
 
 	private Map<Long,Float> map = new HashMap<>();

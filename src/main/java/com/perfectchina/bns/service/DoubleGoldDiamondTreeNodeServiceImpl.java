@@ -91,7 +91,8 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	/**
 	 * param node is SimpleNetTreeNode walking through
 	 */
-	protected void process(TreeNode node, String snapshotDate2) {
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 		// 当前元素
@@ -104,7 +105,6 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         long uplinkId = goldDiamondNetTreeNode.getUplinkId();
         // 获取当前元素的opv
         String accountNum = goldDiamondNetTreeNode.getData().getAccountNum();
-        String snapshotDate = sdf.format(getPreviousDateEndTime());
         OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
         // 获取当前元素的所有直接下级
         List<GoldDiamondNetTreeNode> childNodes = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);

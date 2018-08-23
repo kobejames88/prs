@@ -86,78 +86,70 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 
 	private Map<Long,Long> relation = new HashMap<>();
 
-	/**
-	 * param node is SimpleNetTreeNode walking through
-	 */
-	protected void process(TreeNode node) {
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 		// 当前元素
 		QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode = (QualifiedFiveStarNetTreeNode) node;
 		// 待装载元素
 		GoldDiamondNetTreeNode goldDiamondNetTreeNode = new GoldDiamondNetTreeNode();
-        String pin = qualifiedFiveStarNetTreeNode.getPin();
-        Long id = qualifiedFiveStarNetTreeNode.getId();
-        Long map_uplinkId = relation.get(id);
+		String pin = qualifiedFiveStarNetTreeNode.getPin();
+		Long id = qualifiedFiveStarNetTreeNode.getId();
+		Long map_uplinkId = relation.get(id);
 
-        String accountNum = qualifiedFiveStarNetTreeNode.getData().getAccountNum();
-        String snapshotDate = sdf.format(getPreviousDateEndTime());
-        OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
-        SimpleNetTreeNode simpleNetTreeNode = simpleNetTreeNodeRepository.findByAccountNum(snapshotDate, accountNum);
+		String accountNum = qualifiedFiveStarNetTreeNode.getData().getAccountNum();
+		OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
+		SimpleNetTreeNode simpleNetTreeNode = simpleNetTreeNodeRepository.findByAccountNum(snapshotDate, accountNum);
 
 
-        if (map_uplinkId != null){
-            QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = qualifiedFiveStarNetTreeNodeRepository.getOne(map_uplinkId);
-            String uplinkAccountNum = qualifiedFiveStarUplink.getData().getAccountNum();
-            GoldDiamondNetTreeNode goldDiamondUplink = getTreeNodeRepository().getAccountByAccountNum(qualifiedFiveStarNetTreeNode.getSnapshotDate(),
-                    uplinkAccountNum);
-            long qualifiedFiveStarUplinkId = goldDiamondUplink.getId();
-            String uplinkLevelLine = goldDiamondUplink.getLevelLine();
+		if (map_uplinkId != null){
+			QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = qualifiedFiveStarNetTreeNodeRepository.getOne(map_uplinkId);
+			String uplinkAccountNum = qualifiedFiveStarUplink.getData().getAccountNum();
+			GoldDiamondNetTreeNode goldDiamondUplink = getTreeNodeRepository().getAccountByAccountNum(qualifiedFiveStarNetTreeNode.getSnapshotDate(),
+					uplinkAccountNum);
+			long qualifiedFiveStarUplinkId = goldDiamondUplink.getId();
+			String uplinkLevelLine = goldDiamondUplink.getLevelLine();
 
-            if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
-                goldDiamondNetTreeNode.setUplinkId(goldDiamondUplink.getId());
-                goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
-                goldDiamondNetTreeNode.setPassUpOpv(simpleNetTreeNode.getPpv());
-                // 获取金钻的所有直接下级
-                List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
-                for (TreeNode childNode : childNodes){
-                    QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
-                    relation.put(qualifiedFiveChildNode.getId(),qualifiedFiveStarNetTreeNode.getId());
-                }
-                setuplinkLevelLineAndLevel(uplinkLevelLine,goldDiamondNetTreeNode,qualifiedFiveStarUplinkId);
-                copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
-            }else {
-                goldDiamondUplink.setPassUpOpv(goldDiamondUplink.getPassUpOpv()+simpleNetTreeNode.getPpv());
-                // 获取当前元素的所有直接下级
-                List<TreeNode> childNodes = qualifiedFiveStarNetTreeNode.getChildNodes();
-                for (TreeNode childNode : childNodes){
-                    QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
-                    relation.put(qualifiedFiveChildNode.getId(),map_uplinkId);
-                }
-                goldDiamondNetTreeNodeRepository.saveAndFlush(goldDiamondUplink);
-                relation.remove(id);
-            }
-        }else {
-            if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
-                goldDiamondNetTreeNode.setUplinkId(0);
-                goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
-                goldDiamondNetTreeNode.setPassUpOpv(simpleNetTreeNode.getPpv());
-                goldDiamondNetTreeNode.setLevelLine(String.valueOf(0));
-                goldDiamondNetTreeNode.setLevelNum(0);
-                // 获取金钻的所有直接下级
-                List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
-                for (TreeNode childNode : childNodes){
-                    QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
-                    relation.put(qualifiedFiveChildNode.getId(),qualifiedFiveStarNetTreeNode.getId());
-                }
-                copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
-            }
-        }
-	}
-
-	@Override
-	protected void process(TreeNode node, String snapshotDate) {
-
+			if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
+				goldDiamondNetTreeNode.setUplinkId(goldDiamondUplink.getId());
+				goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
+				goldDiamondNetTreeNode.setPassUpOpv(simpleNetTreeNode.getPpv());
+				// 获取金钻的所有直接下级
+				List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
+				for (TreeNode childNode : childNodes){
+					QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
+					relation.put(qualifiedFiveChildNode.getId(),qualifiedFiveStarNetTreeNode.getId());
+				}
+				setuplinkLevelLineAndLevel(uplinkLevelLine,goldDiamondNetTreeNode,qualifiedFiveStarUplinkId);
+				copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
+			}else {
+				goldDiamondUplink.setPassUpOpv(goldDiamondUplink.getPassUpOpv()+simpleNetTreeNode.getPpv());
+				// 获取当前元素的所有直接下级
+				List<TreeNode> childNodes = qualifiedFiveStarNetTreeNode.getChildNodes();
+				for (TreeNode childNode : childNodes){
+					QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
+					relation.put(qualifiedFiveChildNode.getId(),map_uplinkId);
+				}
+				goldDiamondNetTreeNodeRepository.saveAndFlush(goldDiamondUplink);
+				relation.remove(id);
+			}
+		}else {
+			if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
+				goldDiamondNetTreeNode.setUplinkId(0);
+				goldDiamondNetTreeNode.setOpv(opvNetTreeNode.getOpv());
+				goldDiamondNetTreeNode.setPassUpOpv(simpleNetTreeNode.getPpv());
+				goldDiamondNetTreeNode.setLevelLine(String.valueOf(0));
+				goldDiamondNetTreeNode.setLevelNum(0);
+				// 获取金钻的所有直接下级
+				List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
+				for (TreeNode childNode : childNodes){
+					QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
+					relation.put(qualifiedFiveChildNode.getId(),qualifiedFiveStarNetTreeNode.getId());
+				}
+				copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
+			}
+		}
 	}
 
 	private void setuplinkLevelLineAndLevel(String uplinkLevelLine,GoldDiamondNetTreeNode goldDiamondNetTreeNode,Long goldDiamondUplinkId){
@@ -183,7 +175,6 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		int treeLevel = getMaxTreeLevel(snapshotDate);
 		if (treeLevel < 0)
 			return;
-		Map<Long,List<PassUpGpv>> downLines = new HashMap<>();
 		while (treeLevel >= 0) {
 			List<GoldDiamondNetTreeNode> thisTreeLevelTreeList = goldDiamondNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
