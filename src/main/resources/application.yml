@@ -52,7 +52,7 @@ datasource:
       hbm2ddl.method: update
       show_sql: true
       format_sql: true
-      dialect: org.hibernate.dialect.MySQL5Dialect
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
 ---
 spring:
@@ -69,7 +69,7 @@ datasource:
       hbm2ddl.method: update
       show_sql: true
       format_sql: true
-      dialect: org.hibernate.dialect.MySQL5Dialect
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
 ---
 spring:
@@ -91,7 +91,7 @@ datasource:
       hbm2ddl.method: update
       show_sql: false
       format_sql: true
-      dialect: org.hibernate.dialect.MySQL5Dialect
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 eureka:
   instance:
     registerWithEureka: true
@@ -123,7 +123,7 @@ datasource:
       hbm2ddl.method: update
       show_sql: false
       format_sql: true
-      dialect: org.hibernate.dialect.MySQL5Dialect
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 eureka:
   instance:
     registerWithEureka: true
