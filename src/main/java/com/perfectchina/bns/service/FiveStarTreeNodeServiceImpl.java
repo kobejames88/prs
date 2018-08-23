@@ -63,6 +63,11 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		
 	}
 
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
+
+	}
+
 	/**
 	 * copy value form gpvNetTree
 	 */

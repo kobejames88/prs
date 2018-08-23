@@ -117,6 +117,11 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 	}
 
 	@Override
+	protected void process(TreeNode node, String snapshotDate) {
+
+	}
+
+	@Override
 	/**
 	 * Update the entire tree's gpv
 	 */

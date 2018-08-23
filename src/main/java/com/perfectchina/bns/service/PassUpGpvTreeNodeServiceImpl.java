@@ -108,6 +108,11 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		passUpGpvNetTreeNodeRepository.saveAndFlush(passUpGpvNetTreeNode);
 	}
 
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
+
+	}
+
 	private Map<Long,Float> map = new HashMap<>();
 
 	@Override

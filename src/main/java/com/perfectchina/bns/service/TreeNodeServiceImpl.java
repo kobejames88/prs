@@ -23,7 +23,8 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 
     protected abstract TreeNodeRepository getTreeNodeRepository();
 	protected abstract void process( TreeNode node );
-    
+	protected abstract void process( TreeNode node ,String snapshotDate);
+
 	public boolean isNodeDataExist(String accountNum) {
 		return findByAccountNum( accountNum ) != null && findByAccountNum( accountNum ).size()>0;
 	}
@@ -50,7 +51,8 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
     	// Get child nodes
     	logger.debug("updateWholeTree, start");
     	TreeNode rootNode = getTreeNodeRepository().getRootTreeNode(snapshotDate);
-    	updateChildTreeLevel( 0, rootNode );
+    	//updateChildTreeLevel( 0, rootNode);
+    	updateChildTreeLevel( 0, rootNode,snapshotDate);
     	logger.debug("updateWholeTree, end");
     }
 
@@ -72,8 +74,31 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	        	child.setLevelNum( childLevelNum );
 	            stk.push(child);
 	        }
-	        process(top);
+	       // process(top);
+	        process(top,null);
 	    }
+	}
+
+	public void updateChildTreeLevel( Integer fromLevelNum, TreeNode fromNode,String snapshotDate){
+		List<TreeNode> childList = fromNode.getChildNodes();
+		if ( ( childList == null ) || ( childList.size() == 0 ) )  {
+			return;
+		}
+		logger.debug("updateChildTreeLevel, fromLevelNum="+ fromLevelNum +",  accountNum="+ fromNode.getData().getAccountNum()  );
+		Stack<TreeNode> stk = new Stack<>();
+		fromNode.setLevelNum(fromLevelNum);
+		stk.push(fromNode);
+
+		while (!stk.empty()) {
+			TreeNode top = stk.pop();
+			int childLevelNum = top.getLevelNum() + 1;
+			for ( TreeNode child : top.getChildNodes()) {
+				child.setLevelNum( childLevelNum );
+				stk.push(child);
+			}
+			// process(top);
+			process(top,snapshotDate);
+		}
 	}
 
 }

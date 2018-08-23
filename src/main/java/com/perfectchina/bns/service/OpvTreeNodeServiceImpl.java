@@ -124,6 +124,11 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		opvTreeNodeRepository.saveAndFlush(opvNetTreeNode);
 	}
 
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
+
+	}
+
 	/**
 	 * 更新opvNetTree 的信息并判断成为五星或推上五星
 	 * @param snapshotDate

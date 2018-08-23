@@ -146,7 +146,12 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		relation.remove(id);
 	}
 
-	private void setuplinkLevelLineAndLevel(String uplinkLevelLine,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,Long qualifiedFiveStarUplinkId){
+    @Override
+    protected void process(TreeNode node, String snapshotDate) {
+
+    }
+
+    private void setuplinkLevelLineAndLevel(String uplinkLevelLine,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,Long qualifiedFiveStarUplinkId){
         String newUplinkLevelLine = String.valueOf(new StringBuilder().append(uplinkLevelLine).append("_").append(qualifiedFiveStarUplinkId));
         String[] newUplinkLevelLines = StringUtils.split(newUplinkLevelLine, "_");
         int level = newUplinkLevelLines.length-1;

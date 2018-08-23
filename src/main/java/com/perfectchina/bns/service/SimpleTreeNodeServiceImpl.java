@@ -1,5 +1,7 @@
 package com.perfectchina.bns.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -63,4 +65,27 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		
 	}
 
+	protected void process( TreeNode node,String snapshotDate ) {
+		logger.debug("process, update node="+ node.getData().getAccountNum() +"/"+ node.getData().getName()+
+				", level ["+ node.getLevelNum()+"]." );
+
+		// retrieve sales records of given period to calculate the PPV
+		Long accountId = node.getData().getId();
+		Date date = null;
+		try {
+			date = new SimpleDateFormat("yyyyMM").parse(snapshotDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		Date snapshotDateEndDate = DateUtils.getCurrentMonthEndDate(date);
+		List<SalesRecord> accountMonthlySales = salesRecordService.retrieveSelfSaleRecordOfLastMonth( accountId, snapshotDateEndDate );
+		SalesRecord totalSales = salesRecordService.findOutPersonalSalesRecordTotal(accountMonthlySales);
+
+		SimpleNetTreeNode thisNode = (SimpleNetTreeNode) node ;
+		thisNode.setPpv( totalSales.getSalesPV() );
+
+		getTreeNodeRepository().saveAndFlush( thisNode);
+
+	}
 }

@@ -155,7 +155,12 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
         }
 	}
 
-    private void setuplinkLevelLineAndLevel(String uplinkLevelLine,GoldDiamondNetTreeNode goldDiamondNetTreeNode,Long goldDiamondUplinkId){
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
+
+	}
+
+	private void setuplinkLevelLineAndLevel(String uplinkLevelLine,GoldDiamondNetTreeNode goldDiamondNetTreeNode,Long goldDiamondUplinkId){
         String newUplinkLevelLine = String.valueOf(new StringBuilder().append(uplinkLevelLine).append("_").append(goldDiamondUplinkId));
         String[] newUplinkLevelLines = StringUtils.split(newUplinkLevelLine, "_");
         int level = newUplinkLevelLines.length-1;

@@ -25,7 +25,8 @@ public class SalesRecordServiceImpl implements SalesRecordService {
 
 	public List<SalesRecord> retrieveSelfSaleRecordOfLastMonth(long accountId, Date lastMonthEndDate) {
 		logger.debug( "retrieveSelfSaleRecordOfLastMonth, accountId="+accountId+ ", lastMonthEndDate=" + lastMonthEndDate );
-		Date dateFrom = DateUtils.getMonthStartDate(lastMonthEndDate);
+		//Date dateFrom = DateUtils.getMonthStartDate(lastMonthEndDate);
+		Date dateFrom = DateUtils.getCurrentMonthStartDate(lastMonthEndDate);
 		Date dateTo = lastMonthEndDate;
 		
 		List<SalesRecord> salesRecords = salesRecordRepository.findByAccountId(accountId, dateFrom, dateTo);

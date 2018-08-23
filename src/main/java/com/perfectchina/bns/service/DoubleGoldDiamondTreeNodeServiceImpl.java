@@ -137,7 +137,12 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         relation.remove(id);
 	}
 
-	private Boolean judgeAndSaveReward(int type, Float mergingPoints, GoldDiamondNetTreeNode goldDiamondNetTreeNode,
+    @Override
+    protected void process(TreeNode node, String snapshotDate) {
+
+    }
+
+    private Boolean judgeAndSaveReward(int type, Float mergingPoints, GoldDiamondNetTreeNode goldDiamondNetTreeNode,
                                     DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode,OpvNetTreeNode opvNetTreeNode,
                                     Long id){
 	    switch(type){

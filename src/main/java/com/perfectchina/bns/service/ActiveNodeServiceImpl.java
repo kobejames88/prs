@@ -76,7 +76,12 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 	}
-	
+
+	@Override
+	protected void process(TreeNode node, String snapshotDate) {
+
+	}
+
 	/**
 	 * base on simple net tree
 	 */

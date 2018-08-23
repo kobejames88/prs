@@ -129,6 +129,40 @@ public class DateUtils {
 		// for the previous month, find the last day
 		cal.set( Calendar.DAY_OF_MONTH, cal.getActualMaximum( Calendar.DAY_OF_MONTH ));		
 		return cal.getTime();
+	}// Use this to find out month start date by inputDate, do not hardcode the date in the system
+
+	/**
+	 * 获取输入月份的就开始日期
+	 * @param inputDate
+	 * @return
+	 */
+	public static Date getCurrentMonthStartDate(Date inputDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime( inputDate );
+		cal.set( Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.HOUR_OF_DAY,0);
+		cal.set(Calendar.MINUTE,0);
+		cal.set(Calendar.SECOND,0);
+		cal.set(Calendar.MILLISECOND,0);
+		return cal.getTime();
+	}
+
+	/**
+	 * 获取输入月份的结束日期
+	 * @param inputDate
+	 * @return
+	 */
+	public static Date getCurrentMonthEndDate(Date inputDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime( inputDate );
+		cal.set( Calendar.DAY_OF_MONTH, 1);
+		// for the previous month, find the last day
+		cal.set( Calendar.DAY_OF_MONTH, cal.getActualMaximum( Calendar.DAY_OF_MONTH ));
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		cal.set(Calendar.MILLISECOND, 999);
+		return cal.getTime();
 	}
 
 	public static Date getCurrentDateStartTime(Date inputDate) {		
