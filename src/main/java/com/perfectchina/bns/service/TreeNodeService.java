@@ -18,7 +18,7 @@ public interface TreeNodeService<T> {
 	
 	void updateWholeTree(String snapshotDate);
 	
-	void updateChildTreeLevel(Integer fromLevelNum, TreeNode treeNode);
+	void updateChildTreeLevel(Integer fromLevelNum, TreeNode treeNode,String snapshotDate);
 
 	//int getMaxTreeLevel(String snapShotDate);
 }

@@ -67,6 +67,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		return isReady;
 	}
 
+
 	public int getMaxTreeLevel(String snapShotDate) {
 		return opvTreeNodeRepository.getMaxLevelNum(snapShotDate);
 	}
@@ -74,7 +75,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	/**
 	 * param node is SimpleNetTreeNode walking through
 	 */
-	protected void process(TreeNode node) {
+	protected void process(TreeNode node,String snapshotDate) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 
@@ -124,10 +125,6 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		opvTreeNodeRepository.saveAndFlush(opvNetTreeNode);
 	}
 
-	@Override
-	protected void process(TreeNode node, String snapshotDate) {
-
-	}
 
 	/**
 	 * 更新opvNetTree 的信息并判断成为五星或推上五星

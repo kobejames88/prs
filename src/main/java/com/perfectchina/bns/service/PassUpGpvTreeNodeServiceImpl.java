@@ -67,12 +67,12 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	@Override
 	public void updateWholeTree(String snapshotDate) {
 		TreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNode( snapshotDate );
-		updateChildTreeLevel( 0, rootNode );
+		updateChildTreeLevel( 0, rootNode,snapshotDate );
 	}
 
 	@Override
-	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode) {
-		super.updateChildTreeLevel(fromLevelNum, fromNode);
+	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode,String snapshotDate) {
+		super.updateChildTreeLevel(fromLevelNum, fromNode,snapshotDate);
 	}
 
 	public int getMaxTreeLevel(String snapShotDate) {

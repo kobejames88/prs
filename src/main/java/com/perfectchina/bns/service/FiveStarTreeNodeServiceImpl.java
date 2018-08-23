@@ -57,16 +57,12 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	}
 
 	@Override
-	protected void process(TreeNode node) {
+	protected void process(TreeNode node,String snapshotDate) {
 		// TODO Auto-generated method stub
         throw new java.lang.RuntimeException("Not yet implemented");
 		
 	}
 
-	@Override
-	protected void process(TreeNode node, String snapshotDate) {
-
-	}
 
 	/**
 	 * copy value form gpvNetTree

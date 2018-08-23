@@ -72,11 +72,11 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 	public void updateWholeTree(String snapshotDate) {
 		// Get child nodes
 		TreeNode rootNode = opvNetTreeNodeRepository.getRootTreeNode(snapshotDate);
-		updateChildTreeLevel( 0, rootNode );
+		updateChildTreeLevel( 0, rootNode ,snapshotDate);
 	}
 	@Override
-	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode) {
-		super.updateChildTreeLevel(fromLevelNum, fromNode);
+	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode,String snapshotDate) {
+		super.updateChildTreeLevel(fromLevelNum, fromNode,snapshotDate);
 	}
 	
 	public int getMaxTreeLevel(String snapShotDate) {

@@ -22,7 +22,6 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
 	private SimpleNetTreeNodeRepository simpleTreeNodeRepository;
 
     protected abstract TreeNodeRepository getTreeNodeRepository();
-	protected abstract void process( TreeNode node );
 	protected abstract void process( TreeNode node ,String snapshotDate);
 
 	public boolean isNodeDataExist(String accountNum) {
@@ -57,28 +56,6 @@ public abstract class TreeNodeServiceImpl implements TreeNodeService {
     }
 
     // Return fromNode with all the child updated
-	public void updateChildTreeLevel( Integer fromLevelNum, TreeNode fromNode){
-		List<TreeNode> childList = fromNode.getChildNodes();
-	    if ( ( childList == null ) || ( childList.size() == 0 ) )  {
-	        return;
-	    }
-		logger.debug("updateChildTreeLevel, fromLevelNum="+ fromLevelNum +",  accountNum="+ fromNode.getData().getAccountNum()  );
-	    Stack<TreeNode> stk = new Stack<>();
-	    fromNode.setLevelNum(fromLevelNum);	    
-	    stk.push(fromNode);
-
-	    while (!stk.empty()) {
-	        TreeNode top = stk.pop();
-	        int childLevelNum = top.getLevelNum() + 1;
-	        for ( TreeNode child : top.getChildNodes()) {
-	        	child.setLevelNum( childLevelNum );
-	            stk.push(child);
-	        }
-	       // process(top);
-	        process(top,null);
-	    }
-	}
-
 	public void updateChildTreeLevel( Integer fromLevelNum, TreeNode fromNode,String snapshotDate){
 		List<TreeNode> childList = fromNode.getChildNodes();
 		if ( ( childList == null ) || ( childList.size() == 0 ) )  {

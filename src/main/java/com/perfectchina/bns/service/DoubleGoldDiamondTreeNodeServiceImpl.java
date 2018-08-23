@@ -73,12 +73,12 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	@Override
 	public void updateWholeTree(String snapshotDate) {
 		TreeNode rootNode = goldDiamondNetTreeNodeRepository.getRootTreeNode(snapshotDate);
-		updateChildTreeLevel( 0, rootNode );
+		updateChildTreeLevel( 0, rootNode,snapshotDate );
 	}
 
 	@Override
-	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode) {
-		super.updateChildTreeLevel(fromLevelNum, fromNode);
+	public void updateChildTreeLevel(Integer fromLevelNum, TreeNode fromNode,String snapshotDate) {
+		super.updateChildTreeLevel(fromLevelNum, fromNode,snapshotDate);
 	}
 
     public int getMaxTreeLevel(String snapShotDate) {
@@ -91,7 +91,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	/**
 	 * param node is SimpleNetTreeNode walking through
 	 */
-	protected void process(TreeNode node) {
+	protected void process(TreeNode node, String snapshotDate2) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 		// 当前元素
@@ -136,11 +136,6 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
         relation.remove(id);
 	}
-
-    @Override
-    protected void process(TreeNode node, String snapshotDate) {
-
-    }
 
     private Boolean judgeAndSaveReward(int type, Float mergingPoints, GoldDiamondNetTreeNode goldDiamondNetTreeNode,
                                     DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode,OpvNetTreeNode opvNetTreeNode,

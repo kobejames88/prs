@@ -272,7 +272,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         thisNode.setLevelNum(levelNum);
 
 
-        treeNodeService.updateChildTreeLevel(levelNum, thisNode);
+        treeNodeService.updateChildTreeLevel(levelNum, thisNode,thisNode.getSnapshotDate());
 
 
         account.setStatus(interfaceAccount.getStatus());

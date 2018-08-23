@@ -71,16 +71,12 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 	}
 
 	@Override
-	protected void process(TreeNode node) {
+	protected void process(TreeNode node, String snapshotDate) {
 		// TODO Auto-generated method stub
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
 	}
 
-	@Override
-	protected void process(TreeNode node, String snapshotDate) {
-
-	}
 
 	/**
 	 * base on simple net tree
