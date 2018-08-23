@@ -80,7 +80,8 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 	}
 	
 	public int getMaxTreeLevel(String snapShotDate) {
-		return getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+        Integer maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+		return maxLevelNum == null ? -1 : maxLevelNum;
 	}
 
 	@Override

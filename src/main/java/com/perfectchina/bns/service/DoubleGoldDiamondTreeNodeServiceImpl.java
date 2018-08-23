@@ -82,8 +82,8 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	}
 
     public int getMaxTreeLevel(String snapShotDate) {
-        int maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
-        return maxLevelNum;
+        Integer maxLevelNum = getTreeNodeRepository().getMaxLevelNum(snapShotDate);
+        return maxLevelNum == null ? -1 : maxLevelNum;
     }
 
 	private Map<Long,Long> relation = new HashMap<>();
