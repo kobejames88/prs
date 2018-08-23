@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,11 +76,19 @@ public class RestApiDoubleGoldDiamondNetTreeNodeController {
 	 */
 	@RequestMapping(value = "/doubleGoldDiamond/{snapshotDate}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updatePassUpGpvNet(@PathVariable("snapshotDate") String snapshotDate) {
-
-		treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
-		treeNodeService.updateWholeTree(snapshotDate);
-		treeNodeService.updateWholeTreeDoubleGoldDiamond(snapshotDate);
-
+        DateFormat format1 = new SimpleDateFormat("yyyyMM");
+        Date date = null;
+        try {
+            date = format1.parse(snapshotDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( date ));
+        boolean readyToUpdate = treeNodeService.isReadyToUpdate();
+        if (readyToUpdate){
+            treeNodeService.updateWholeTree(snapshotDate);
+            treeNodeService.updateWholeTreeDoubleGoldDiamond(snapshotDate);
+        }
 
 		HttpHeaders headers = new HttpHeaders();
 		try {
