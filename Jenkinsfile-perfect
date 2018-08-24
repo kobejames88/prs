@@ -18,7 +18,7 @@ node {
          bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
       }
    }
-   state('build-dockerpush') {
+   stage('build-dockerpush') {
    sshPublisher(publishers: [sshPublisherDesc(configName: 'ci.zs.perfect', transfers: [sshTransfer(excludes: '', execCommand: 'source /home/pjsong/jenkins_ssh/build-local.sh', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '/var/jenkins_home/workspace/bns/target/*.jar, /var/jenkins_home/workspace/bns/Dockerfile, /var/jenkins_home/workspace/bns/build-local.sh')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
    }
    stage('Results') {
