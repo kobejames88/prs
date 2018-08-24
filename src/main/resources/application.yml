@@ -42,12 +42,9 @@ spring:
 
 datasource:
   bns:
-    #url: "jdbc:mysql://10.125.128.18:3306/bns_db"
-    #username: bns
-    #password: bns
-    url: jdbc:mysql://localhost:3306/bns_db
-    username: root
-    password: root
+    url: "jdbc:mysql://10.125.128.18:3306/bns_db"
+    username: bns
+    password: bns
     driverClassName: com.mysql.jdbc.Driver
     defaultSchema:
     maxPoolSize: 10

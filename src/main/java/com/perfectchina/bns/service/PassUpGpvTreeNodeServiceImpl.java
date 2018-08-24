@@ -84,10 +84,8 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 	protected void process(TreeNode node, String snapshotDate) {
 		logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
 				+ ", level [" + node.getLevelNum() + "].");
-		// Copy the node of the original network map plus the uplinkId to GpvNetTreeNode
 		FiveStarNetTreeNode fiveStarNetTreeNode = (FiveStarNetTreeNode) node;
 		PassUpGpvNetTreeNode passUpGpvNetTreeNode = new PassUpGpvNetTreeNode();
-		//the uplinkId is SimpleNet
 		long uplinkId = fiveStarNetTreeNode.getUplinkId();
 		if(uplinkId!=0){
 			FiveStarNetTreeNode fiveStarUplink = fiveStarNetTreeNodeRepository.getOne(uplinkId);
@@ -116,7 +114,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		int treeLevel = getMaxTreeLevel(snapShotDate);
 		if (treeLevel < 0)
 			return;
-		while (treeLevel >= 0) {
+		while (treeLevel > 0) {
 			// Get all the nodes in this layer
 			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
