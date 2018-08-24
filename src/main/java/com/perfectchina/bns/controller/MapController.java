@@ -1,9 +1,12 @@
 package com.perfectchina.bns.controller;
 
-import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.model.vo.FiveStarVo;
+import com.perfectchina.bns.model.vo.GoldDiamonndVo;
 import com.perfectchina.bns.model.vo.QualifiedFiveStarVo;
-import com.perfectchina.bns.service.GpvTreeNodeService;
+import com.perfectchina.bns.service.FiveStarTreeNodeService;
+import com.perfectchina.bns.service.GoldDiamondTreeNodeService;
 import com.perfectchina.bns.service.QualifiedFiveStarTreeNodeService;
+import com.perfectchina.bns.service.map.MapType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 
 /**
@@ -33,23 +34,36 @@ public class MapController {
 
 	@Autowired
 	QualifiedFiveStarTreeNodeService qualifiedFiveStarTreeNodeService; //Service which will do all data retrieval/manipulation work
-	
+	@Autowired
+    FiveStarTreeNodeService fiveStarTreeNodeService;
+	@Autowired
+    GoldDiamondTreeNodeService goldDiamondTreeNodeService;
 
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
 	@RequestMapping(value = "/map/{type}/{snapshotDate}", method = RequestMethod.GET)
-	public ResponseEntity<List<QualifiedFiveStarVo>> listAccounts(@PathVariable("type") int type, @PathVariable("snapshotDate") String snapshotDate,
+	public ResponseEntity listAccounts(@PathVariable("type") int type, @PathVariable("snapshotDate") String snapshotDate,
                                                                   HttpServletResponse httpServletResponse) {
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "x-requested-with");
-        List<QualifiedFiveStarVo> qualifiedFiveStarVos = null;
-	    if (type == 2){
-             qualifiedFiveStarVos = qualifiedFiveStarTreeNodeService.convertQualifiedFiveStarVo(snapshotDate);
+        switch(type){
+            case MapType.FIVE_STAR_NET:
+                List<FiveStarVo> fiveStarVos = fiveStarTreeNodeService.convertFiveStarVo(snapshotDate);
+                return new ResponseEntity (fiveStarVos, HttpStatus.OK);
+            case MapType.QUALIFIEDFIVE_STAR_NET:
+                List<QualifiedFiveStarVo> qualifiedFiveStarVos = qualifiedFiveStarTreeNodeService.convertQualifiedFiveStarVo(snapshotDate);
+                return new ResponseEntity (qualifiedFiveStarVos, HttpStatus.OK);
+            case MapType.GOLDDIAMOND_NET:
+                List<GoldDiamonndVo> goldDiamonndVos = goldDiamondTreeNodeService.convertGoldDiamondVo(snapshotDate);
+                return new ResponseEntity (goldDiamonndVos, HttpStatus.OK);
+            case MapType.DOUBLE_GOLDDIAMOND_NET:
+                //...;
+                break;
         }
-        return new ResponseEntity<>(qualifiedFiveStarVos, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
 }

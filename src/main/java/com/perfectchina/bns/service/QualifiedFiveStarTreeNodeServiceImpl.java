@@ -371,30 +371,32 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     }
 
     @Override
-    public List<QualifiedFiveStarVo> convertQualifiedFiveStarVo(String snapshotDate){
+    public List<QualifiedFiveStarVo> convertQualifiedFiveStarVo(String snapshotDate) {
         List<QualifiedFiveStarVo> qualifiedFiveStarVos = new ArrayList<>();
         List<QualifiedFiveStarNetTreeNode> qualifiedFiveStarNetTreeNodes = getTreeNodeRepository().getTreeNodesBySnapshotDate(snapshotDate);
-        for (QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode : qualifiedFiveStarNetTreeNodes){
-            QualifiedFiveStarVo qualifiedFiveStarVo = new QualifiedFiveStarVo();
-            FiveStarNetTreeNode fiveStarAccountNum = fiveStarNetTreeNodeRepository.findByAccountNum(snapshotDate,qualifiedFiveStarNetTreeNode.getData().getAccountNum());
-            qualifiedFiveStarVo.setLevelNum(qualifiedFiveStarNetTreeNode.getLevelNum());
-            qualifiedFiveStarVo.setName(qualifiedFiveStarNetTreeNode.getData().getName());
-            qualifiedFiveStarVo.setAccountNum(qualifiedFiveStarNetTreeNode.getData().getAccountNum());
-            qualifiedFiveStarVo.setPpv(fiveStarAccountNum.getPpv());
-            qualifiedFiveStarVo.setGpv(fiveStarAccountNum.getGpv());
-            qualifiedFiveStarVo.setOpv(fiveStarAccountNum.getOpv());
-            qualifiedFiveStarVo.setPassUpGpv(qualifiedFiveStarNetTreeNode.getPassUpGpv());
-            qualifiedFiveStarVo.setBorrowPoints(qualifiedFiveStarNetTreeNode.getBorrowPoints());
-            qualifiedFiveStarVo.setBorrowedPoints(qualifiedFiveStarNetTreeNode.getBorrowedPoints());
-            qualifiedFiveStarVo.setFiveStarIntegral(qualifiedFiveStarNetTreeNode.getFiveStarIntegral());
-            int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
-            qualifiedFiveStarVo.setQualifiedLine(qualifiedLine<0?0:qualifiedLine);
-            String pin = qualifiedFiveStarNetTreeNode.getPin();
-            if (pin == null) pin = "ONE_STAR";
-            qualifiedFiveStarVo.setPin(Pin.codeOf(pin).getCode());
-            // todo 获取没每人的历史最高PIN
-            qualifiedFiveStarVo.setMaxPin(Pin.codeOf(pin).getCode());
-            qualifiedFiveStarVos.add(qualifiedFiveStarVo);
+        if (qualifiedFiveStarNetTreeNodes.size() > 0) {
+            for (QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode : qualifiedFiveStarNetTreeNodes) {
+                if (qualifiedFiveStarNetTreeNode.getUplinkId() == 0) continue;
+                QualifiedFiveStarVo qualifiedFiveStarVo = new QualifiedFiveStarVo();
+                FiveStarNetTreeNode fiveStarAccountNum = fiveStarNetTreeNodeRepository.findByAccountNum(snapshotDate, qualifiedFiveStarNetTreeNode.getData().getAccountNum());
+                qualifiedFiveStarVo.setLevelNum(qualifiedFiveStarNetTreeNode.getLevelNum());
+                qualifiedFiveStarVo.setName(qualifiedFiveStarNetTreeNode.getData().getName());
+                qualifiedFiveStarVo.setAccountNum(qualifiedFiveStarNetTreeNode.getData().getAccountNum());
+                qualifiedFiveStarVo.setPpv(fiveStarAccountNum.getPpv());
+                qualifiedFiveStarVo.setGpv(fiveStarAccountNum.getGpv());
+                qualifiedFiveStarVo.setOpv(fiveStarAccountNum.getOpv());
+                qualifiedFiveStarVo.setPassUpGpv(qualifiedFiveStarNetTreeNode.getPassUpGpv());
+                qualifiedFiveStarVo.setBorrowPoints(qualifiedFiveStarNetTreeNode.getBorrowPoints());
+                qualifiedFiveStarVo.setBorrowedPoints(qualifiedFiveStarNetTreeNode.getBorrowedPoints());
+                qualifiedFiveStarVo.setFiveStarIntegral(qualifiedFiveStarNetTreeNode.getFiveStarIntegral());
+                int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
+                qualifiedFiveStarVo.setQualifiedLine(qualifiedLine < 0 ? 0 : qualifiedLine);
+                String pin = qualifiedFiveStarNetTreeNode.getPin();
+                qualifiedFiveStarVo.setPin(Pin.codeOf(pin).getCode());
+                // todo 获取每人的历史最高PIN
+                qualifiedFiveStarVo.setMaxPin(Pin.codeOf(pin).getCode());
+                qualifiedFiveStarVos.add(qualifiedFiveStarVo);
+            }
         }
         return qualifiedFiveStarVos;
     }

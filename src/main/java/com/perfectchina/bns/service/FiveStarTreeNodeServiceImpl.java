@@ -1,12 +1,17 @@
 package com.perfectchina.bns.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
 
 import javax.transaction.Transactional;
 
+import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
+import com.perfectchina.bns.model.vo.FiveStarVo;
+import com.perfectchina.bns.model.vo.QualifiedFiveStarVo;
+import com.perfectchina.bns.service.Enum.Pin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,5 +165,30 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 		TreeNode rootNode = fiveStarNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );
 		return rootNode;
 	}
-	
+
+	@Override
+	public List<FiveStarVo> convertFiveStarVo(String snapshotDate) {
+        List<FiveStarVo> qualifiedFiveStarVos = new ArrayList<>();
+        List<FiveStarNetTreeNode> fiveStarNetTreeNodes = getTreeNodeRepository().getTreeNodesBySnapshotDate(snapshotDate);
+        if (fiveStarNetTreeNodes.size() >0 ){
+            for (FiveStarNetTreeNode fiveStarNetTreeNode : fiveStarNetTreeNodes){
+                if (fiveStarNetTreeNode.getUplinkId() == 0) continue;
+                FiveStarVo fiveStarVo =new FiveStarVo();
+                fiveStarVo.setLevelNum(fiveStarNetTreeNode.getLevelNum());
+                fiveStarVo.setName(fiveStarNetTreeNode.getData().getName());
+                fiveStarVo.setAccountNum(fiveStarNetTreeNode.getData().getAccountNum());
+                fiveStarVo.setPpv(fiveStarNetTreeNode.getPpv());
+                fiveStarVo.setGpv(fiveStarNetTreeNode.getGpv());
+                fiveStarVo.setOpv(fiveStarNetTreeNode.getOpv());
+                fiveStarVo.setQualifiedLine(0);
+                String pin = fiveStarNetTreeNode.getPin();
+                fiveStarVo.setPin(Pin.codeOf(pin).getCode());
+                // todo 获取每人的历史最高PIN
+                fiveStarVo.setMaxPin(Pin.codeOf(pin).getCode());
+                qualifiedFiveStarVos.add(fiveStarVo);
+            }
+        }
+        return qualifiedFiveStarVos;
+	}
+
 }

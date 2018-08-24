@@ -1,21 +1,15 @@
 package com.perfectchina.bns.service;
 
-import java.util.Date;
-
+import com.perfectchina.bns.model.Account;
+import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.service.pin.CheckPinResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perfectchina.bns.model.Account;
-import com.perfectchina.bns.model.AccountAward;
-import com.perfectchina.bns.model.AccountPinHistory;
-import com.perfectchina.bns.model.treenode.TreeNode;
-import com.perfectchina.bns.repositories.AccountPinHistoryRepository;
-import com.perfectchina.bns.service.pin.CheckPinResult;
-import com.perfectchina.bns.service.pin.PinPositionChecker;
-import com.perfectchina.bns.service.pin.PinPositionCheckerFactory;
+import java.util.Date;
 
 @Transactional
 @Service
@@ -42,7 +36,7 @@ public class AccountPinServiceImpl implements AccountPinService {
 	
 	/**
 	 * This function return the new account pin based on the GPV
-	 * @param account account to check
+	 * @param  account to check
 	 * @return the new pin for the account based on the GPV
 	 */
 	private CheckPinResult checkAccountPinPromotion(TreeNode treeNode, Date lastMonthEndDate) {
