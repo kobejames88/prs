@@ -18,7 +18,7 @@ node {
       }
    }
   state('build-dockerpush') {
-      sshPublisher(publishers: [sshPublisherDesc(configName: 'chinaunicom', transfers: [sshTransfer(excludes: '', execCommand: 'source /home/pjsong/jenkins_ssh/build-chinaunicom.sh', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '/var/jenkins_home/workspace/bns/target/*.jar, /var/jenkins_home/workspace/bns/Dockerfile, /var/jenkins_home/workspace/bns/build.sh')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+      sshPublisher(publishers: [sshPublisherDesc(configName: 'chinaunicom', transfers: [sshTransfer(excludes: '', execCommand: 'source /home/pjsong/jenkins_ssh/build-chinaunicom.sh', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '/var/jenkins_home/workspace/bns/target/*.jar, /var/jenkins_home/workspace/bns/Dockerfile, /var/jenkins_home/workspace/bns/build-chinaunicom.sh')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
       }
    stage('Results') {
  //     junit '**/target/surefire-reports/TEST-*.xml'
