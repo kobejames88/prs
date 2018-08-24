@@ -99,7 +99,7 @@ public class CustomerBonusNetServiceImpl  implements  CustomerBonusNetService{
                         for(TreeNode treeNode : childNodes){
                             reward = reward-((CustomerBonusNet)treeNode).getAmountTotal();
                         }
-                        customerBonusNet.setReward(reward);
+                        customerBonusNet.setReward(ManthUtils.round(reward));
                         customerBonusNet.setAmountTotal(amountTotal);
                         //all section calculate finish
                         break;
