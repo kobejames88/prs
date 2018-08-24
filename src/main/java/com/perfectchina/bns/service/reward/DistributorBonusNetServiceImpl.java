@@ -1,6 +1,7 @@
 package com.perfectchina.bns.service.reward;
 
 import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.common.utils.ManthUtils;
 import com.perfectchina.bns.model.CustomerBonusNet;
 import com.perfectchina.bns.model.reward.DistributorBonus;
 import com.perfectchina.bns.model.reward.DistributorBonusRate;
@@ -90,7 +91,7 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
         if(PinPosition.NEW_FIVE_STAR.equals(distributorBonus.getPin())&&distributorBonus.getAopvLastMonth()<18000){
             Float surplus = 18000 - distributorBonus.getAopvLastMonth();
             Float reward = (distributorBonus.getGpv() - surplus)* (bonusRate.getBonusRate() - 0.12F);
-            distributorBonus.setReward(reward);
+            distributorBonus.setReward(ManthUtils.round(reward));
             //surplus opv reward need pass up;will calculate in DistributorDifferentialBonus
             Float surplusReward = surplus * 0.12F;
 
@@ -129,7 +130,7 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
         }
         else {// if no newFiveStar
             Float reward = distributorBonus.getGpv() * (bonusRate.getBonusRate() - 0.12F);
-            distributorBonus.setReward(reward);
+            distributorBonus.setReward(ManthUtils.round(reward));
         }
         //算直销员级差时需要减的直销员奖
         Float temporaryBonus = distributorBonus.getGpv() * (bonusRate.getBonusRate());

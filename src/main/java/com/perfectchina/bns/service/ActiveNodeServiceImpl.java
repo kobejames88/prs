@@ -111,6 +111,7 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 		updateWholeTreeActiveNet(snapShotDate);
 	}
 
+
 	public void updateWholeTreeActiveNet(String snapShotDate) {
 		//find all last month snapshot date leafNodes;from leadNode climb up
 		List<ActiveNetTreeNode> leafNodes = activeNetTreeNodeRepository.findLeafNodes(snapShotDate);
@@ -118,9 +119,8 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 			ActiveNetTreeNode upLinkNode = activeNetTreeNodeRepository.getOne(activeNetTreeNode.getUplinkId());
 			//climb up  until root
 			while(upLinkNode!=null){
-				//if active find uplink node until the node is active or root;then set upLinkId
-				if(activeNetTreeNode.getPv()>=200){
-					ActiveNetTreeNode upLinkNode2 = upLinkNode;		
+					ActiveNetTreeNode upLinkNode2 = upLinkNode;
+					//find upLink until upLink is active
 					while(upLinkNode2.getPv()<200){
 						ActiveNetTreeNode upLinkNode2Up = null;
 						try {
@@ -134,15 +134,14 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 						upLinkNode2 = upLinkNode2Up;
 						activeNetTreeNode.setUplinkId(upLinkNode2.getId());
 					}
-				//pass gpv to uplinkNode;then set gpv=0,avoid repeatb calculate gpv
-				}else{
-					upLinkNode.setPv(upLinkNode.getPv()+activeNetTreeNode.getPv());
-					activeNetTreeNode.setPv(0);
-				}
 				//loop
 				activeNetTreeNode = upLinkNode;
 				try {
 					upLinkNode = activeNetTreeNodeRepository.findById(activeNetTreeNode.getUplinkId()).get();
+					if(upLinkNode!=null&&activeNetTreeNode.getPv()< 200){
+						upLinkNode.setPv(upLinkNode.getPv()+activeNetTreeNode.getPv());
+						activeNetTreeNode.setPv(0);
+					}
 				} catch (Exception e) {
 					break;
 				}
@@ -151,7 +150,7 @@ public class ActiveNodeServiceImpl extends TreeNodeServiceImpl implements Active
 		//delete no active member
 		activeNetTreeNodeRepository.deleteNOActiveMember();
 		updataLevel(snapShotDate);
-	  }
+	}
 
 	private void updataLevel(String snapShotDate) {
 		int fromLevelNum = 0;

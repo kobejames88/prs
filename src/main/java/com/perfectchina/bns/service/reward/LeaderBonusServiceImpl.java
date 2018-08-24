@@ -1,6 +1,7 @@
 package com.perfectchina.bns.service.reward;
 
 import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.common.utils.ManthUtils;
 import com.perfectchina.bns.model.reward.LeaderBonus;
 import com.perfectchina.bns.model.reward.LeaderBonusRate;
 import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
@@ -59,32 +60,32 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
             }
             if(PinPosition.RUBY.equals(leaderBonus.getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(rubyReward);
+                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
             }
             if(PinPosition.EMERALD.equals(leaderBonus.getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(rubyReward);
+                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
                 float emeraldReward = calculateEmeraldReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setEmerald(emeraldReward);
+                leaderBonus.setEmerald(ManthUtils.round(emeraldReward));
             }
             if(PinPosition.DIAMOND.equals(leaderBonus.getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(rubyReward);
+                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
                 float emeraldReward = calculateEmeraldReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setEmerald(emeraldReward);
+                leaderBonus.setEmerald(ManthUtils.round(emeraldReward));
                 float diamondReward = calculateDiamondReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setDiamondReward(diamondReward);
+                leaderBonus.setDiamondReward(ManthUtils.round(diamondReward));
             }
 
             if(PinPosition.GOLD_DIAMOND.equals(leaderBonus.getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(rubyReward);
+                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
                 float emeraldReward = calculateEmeraldReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setEmerald(emeraldReward);
+                leaderBonus.setEmerald(ManthUtils.round(emeraldReward));
                 float diamondReward = calculateDiamondReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setDiamondReward(diamondReward);
+                leaderBonus.setDiamondReward(ManthUtils.round(diamondReward));
                 float goldDiamondReward = calculateGoldDiamondReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setGoldDiamondReward(goldDiamondReward);
+                leaderBonus.setGoldDiamondReward(ManthUtils.round(goldDiamondReward));
             }
 
             leaderBonusRepository.saveAndFlush(leaderBonus);

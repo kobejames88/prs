@@ -1,6 +1,6 @@
 
 import com.perfectchina.bns.WebApplication;
-import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.common.utils.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,6 +66,15 @@ public class DateUtilsTest {
 		System.out.print("==============================================");
 		System.out.print(currentDateStartTime);
 		System.out.print(currentDateEndTime);
+	}
+
+	@Test
+	public void test(){
+		System.out.println(ManthUtils.round(1.005F));
+		System.out.println(ManthUtils.round(1.095F));
+		System.out.println(ManthUtils.round(1.004F));
+		System.out.println(ManthUtils.round(1.04F));
+		System.out.println(ManthUtils.round(1.05F));
 	}
 
 }

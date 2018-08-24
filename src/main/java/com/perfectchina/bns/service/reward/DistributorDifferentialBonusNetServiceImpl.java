@@ -1,6 +1,7 @@
 package com.perfectchina.bns.service.reward;
 
 import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.common.utils.ManthUtils;
 import com.perfectchina.bns.model.reward.DistributorBonus;
 import com.perfectchina.bns.model.reward.DistributorDifferentialBonus;
 import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
@@ -88,7 +89,7 @@ public class DistributorDifferentialBonusNetServiceImpl implements DistributorDi
             }
             Float reward = distributorDifferentialBonus.getOpv()*(distributorDifferentialBonusRateRepository.findBonusRateByOpvAndDateAsc(distributorDifferentialBonus.getOpv(),new Date()).getBonusRate());
             reward = reward - childReward + distributorBonus.getTemporaryReward() -distributorBonus.getTemporaryBonus();
-            distributorDifferentialBonus.setReward(reward);
+            distributorDifferentialBonus.setReward(ManthUtils.round(reward));
         }
         else{
             distributorDifferentialBonus.setReward(0);
