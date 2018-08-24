@@ -62,7 +62,7 @@ public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T,
 
 	@Query("SELECT a FROM #{#entityName} a WHERE a.snapshotDate = :snapshotDate order by a.levelNum")
 	public List<T> getTreeNodesBySnapshotDate(@Param("snapshotDate") String snapshotDate);
-	
+ 
 	@Query("SELECT a FROM #{#entityName} a WHERE a.uplinkId = :uplinkId order by a.id")
 	public List<T> getChildNodesByUpid(@Param("uplinkId")long uplinkId);
 
