@@ -180,7 +180,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 			return;
 
 		Map<Long,List<PassUpGpv>> downLines = new HashMap<>();
-		while (treeLevel >= 0) {
+		while (treeLevel > 0) {
 			List<QualifiedFiveStarNetTreeNode> thisTreeLevelList = qualifiedFiveStarNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
 			for (QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode : thisTreeLevelList) {
@@ -225,22 +225,22 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 if (passUpGpvs != null){
                     Iterator<PassUpGpv> passUpGpvIterator = passUpGpvs.iterator();
                     List<QualifiedFiveStarNetTreeNode> nodes = new ArrayList<>();
-                    // If there are child nodes, there is no need to borrow them
+                    // 如果合格则不需要借分
                     if (fiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
                         String pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
                         qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
                         qualifiedFiveStarNetTreeNode.setPin(pin);
                         qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarNetTreeNode);
                     }else {
-                        // Start the loan
-                        // Judging rank before borrowing points
+                        // 开始借分
+                        // 获取借分前的等级
                         String beforeBorrowPin = getPin(fiveStarIntegral, passUpGpv, qualifiedLine);
                         while (!(fiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
                             if (passUpGpvIterator.hasNext()) {
                                 PassUpGpv maxPassUpGpv = passUpGpvIterator.next();
-                                // How many points do you need to get the node
+                                // 获取需要借多少分
                                 Float needBorrowPoints = PinPoints.COMMON_QUALIFY_POINTS-fiveStarIntegral;
-                                // Gets the highest pass-up-gpv child node of the node
+                                // 获取紧缩gpv最高的节点
                                 QualifiedFiveStarNetTreeNode downLineNode = qualifiedFiveStarNetTreeNodeRepository.getOne(maxPassUpGpv.id);
                                 Float downlineFiveStarIntegral = downLineNode.getFiveStarIntegral();
                                 downLineNode.setBorrowTo(qualifiedFiveStarNetTreeNode.getId());
@@ -252,16 +252,16 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 Float borrowedPoints = qualifiedFiveStarNetTreeNode.getBorrowedPoints()!= null ? qualifiedFiveStarNetTreeNode.getBorrowedPoints() : 0F;
                                 qualifiedFiveStarNetTreeNode.setBorrowPoints(borrowedPoints+(isAchieve ? needBorrowPoints : downlineFiveStarIntegral));
                                 qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
-                                // If not, a qualified five-star line will be deleted
+
                                 if (isAchieve){
                                     if (downLineNodeFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
                                         // Qualified after borrowing points,Computing grade
                                         String pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
                                         qualifiedFiveStarNetTreeNode.setPin(pin);
                                     }else {
-                                        // Unqualified after borrowing points,Computing grade
-                                        // No influence on Ruby rank
-                                        qualifiedLine-=1;
+                                        // 如果借分后仍不合格，则合格线减一
+                                        // 红宝石职级不受影响
+                                        qualifiedLine = qualifiedLine == 0 ? 0 : qualifiedLine-1;
                                         String pin;
                                         if (beforeBorrowPin == PinPosition.RUBY){
                                             Account account = accountRepository.getAccountById(accountId);
@@ -275,7 +275,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                         qualifiedFiveStarNetTreeNode.setPin(pin);
                                     }
                                 }else {
-                                    qualifiedLine-=1;
+                                    qualifiedLine = qualifiedLine == 0 ? 0 : qualifiedLine-1;
                                     qualifiedFiveStarNetTreeNode.setQualifiedLine(qualifiedLine);
                                     passUpGpvIterator.remove();
                                 }
