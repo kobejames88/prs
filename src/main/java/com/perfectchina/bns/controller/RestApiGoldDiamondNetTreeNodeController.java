@@ -44,15 +44,16 @@ public class RestApiGoldDiamondNetTreeNodeController {
 	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 		
 		TreeNode rootNode = treeNodeService.getRootTreeNode(snapshotDate); // pass root node id to retrieve whole tree
-		if ( rootNode == null ) {
+        List<TreeNode> childNodes = rootNode.getChildNodes();
+
+        if ( rootNode == null || childNodes.size() == 0) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
 		}
 		
 		// parse the whole tree in depth first order for the whole list of TreeNode				
 		List<TreeNode> treeNodes = new ArrayList<>();
-		
-	    Stack<TreeNode> stk = new Stack<>();
+        Stack<TreeNode> stk = new Stack<>();
 	    stk.push( rootNode );
 	    while (!stk.empty()) {
 	        TreeNode top = stk.pop();

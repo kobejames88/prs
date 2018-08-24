@@ -103,13 +103,25 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         Long id = goldDiamondNetTreeNode.getId();
         // 当前元素上级id
         long uplinkId = goldDiamondNetTreeNode.getUplinkId();
+
         // 获取当前元素的opv
         String accountNum = goldDiamondNetTreeNode.getData().getAccountNum();
         OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
         // 获取当前元素的所有直接下级
         List<GoldDiamondNetTreeNode> childNodes = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
         int count = childNodes.size();
-        if (count !=0 ){
+        // 根节点直接通过
+        if (uplinkId == 0){
+            if (count > 0){
+                for (GoldDiamondNetTreeNode childNode : childNodes){
+                    relation.put(childNode.getId(), id);
+                }
+            }
+            copyNetTree(goldDiamondNetTreeNode,doubleGoldDiamondNetTreeNode);
+            return;
+        }
+        // 合并合格线，成功就生成节点
+        if (count > 0 ){
             Boolean flag = false;
             Boolean isDoubleGoldDiamond = false;
             if (count >= 7){
@@ -135,6 +147,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
             }
         }
         relation.remove(id);
+
 	}
 
     private Boolean judgeAndSaveReward(int type, Float mergingPoints, GoldDiamondNetTreeNode goldDiamondNetTreeNode,
