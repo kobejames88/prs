@@ -45,9 +45,10 @@ public class RestApiDoubleGoldDiamondNetTreeNodeController {
 
 	@RequestMapping(value = "/doubleGoldDiamond/listAccounts/{snapshotDate}", method = RequestMethod.GET)
 	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
-		
+
 		TreeNode rootNode = treeNodeService.getRootTreeNode(snapshotDate); // pass root node id to retrieve whole tree
-		if ( rootNode == null ) {
+        List<TreeNode> childNodes = rootNode.getChildNodes();
+        if ( rootNode == null || childNodes.size() == 0 ) {
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 			// You many decide to return HttpStatus.NOT_FOUND
 		}
