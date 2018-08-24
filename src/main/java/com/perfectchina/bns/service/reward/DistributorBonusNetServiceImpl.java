@@ -1,5 +1,6 @@
 package com.perfectchina.bns.service.reward;
 
+import com.perfectchina.bns.common.utils.BeanUtil;
 import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.common.utils.ManthUtils;
 import com.perfectchina.bns.model.CustomerBonusNet;
@@ -56,7 +57,8 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
             for (TreeNode child : top.getChildNodes()) {
                 stk.push(child);
             }
-            BeanUtils.copyProperties(top, distributorBonus);
+            //BeanUtils.copyProperties(top, distributorBonus);
+            BeanUtil.copyPropertiesIgnoreNull(top, distributorBonus);
             //find and set uplinkId
             long uplinkId = top.getUplinkId();
             if (uplinkId != 0) {
