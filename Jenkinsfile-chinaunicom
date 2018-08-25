@@ -12,7 +12,7 @@ node {
       // Run the maven build
       if (isUnix()) {
          sh "'${mvnHome}/bin/mvn' -DskipTests clean package"
-         sh "'${mvnHome}/bin/mvn' sonar:sonar -Dsonar.host.url=http://10.125.128.18:9001 -Dsonar.login=d46c6f57bfc0186b7a8c8ff9f562ecdf47322f95"
+         sh "'${mvnHome}/bin/mvn' sonar:sonar -Dsonar.host.url=http://10.125.128.18:9001 -Dsonar.login=118fe220f0a13c812d1a424d99efdf5621c35612"
       } else {
          bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
       }
