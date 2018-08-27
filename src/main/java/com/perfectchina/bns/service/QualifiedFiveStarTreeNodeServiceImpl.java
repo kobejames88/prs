@@ -192,11 +192,25 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
                 long id = qualifiedFiveStarNetTreeNode.getId();
                 List<QualifiedFiveStarNetTreeNode> childs = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
+                int EmeraldLine = 0;
+                int GoldDiamondLine = 0;
                 if (childs.size()>0){
                     qualifiedFiveStarNetTreeNode.setHasChild(true);
+                    // 记录下级翡翠和金钻的个数
+                    for (QualifiedFiveStarNetTreeNode qualifiedFiveChildNode : childs){
+                        String pin = qualifiedFiveChildNode.getData().getPin();
+                        if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.EMERALD).getCode()){
+                            EmeraldLine+=1;
+                        }
+                        if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.GOLD_DIAMOND).getCode()){
+                            GoldDiamondLine+= 1;
+                        }
+                    }
                 }else {
                     qualifiedFiveStarNetTreeNode.setHasChild(false);
                 }
+                qualifiedFiveStarNetTreeNode.setEmeraldLine(EmeraldLine);
+                qualifiedFiveStarNetTreeNode.setGoldDiamondLine(GoldDiamondLine);
 
                 // Go to map to get all the people with common superiors
                 List<PassUpGpv> downLinePassUpGpvs = downLines.get(uplinkId);

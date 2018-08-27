@@ -32,7 +32,7 @@ public enum Pin {
                 return pin;
             }
         }
-        throw new RuntimeException("没有此交易状态码！");
+        throw new RuntimeException("没有此职级！");
     }
 
     public String getValue() {

@@ -106,7 +106,6 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
 		FiveStarNetTreeNode fiveStarNetTreeNode = fiveStarNetTreeNodeRepository.findByAccountNum(snapshotDate, accountNum);
 
-
 		if (map_uplinkId != null){
 			// 如果map中有上级id
 			QualifiedFiveStarNetTreeNode qualifiedFiveStarUplink = qualifiedFiveStarNetTreeNodeRepository.getOne(map_uplinkId);

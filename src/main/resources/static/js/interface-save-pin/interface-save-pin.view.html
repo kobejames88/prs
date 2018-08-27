@@ -1,0 +1,27 @@
+<h1>Interface Save Pin</h1>
+
+<button onclick="save('201807')">save pin 201807</button></br>
+<button onclick="save('201808')">save pin 201808</button></br>
+<button onclick="save('201809')">save pin 201809</button></br>
+
+ <script type="text/javascript">
+ function save(){
+	 $.ajax({
+         url:"/bns/api/pin/" + snahshotDate ,
+         type:"put",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+
