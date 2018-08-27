@@ -38,10 +38,10 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     private float asteriskNodePoints;
 
     @Column(columnDefinition="int default 0")
-    private int EmeraldLine;
+    private int emeraldLine;
 
     @Column(columnDefinition="int default 0")
-    private int GoldDiamondLine;
+    private int goldDiamondLine;
 
     private String levelLine;
 
@@ -52,19 +52,19 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     }
 
     public int getEmeraldLine() {
-        return EmeraldLine;
+        return emeraldLine;
     }
 
     public void setEmeraldLine(int emeraldLine) {
-        EmeraldLine = emeraldLine;
+        this.emeraldLine = emeraldLine;
     }
 
     public int getGoldDiamondLine() {
-        return GoldDiamondLine;
+        return goldDiamondLine;
     }
 
     public void setGoldDiamondLine(int goldDiamondLine) {
-        GoldDiamondLine = goldDiamondLine;
+        this.goldDiamondLine = goldDiamondLine;
     }
 
     public Boolean getHasAsteriskNode() {
