@@ -28,6 +28,23 @@ public class GoldenDiamondOPVBonusRate {
     private float bonusRateLvl7;  //第七代 0.1%
     private float bonusRateLvl8;  //第八代 0.1%
 
+
+    private String createdBy;
+
+    @Temporal(TemporalType.DATE)
+    private Date creationDate;
+
+    @Temporal(TemporalType.DATE)
+    private Date effectiveFrom;
+
+    @Temporal(TemporalType.DATE)
+    private Date effectiveTo;
+
+    private String lastUpdatedBy;
+
+    @Temporal(TemporalType.DATE)
+    private Date lastUpdatedDate;
+
     public long getId() {
         return id;
     }
@@ -98,5 +115,53 @@ public class GoldenDiamondOPVBonusRate {
 
     public void setBonusRateLvl8(float bonusRateLvl8) {
         this.bonusRateLvl8 = bonusRateLvl8;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getEffectiveFrom() {
+        return effectiveFrom;
+    }
+
+    public void setEffectiveFrom(Date effectiveFrom) {
+        this.effectiveFrom = effectiveFrom;
+    }
+
+    public Date getEffectiveTo() {
+        return effectiveTo;
+    }
+
+    public void setEffectiveTo(Date effectiveTo) {
+        this.effectiveTo = effectiveTo;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
+
+    public Date getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(Date lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 }

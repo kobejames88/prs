@@ -42,7 +42,7 @@ spring:
 
 datasource:
   bns:
-    url: "jdbc:mysql://10.125.128.18:3306/bns_db"
+    url: "jdbc:mysql://10.125.128.18:9296/bns_db?useUnicode=true&characterEncoding=utf8"
     username: bns
     password: bns
     driverClassName: com.mysql.jdbc.Driver
