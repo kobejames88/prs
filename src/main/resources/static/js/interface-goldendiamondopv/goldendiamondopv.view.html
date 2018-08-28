@@ -1,0 +1,31 @@
+<h1>goldenDiamondOPVBonus</h1>
+
+
+<button onclick="createNet('201807')">calculate goldenDiamondOPVBonus 201807</button></br>
+<button onclick="createNet('201808')">calculate goldenDiamondOPVBonus 201808</button></br>
+<button onclick="createNet('201809')">calculate goldenDiamondOPVBonus 201809</button></br>
+<a href="#!/interface-goldendiamondopv-bonus/list?201807"><button >list goldenDiamondOPVBonus 201807</button></a></br>
+<a href="#!/interface-goldendiamondopv-bonus/list?201808"><button >list goldenDiamondOPVBonus 201808</button></a></br>
+<a href="#!/interface-goldendiamondopv-bonus/list?201809"><button >list goldenDiamondOPVBonus 201809</button></a></br>
+
+ <script type="text/javascript">
+ function createNet(snahshotDate){
+	 $.ajax({
+         url:"/bns/api/reward/calculate/goldendiamondopv/bonus/" + snahshotDate ,
+         type:"get",
+         data:"",
+         async:true, 
+         processData:false,
+         contentType:false,
+         success:function(data){
+       	  alert("success!");
+         },
+         error:function(e){
+             alert("failed!");
+         }
+     });
+ }
+
+  </script>
+
+

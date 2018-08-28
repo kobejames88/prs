@@ -233,6 +233,21 @@
                 controllerAs: 'vm'
             })
 
+
+            .when('/interface-goldendiamondopv-bonus', {
+                controller: 'GoldenDiamondOPVBonusController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-goldendiamondopv/goldendiamondopv.view.html',
+                controllerAs: 'vm'
+            })
+
+            .when('/interface-goldendiamondopv-bonus/list', {
+                controller: 'GoldenDiamondOPVBonusController',
+                //templateUrl: 'register',
+                templateUrl: 'js/interface-goldendiamondopv/list/goldendiamondopv.html',
+                controllerAs: 'vm'
+            })
+
             .otherwise({ redirectTo: '/login' });
                 
     }

@@ -47,14 +47,14 @@ public class GoldenDiamondOPVBonusServiceImpl implements  GoldenDiamondOPVBonusS
         GoldDiamondNetTreeNode rootTreeNode = goldDiamondNetTreeNodeRepository.getRootTreeNode(snapshotDate);
         Stack<TreeNode> stk = new Stack<>();
         stk.push(rootTreeNode);
-        while (stk!=null){
+        while (!stk.isEmpty()){
             GoldDiamondNetTreeNode node = (GoldDiamondNetTreeNode)stk.pop();
             List<TreeNode> childNodes = node.getChildNodes();
             for(TreeNode treeNode : childNodes){
                 stk.push(treeNode);
             }
             //标记要计算到的代数，待优化
-            QualifiedFiveStarNetTreeNode fiveStar = qualifiedFiveStarNetTreeNodeRepository.findByAccountNum(node.getData().getAccountNum(), node.getSnapshotDate());
+            QualifiedFiveStarNetTreeNode fiveStar = qualifiedFiveStarNetTreeNodeRepository.findByAccountNum(node.getSnapshotDate(),node.getData().getAccountNum());
             int flag = 4;
             if(fiveStar.getGoldDiamondLine()>=7){
                 flag = 8;
@@ -64,6 +64,7 @@ public class GoldenDiamondOPVBonusServiceImpl implements  GoldenDiamondOPVBonusS
             float bonus = calculate( node, 0,flag);
             GoldenDiamondOPVBonus goldenDiamondOPVBonus = new GoldenDiamondOPVBonus();
             BeanUtil.copyPropertiesIgnoreNull(node,goldenDiamondOPVBonus);
+            goldenDiamondOPVBonus.setAccount(node.getData());
             goldenDiamondOPVBonus.setReward(bonus);
             goldenDiamondOPVBonusRepository.saveAndFlush(goldenDiamondOPVBonus);
         }

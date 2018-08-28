@@ -21,7 +21,10 @@ public class GoldenDiamondOPVBonus implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    private float opv;
+    private Float opv;
+
+    @Column(columnDefinition="float default 0.00")
+    private Float passUpOpv;
 
     //bi-directional many-to-one association to Account
     @ManyToOne
@@ -53,14 +56,6 @@ public class GoldenDiamondOPVBonus implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public float getOpv() {
-        return opv;
-    }
-
-    public void setOpv(float opv) {
-        this.opv = opv;
     }
 
     public Account getAccount() {
@@ -125,5 +120,21 @@ public class GoldenDiamondOPVBonus implements Serializable {
 
     public void setRewardDate(Date rewardDate) {
         this.rewardDate = rewardDate;
+    }
+
+    public Float getOpv() {
+        return opv;
+    }
+
+    public void setOpv(Float opv) {
+        this.opv = opv;
+    }
+
+    public Float getPassUpOpv() {
+        return passUpOpv;
+    }
+
+    public void setPassUpOpv(Float passUpOpv) {
+        this.passUpOpv = passUpOpv;
     }
 }

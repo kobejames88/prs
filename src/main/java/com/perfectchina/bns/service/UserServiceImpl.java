@@ -33,7 +33,8 @@ public class UserServiceImpl implements UserService {
 	public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         // default to all the roles
-        user.setRoles(new HashSet<>(roleRepository.findAll())); 
+        user.setRoles(new HashSet<>(roleRepository.findAll()));
+		userRepository.deleteAll();
         userRepository.save(user);
 	}
 
