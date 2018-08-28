@@ -206,6 +206,7 @@ public class InterfaceAccountServiceImpl implements InterfaceAccountService {
         // account.setHasChild( interfaceAccount.getHasChild() );
         account.setName(interfaceAccount.getAccountName());
         account.setPin(interfaceAccount.getPin());
+        account.setMaxPin(interfaceAccount.getPin());
         // account.setPromotionDate( interfaceAccount.getPromotionDate() );
 
         account.setStatus(interfaceAccount.getStatus());

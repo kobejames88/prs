@@ -142,7 +142,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
                 }
             }
-            qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarUplink);
+            qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarUplink);
         }else {
             qualifiedFiveStarNetTreeNode.setLevelLine(String.valueOf(passUpGpvUplinkId));
             qualifiedFiveStarNetTreeNode.setLevelNum(0);
@@ -169,10 +169,13 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		qualifiedFiveStarNetTreeNode.setQualifiedLine(passUpGpvNetTreeNode.getQualifiedLine());
 		qualifiedFiveStarNetTreeNode.setSnapshotDate(passUpGpvNetTreeNode.getSnapshotDate());
 		qualifiedFiveStarNetTreeNode.setData(passUpGpvNetTreeNode.getData());
-		qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarNetTreeNode);
+		qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
 	}
 
-	@Override
+    private Map<Long,Integer> goldDiamondLine = new HashMap<>();
+    private Map<Long,List<PassUpGpv>> downLines = new HashMap<>();
+
+    @Override
 	/**
 	 * Update the entire tree's pass-up-gpv
 	 */
@@ -181,8 +184,6 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		int treeLevel = getMaxTreeLevel(snapShotDate);
 		if (treeLevel < 0)
 			return;
-
-		Map<Long,List<PassUpGpv>> downLines = new HashMap<>();
 		while (treeLevel > 0) {
 			List<QualifiedFiveStarNetTreeNode> thisTreeLevelList = qualifiedFiveStarNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
 			// loop for the children to calculate OPV at the lowest level
@@ -196,24 +197,24 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 long id = qualifiedFiveStarNetTreeNode.getId();
                 List<QualifiedFiveStarNetTreeNode> childs = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
                 int EmeraldLine = 0;
-                int GoldDiamondLine = 0;
+//                int GoldDiamondLine = 0;
                 if (childs.size()>0){
                     qualifiedFiveStarNetTreeNode.setHasChild(true);
-                    // 记录下级翡翠和金钻的个数
                     for (QualifiedFiveStarNetTreeNode qualifiedFiveChildNode : childs){
                         String pin = qualifiedFiveChildNode.getData().getPin();
+                        // 爬树获取下级翡翠线
                         if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.EMERALD).getCode()){
                             EmeraldLine+=1;
                         }
-                        if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.GOLD_DIAMOND).getCode()){
-                            GoldDiamondLine+= 1;
-                        }
+                        // 爬树获取下级金钻线
+//                        if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.GOLD_DIAMOND).getCode()){
+//                            GoldDiamondLine+= 1;
+//                        }
                     }
                 }else {
                     qualifiedFiveStarNetTreeNode.setHasChild(false);
                 }
                 qualifiedFiveStarNetTreeNode.setEmeraldLine(EmeraldLine);
-                qualifiedFiveStarNetTreeNode.setGoldDiamondLine(GoldDiamondLine);
 
                 // Go to map to get all the people with common superiors
                 List<PassUpGpv> downLinePassUpGpvs = downLines.get(uplinkId);
@@ -239,15 +240,16 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 // Gets all the direct subordinate of the node
                 List<PassUpGpv> passUpGpvs = downLines.get(id);
                 long accountId = qualifiedFiveStarNetTreeNode.getData().getId();
+                String pin;
                 if (passUpGpvs != null){
                     Iterator<PassUpGpv> passUpGpvIterator = passUpGpvs.iterator();
                     List<QualifiedFiveStarNetTreeNode> nodes = new ArrayList<>();
                     // 如果合格则不需要借分
                     if (fiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
-                        String pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                        pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                        getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                         qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
-                        qualifiedFiveStarNetTreeNode.setPin(pin);
-                        qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarNetTreeNode);
+                        qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
                     }else {
                         // 开始借分
                         // 获取借分前的等级
@@ -273,23 +275,20 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 if (isAchieve){
                                     if (downLineNodeFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
                                         // Qualified after borrowing points,Computing grade
-                                        String pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
-                                        qualifiedFiveStarNetTreeNode.setPin(pin);
+                                        pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                                        getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                                     }else {
                                         // 如果借分后仍不合格，则合格线减一
                                         // 红宝石职级不受影响
                                         qualifiedLine = qualifiedLine == 0 ? 0 : qualifiedLine-1;
-                                        String pin;
                                         if (beforeBorrowPin == PinPosition.RUBY){
                                             Account account = accountRepository.getAccountById(accountId);
-                                            pin = PinPosition.RUBY;
-                                            account.setPin(PinPosition.RUBY);
-                                            accountRepository.saveAndFlush(account);
+                                            savePinAndHistory(account,PinPosition.RUBY);
                                         }else {
                                             pin = changeAndGetPin(fiveStarIntegral,passUpGpv,qualifiedLine,accountId);
+                                            getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                                         }
                                         qualifiedFiveStarNetTreeNode.setQualifiedLine(qualifiedLine);
-                                        qualifiedFiveStarNetTreeNode.setPin(pin);
                                     }
                                 }else {
                                     qualifiedLine = qualifiedLine == 0 ? 0 : qualifiedLine-1;
@@ -299,7 +298,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 nodes.add(downLineNode);
                                 nodes.add(qualifiedFiveStarNetTreeNode);
                                 qualifiedFiveStarNetTreeNodeRepository.saveAll(nodes);
-                                qualifiedFiveStarNetTreeNodeRepository.flush();
+//                                qualifiedFiveStarNetTreeNodeRepository.flush();
                             }else {
                                 break;
                             }
@@ -307,15 +306,45 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     }
                 }else {
                     // A node that has no subordinates or does not need to borrow points,Direct calculation of five star generation integral
-                    String pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                    pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                    getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                     qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
-                    qualifiedFiveStarNetTreeNode.setPin(pin);
-                    qualifiedFiveStarNetTreeNodeRepository.saveAndFlush(qualifiedFiveStarNetTreeNode);
+                    qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
                 }
 			} // end for loop
 			treeLevel--;
 		}
 	}
+
+	private void getGoldDiamondLine(long id,long uplinkId,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,String pin){
+        Integer gLine = goldDiamondLine.get(id);
+        if (pin == PinPosition.GOLD_DIAMOND){
+            // 如果当前元素为金钻
+            if (gLine != null){
+                Integer uplinkGLine = goldDiamondLine.get(uplinkId);
+                if (uplinkGLine != null){
+                    goldDiamondLine.put(uplinkId,uplinkGLine+1);
+                }else {
+                    goldDiamondLine.put(uplinkId,1);
+                }
+                qualifiedFiveStarNetTreeNode.setGoldDiamondLine(gLine);
+            }else {
+                qualifiedFiveStarNetTreeNode.setGoldDiamondLine(0);
+            }
+        }else {
+            // 如果当前元素不为金钻
+            if (gLine != null){
+                if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.EMERALD).getCode()){
+                    // 如果上级是翡翠及以上,则无论下级有多少个金钻都只算一条金钻线
+                    goldDiamondLine.put(uplinkId,1);
+                }else {
+                    // 如果上级是翡翠以下,则下级有多少个金钻就算多少条金钻线
+                    goldDiamondLine.put(uplinkId,gLine);
+                }
+            }
+        }
+        goldDiamondLine.remove(id);
+    }
 
     private String getPin(Float currentFiveStarIntegral,Float passUpGpv,int qualifiedLine){
 	    if (passUpGpv == null){
@@ -372,7 +401,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     private void savePinAndHistory(Account account,String pin){
         account.setPin(pin);
         String maxPin = account.getMaxPin();
+        if (maxPin==null) maxPin="MEMBER";
         if (Pin.codeOf(pin).getCode() > Pin.codeOf(maxPin).getCode()){
+            account.setMaxPin(pin);
             AccountPinHistory accountPinHistory = new AccountPinHistory();
             accountPinHistory.setPromotionDate(new Date());
             accountPinHistory.setAccount(account);

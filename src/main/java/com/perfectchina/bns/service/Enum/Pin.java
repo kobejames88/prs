@@ -3,6 +3,7 @@ package com.perfectchina.bns.service.Enum;
 import org.apache.commons.lang3.StringUtils;
 
 public enum Pin {
+    MEMBER(0,"MEMBER"),
     ONE_STAR(1,"ONE_STAR"),
     TWO_STAR(2,"TWO_STAR"),
     THREE_STAR(3,"THREE_STAR"),
