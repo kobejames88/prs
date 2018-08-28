@@ -1,6 +1,7 @@
 package com.perfectchina.bns.service;
 
 import com.perfectchina.bns.model.Account;
+import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.PassUpGpv;
 import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.PassUpGpvNetTreeNode;
@@ -36,6 +37,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     private AccountRepository accountRepository;
 	@Autowired
     private FiveStarNetTreeNodeRepository fiveStarNetTreeNodeRepository;
+	@Autowired
+    private AccountPinHistoryRepository accountPinHistoryRepository;
 
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -344,31 +347,41 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
         Account account = accountRepository.getAccountById(id);
         if ((qualifiedLine >= 8) || (qualifiedLine >= 7 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-            account.setPin(PinPosition.GOLD_DIAMOND);
-            accountRepository.saveAndFlush(account);
+            savePinAndHistory(account,PinPosition.GOLD_DIAMOND);
             return PinPosition.GOLD_DIAMOND;
         }
         if ((qualifiedLine >= 6) || (qualifiedLine >= 5 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-            account.setPin(PinPosition.DIAMOND);
-            accountRepository.saveAndFlush(account);
+            savePinAndHistory(account,PinPosition.DIAMOND);
             return PinPosition.DIAMOND;
         }
         if ((qualifiedLine >= 4) || (qualifiedLine >= 3 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-            account.setPin(PinPosition.EMERALD);
-            accountRepository.saveAndFlush(account);
+            savePinAndHistory(account,PinPosition.EMERALD);
             return PinPosition.EMERALD;
         }
         if ((qualifiedLine >= 2) || (qualifiedLine >= 1 && passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS)){
-            account.setPin(PinPosition.RUBY);
-            accountRepository.saveAndFlush(account);
+            savePinAndHistory(account,PinPosition.RUBY);
             return PinPosition.RUBY;
         }
         if (passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS){
-            account.setPin(PinPosition.QUALIFIED_FIVE_STAR);
-            accountRepository.saveAndFlush(account);
+            savePinAndHistory(account,PinPosition.QUALIFIED_FIVE_STAR);
             return PinPosition.QUALIFIED_FIVE_STAR;
         }
         return null;
+    }
+
+    private void savePinAndHistory(Account account,String pin){
+        account.setPin(pin);
+        String maxPin = account.getMaxPin();
+        if (Pin.codeOf(pin).getCode() > Pin.codeOf(maxPin).getCode()){
+            AccountPinHistory accountPinHistory = new AccountPinHistory();
+            accountPinHistory.setPromotionDate(new Date());
+            accountPinHistory.setAccount(account);
+            accountPinHistory.setCreatedBy("TerryTang");
+            accountPinHistory.setLastUpdatedBy("TerryTang");
+            accountPinHistory.setPin(pin);
+            accountPinHistoryRepository.save(accountPinHistory);
+        }
+        accountRepository.save(account);
     }
 
 	private List<PassUpGpv> SortFiveStarIntegral(List<PassUpGpv> passUpGpvs){

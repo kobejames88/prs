@@ -29,7 +29,6 @@ public class SavePinServiceImpl implements SavePinService{
                 accountPinHistory.setCreatedBy("TerryTang");
                 accountPinHistory.setLastUpdatedBy("TerryTang");
                 accountPinHistory.setAccount(account);
-                accountPinHistory.setSnapshotDate(snapShotDate);
                 accountPinHistories.add(accountPinHistory);
             }
         }
