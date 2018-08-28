@@ -43,8 +43,10 @@ public class Account implements Serializable {
 	
 	private String address;
 
-	private String accountNum;	
-	
+	private String accountNum;
+
+	private String maxPin;
+
 	private String pin;
 
 	@Temporal(TemporalType.DATE)
@@ -65,7 +67,15 @@ public class Account implements Serializable {
 	public Account() {
 	}
 
-	public long getId() {
+    public String getMaxPin() {
+        return maxPin;
+    }
+
+    public void setMaxPin(String maxPin) {
+        this.maxPin = maxPin;
+    }
+
+    public long getId() {
 		return this.id;
 	}
 

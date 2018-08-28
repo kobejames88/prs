@@ -35,6 +35,8 @@ public class AccountPinHistory implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date promotionDate;
 
+	private String snapshotDate;
+
 	//bi-directional many-to-one association to Account
 	@ManyToOne
 	@JoinColumn(name="AccountId")
@@ -43,7 +45,15 @@ public class AccountPinHistory implements Serializable {
 	public AccountPinHistory() {
 	}
 
-	public long getId() {
+    public String getSnapshotDate() {
+        return snapshotDate;
+    }
+
+    public void setSnapshotDate(String snapshotDate) {
+        this.snapshotDate = snapshotDate;
+    }
+
+    public long getId() {
 		return id;
 	}
 

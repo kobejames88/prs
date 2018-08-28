@@ -18,6 +18,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 	@Query("SELECT a FROM Account a WHERE a.accountNum = :accountNum order by a.id desc")
 	public Account getAccountByAccountNum(@Param("accountNum") String accountNum);
+
+
 	
 	@Query("SELECT a FROM Account a WHERE DATE_FORMAT(a.promotionDate , '%Y-%m')= :requireDate AND a.status = 'A' order by a.id")
 	public List<Account> getAccountByPromotionDateYearMonth(
