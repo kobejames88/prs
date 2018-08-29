@@ -10,7 +10,9 @@ import java.util.List;
  */
 
 public interface GoldenDiamondOPVBonusService {
+    //计算金钻平级奖
     void calculateBonus(String snapshotDate);
 
+    //获取所有金钻平级奖信息
     List<GoldenDiamondOPVBonus> listBonusInfo(String snapshotDate);
 }
