@@ -20,6 +20,8 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private Float gpv;
 
+    private Float opv;
+
     @Column(columnDefinition="float default 0.00")
     private Float fiveStarIntegral;
 
@@ -34,6 +36,8 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private Boolean hasAsteriskNode;
 
+    private Boolean AboveEmeraldNodeSign;
+
     @Column(columnDefinition="float default 0.00")
     private float asteriskNodePoints;
 
@@ -46,6 +50,22 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     private String levelLine;
 
     private String pin;
+
+    public Boolean getAboveEmeraldNodeSign() {
+        return AboveEmeraldNodeSign;
+    }
+
+    public void setAboveEmeraldNodeSign(Boolean aboveEmeraldNodeSign) {
+        AboveEmeraldNodeSign = aboveEmeraldNodeSign;
+    }
+
+    public Float getOpv() {
+        return opv;
+    }
+
+    public void setOpv(Float opv) {
+        this.opv = opv;
+    }
 
     public void setAsteriskNodePoints(float asteriskNodePoints) {
         this.asteriskNodePoints = asteriskNodePoints;

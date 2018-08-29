@@ -3,10 +3,7 @@ package com.perfectchina.bns.service;
 import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.PassUpGpv;
-import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
-import com.perfectchina.bns.model.treenode.PassUpGpvNetTreeNode;
-import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
-import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.model.treenode.*;
 import com.perfectchina.bns.model.vo.QualifiedFiveStarVo;
 import com.perfectchina.bns.repositories.*;
 import com.perfectchina.bns.service.Enum.Pin;
@@ -39,6 +36,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     private FiveStarNetTreeNodeRepository fiveStarNetTreeNodeRepository;
 	@Autowired
     private AccountPinHistoryRepository accountPinHistoryRepository;
+    @Autowired
+    private OpvNetTreeNodeRepository opvNetTreeNodeRepository;
 
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -121,12 +120,12 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
             // To judge if it is a qualified five-star
             if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
                 setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
-                copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
+                copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode,snapshotDate);
             }else{
                 // To judge if it is a ruby
                 if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine >= 1) || (qualifiedLine >= 2)){
                     setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
-                    copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
+                    copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode,snapshotDate);
                 }else {
                     // Filter this element
                     // Gets the direct subordinate of this element
@@ -146,7 +145,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }else {
             qualifiedFiveStarNetTreeNode.setLevelLine(String.valueOf(passUpGpvUplinkId));
             qualifiedFiveStarNetTreeNode.setLevelNum(0);
-            copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode);
+            copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode,snapshotDate);
         }
         relation.remove(id);
     }
@@ -159,7 +158,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         qualifiedFiveStarNetTreeNode.setLevelNum(level);
     }
 
-	private void copyNetTree(PassUpGpvNetTreeNode passUpGpvNetTreeNode,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode){
+	private void copyNetTree(PassUpGpvNetTreeNode passUpGpvNetTreeNode,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,String snapshotDate){
+        String accountNum = qualifiedFiveStarNetTreeNode.getData().getAccountNum();
+		OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
         Float asteriskNodePoints = passUpGpvNetTreeNode.getAsteriskNodePoints();
         Boolean hasAsteriskNode = passUpGpvNetTreeNode.getHasAsteriskNode();
         qualifiedFiveStarNetTreeNode.setAsteriskNodePoints(asteriskNodePoints == null ? 0F : asteriskNodePoints);
@@ -168,6 +169,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         qualifiedFiveStarNetTreeNode.setGpv(passUpGpvNetTreeNode.getGpv());
 		qualifiedFiveStarNetTreeNode.setQualifiedLine(passUpGpvNetTreeNode.getQualifiedLine());
 		qualifiedFiveStarNetTreeNode.setSnapshotDate(passUpGpvNetTreeNode.getSnapshotDate());
+        qualifiedFiveStarNetTreeNode.setAboveEmeraldNodeSign(false);
+        qualifiedFiveStarNetTreeNode.setOpv(opvNetTreeNode.getOpv());
 		qualifiedFiveStarNetTreeNode.setData(passUpGpvNetTreeNode.getData());
 		qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
 	}
