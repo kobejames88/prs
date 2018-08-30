@@ -161,7 +161,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     }
 
 	private void copyNetTree(PassUpGpvNetTreeNode passUpGpvNetTreeNode,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,String snapshotDate){
-        String accountNum = qualifiedFiveStarNetTreeNode.getData().getAccountNum();
+        String accountNum = passUpGpvNetTreeNode.getData().getAccountNum();
 		OpvNetTreeNode opvNetTreeNode = opvNetTreeNodeRepository.findByAccountNum(snapshotDate,accountNum);
         Float asteriskNodePoints = passUpGpvNetTreeNode.getAsteriskNodePoints();
         Boolean hasAsteriskNode = passUpGpvNetTreeNode.getHasAsteriskNode();
@@ -402,11 +402,12 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
     private void savePinAndHistory(Account account,String pin){
         account.setPin(pin);
-        accountRepository.save(account);
         String maxPin = account.getMaxPin();
         Integer max = Pin.descOf(pin).getCode();
         Integer temp = Pin.descOf(maxPin).getCode();
         if (max > temp){
+            account.setMaxPin(pin);
+            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = max-1;
             while (max > temp){
                 temp+=1;
                 String temp_pin = Pin.codeOf(temp).getDesc();
@@ -419,6 +420,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 accountPinHistoryRepository.save(accountPinHistory);
             }
         }
+        accountRepository.save(account);
     }
 
 	private List<PassUpGpv> SortFiveStarIntegral(List<PassUpGpv> passUpGpvs){

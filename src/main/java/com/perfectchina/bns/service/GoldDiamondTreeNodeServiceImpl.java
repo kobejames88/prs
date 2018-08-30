@@ -105,7 +105,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode = (QualifiedFiveStarNetTreeNode) node;
 		// 待装载元素
 		GoldDiamondNetTreeNode goldDiamondNetTreeNode = new GoldDiamondNetTreeNode();
-		String pin = qualifiedFiveStarNetTreeNode.getPin();
+		String pin = qualifiedFiveStarNetTreeNode.getData().getPin();
 		Long id = qualifiedFiveStarNetTreeNode.getId();
 		Long map_uplinkId = relation.get(id);
 
@@ -176,25 +176,25 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 				copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
 			}else {
 			    // 如果不是金钻
-			    if (goldDiamondUplink.getLevelNum() > 0){
+//			    if (goldDiamondUplink.getLevelNum() > 0){
                     if (ranks != null){
                         // 有上级金钻
                         Rank rank = new Rank();
                         rank.setId(id);
                         rank.setPin(pin);
                         ranks.add(rank);
-                        // 获取当前元素的所有直接下级
-                        if (childNodes.size() > 0){
-                            for (TreeNode childNode : childNodes){
-                                QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
-                                long qc_id = qualifiedFiveChildNode.getId();
-                                goldRelationLine.put(qc_id,ranks);
-                                relation.put(qc_id,map_uplinkId);
-                            }
-                        }
-                        goldDiamondNetTreeNodeRepository.save(goldDiamondUplink);
                     }
-                }
+                    // 获取当前元素的所有直接下级
+                    if (childNodes.size() > 0){
+                        for (TreeNode childNode : childNodes){
+                            QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
+                            long qc_id = qualifiedFiveChildNode.getId();
+                            if (ranks != null) goldRelationLine.put(qc_id,ranks);
+                            relation.put(qc_id,map_uplinkId);
+                        }
+                    }
+                    goldDiamondNetTreeNodeRepository.save(goldDiamondUplink);
+//                }
                 goldRelationLine.remove(id);
 				relation.remove(id);
 			}
@@ -331,11 +331,12 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 
     private void savePinAndHistory(Account account,String pin){
         account.setPin(pin);
-        accountRepository.save(account);
         String maxPin = account.getMaxPin();
         Integer max = Pin.descOf(pin).getCode();
         Integer temp = Pin.descOf(maxPin).getCode();
         if (max > temp){
+            account.setMaxPin(pin);
+            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = max-1;
             while (max > temp){
                 temp+=1;
                 String temp_pin = Pin.codeOf(temp).getDesc();
@@ -348,6 +349,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                 accountPinHistoryRepository.save(accountPinHistory);
             }
         }
+        accountRepository.save(account);
     }
 
     private Float calculateMergingPoints(int line, int count, List<Float> opvs) {

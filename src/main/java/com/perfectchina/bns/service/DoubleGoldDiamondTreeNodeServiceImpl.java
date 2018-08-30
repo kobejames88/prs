@@ -234,11 +234,13 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
     private void savePinAndHistory(Account account,String pin){
         account.setPin(pin);
-        accountRepository.save(account);
         String maxPin = account.getMaxPin();
         Integer max = Pin.descOf(pin).getCode();
         Integer temp = Pin.descOf(maxPin).getCode();
         if (max > temp){
+            account.setMaxPin(pin);
+            // 五星及以上职级才保存到history表中
+            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = max-1;
             while (max > temp){
                 temp+=1;
                 String temp_pin = Pin.codeOf(temp).getDesc();
@@ -251,6 +253,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 accountPinHistoryRepository.save(accountPinHistory);
             }
         }
+        accountRepository.save(account);
     }
 
     public TreeNode getRootNode(String snapshotDate) {
