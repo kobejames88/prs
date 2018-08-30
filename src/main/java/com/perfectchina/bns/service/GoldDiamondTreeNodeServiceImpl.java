@@ -1,17 +1,14 @@
 package com.perfectchina.bns.service;
 
+import com.perfectchina.bns.model.Account;
+import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.Rank;
-import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
-import com.perfectchina.bns.model.treenode.GoldDiamondNetTreeNode;
-import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
-import com.perfectchina.bns.model.treenode.TreeNode;
+import com.perfectchina.bns.model.treenode.*;
 import com.perfectchina.bns.model.vo.GoldDiamonndVo;
-import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.GoldDiamondNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.QualifiedFiveStarNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.TreeNodeRepository;
+import com.perfectchina.bns.repositories.*;
 import com.perfectchina.bns.service.Enum.Pin;
 import com.perfectchina.bns.service.pin.PinPosition;
+import com.perfectchina.bns.service.reward.RewardPosition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +31,14 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	@Autowired
 	private QualifiedFiveStarNetTreeNodeRepository qualifiedFiveStarNetTreeNodeRepository;
 
-
-//	@Autowired
-//	private SimpleNetTreeNodeRepository simpleNetTreeNodeRepository;
     @Autowired
     private FiveStarNetTreeNodeRepository fiveStarNetTreeNodeRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private AccountPinHistoryRepository accountPinHistoryRepository;
 
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -129,7 +129,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                     // 有上级金钻,获取line判断是否有翡翠以上职级
                     Boolean hasEmerald = false;
                     for (Rank rank : ranks){
-                        if (Pin.codeOf(PinPosition.EMERALD).getCode() <= Pin.codeOf(rank.getPin()).getCode()){
+                        if (Pin.valueOf(PinPosition.EMERALD).getCode() <= Pin.valueOf(rank.getPin()).getCode()){
                             hasEmerald = true;
                             break;
                         }
@@ -146,10 +146,10 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                     List<Float> opvs = nodeOpv.get(upRank);
                     if (hasEmerald){
                         // 如果有翡翠及以上职级,将此节点线上的金钻下级opv存入map
-                        saveOpv2Map(sign,opvs,q_opv,upRank);
+                        saveOpv2Map(sign,opvs,q_opv,g_up);
                     }else {
                         // 如果没有翡翠及以上职级,将此节点的opv存入map
-                        saveOpv2Map(sign,opvs,opv,upRank);
+                        saveOpv2Map(sign,opvs,opv,g_up);
                     }
                     // 上级金钻的opv-此节点的opv
                     g_up.setPassUpOpv(g_up.getPassUpOpv() - q_opv);
@@ -191,7 +191,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                                 relation.put(qc_id,map_uplinkId);
                             }
                         }
-                        goldDiamondNetTreeNodeRepository.saveAndFlush(goldDiamondUplink);
+                        goldDiamondNetTreeNodeRepository.save(goldDiamondUplink);
                     }
                 }
                 goldRelationLine.remove(id);
@@ -214,15 +214,15 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		}
 	}
 
-    private void saveOpv2Map(Boolean sign,List<Float> opvs,Float opv,Rank upRank){
+    private void saveOpv2Map(Boolean sign,List<Float> opvs,Float opv,GoldDiamondNetTreeNode up){
         if (!sign){
             if (opvs != null){
                 opvs.add(opv);
-                nodeOpv.put(upRank.getId(),opvs);
+                nodeOpv.put(up.getId(),opvs);
             }else {
                 List<Float> opvList = new ArrayList<>();
                 opvList.add(opv);
-                nodeOpv.put(upRank.getId(),opvList);
+                nodeOpv.put(up.getId(),opvList);
             }
         }
     }
@@ -238,7 +238,8 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	private void copyNetTree(QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,GoldDiamondNetTreeNode goldDiamondNetTreeNode){
         goldDiamondNetTreeNode.setSnapshotDate(qualifiedFiveStarNetTreeNode.getSnapshotDate());
         goldDiamondNetTreeNode.setData(qualifiedFiveStarNetTreeNode.getData());
-		goldDiamondNetTreeNodeRepository.saveAndFlush(goldDiamondNetTreeNode);
+        goldDiamondNetTreeNode.setMergePoints(0F);
+		goldDiamondNetTreeNodeRepository.save(goldDiamondNetTreeNode);
 	}
 
 	@Override
@@ -246,26 +247,119 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	 * Update the entire tree's pass-up-gpv
 	 */
 	public void updateWholeTreeGoldDiamond(String snapshotDate) {
-		// Get the level of the original tree
 		int treeLevel = getMaxTreeLevel(snapshotDate);
 		if (treeLevel < 0)
 			return;
 		while (treeLevel > 0) {
 			List<GoldDiamondNetTreeNode> thisTreeLevelTreeList = goldDiamondNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
-			// loop for the children to calculate OPV at the lowest level
 			for (GoldDiamondNetTreeNode goldDiamondNetTreeNode : thisTreeLevelTreeList) {
                 long id = goldDiamondNetTreeNode.getId();
+                Float opv = goldDiamondNetTreeNode.getOpv();
+                // 获取当前节点每每条金钻线的opv
+                List<Float> opvs = nodeOpv.get(id);
+                if (opvs != null){
+                    int size = opvs.size();
+                    if (size > 0){
+                        Boolean flag = false;
+                        Float mergePoints = 0F;
+                        if (size >= 7) {
+                            // 如果有 x>=7 个直接下级，尝试合并
+                            mergePoints = calculateMergingPoints(7, size, opvs);
+                            judgeAndSaveReward(7, mergePoints, goldDiamondNetTreeNode, null);
+                            if (mergePoints < 200000F) {
+                                flag = true;
+                            }
+                        }
+                        if (flag || (size >= 4 && size < 7)) {
+                            // 如果有 x>=7 个直接下级但是合并失败 或 4<= x <7, 尝试合并
+                            mergePoints = calculateMergingPoints(4, size, opvs);
+                            judgeAndSaveReward(4, mergePoints, goldDiamondNetTreeNode, opv);
+                        }
+                        goldDiamondNetTreeNode.setMergePoints(mergePoints);
+                    }
+                }
+
+                // 更新当前节点是否有子节点
                 List<GoldDiamondNetTreeNode> childs = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
                 if (childs.size()>0){
                     goldDiamondNetTreeNode.setHasChild(true);
                 }else {
                     goldDiamondNetTreeNode.setHasChild(false);
                 }
-                goldDiamondNetTreeNodeRepository.saveAndFlush(goldDiamondNetTreeNode);
+                goldDiamondNetTreeNodeRepository.save(goldDiamondNetTreeNode);
+                nodeOpv.remove(id);
 			} // end for loop
 			treeLevel--;
 		}
 	}
+
+    private void judgeAndSaveReward(int type, Float mergingPoints, GoldDiamondNetTreeNode goldDiamondNetTreeNode, Float opv) {
+        switch (type) {
+            case 7:
+                if (mergingPoints >= 1000000F) {
+                    // 4重奖励，双金钻
+                    saveInfo(goldDiamondNetTreeNode, RewardPosition.QUADRUPLE_REWARD);
+                }
+                if (mergingPoints >= 500000F) {
+                    // 3重奖励，双金钻
+                    saveInfo(goldDiamondNetTreeNode, RewardPosition.TRIPLE_REWARD);
+                }
+                if (mergingPoints >= 200000F) {
+                    // 2重奖励，双金钻
+                    saveInfo(goldDiamondNetTreeNode, RewardPosition.DOUBLE_REWARD);
+                }
+                break;
+            case 4:
+                // 4条100万金钻线，且本人OPV达1000万
+                if (mergingPoints >= 1000000F && opv >= 10000000F) {
+                    // 1重奖励，双金钻
+                    saveInfo(goldDiamondNetTreeNode, RewardPosition.ONCE_REWARD);
+                }
+                break;
+        }
+    }
+
+    private void saveInfo(GoldDiamondNetTreeNode goldDiamondNetTreeNode, String reward) {
+        goldDiamondNetTreeNode.setReward(reward);
+        Account account = accountRepository.getAccountById(goldDiamondNetTreeNode.getData().getId());
+        savePinAndHistory(account, PinPosition.DOUBLE_GOLD_DIAMOND);
+    }
+
+    private void savePinAndHistory(Account account,String pin){
+        account.setPin(pin);
+        accountRepository.save(account);
+        String maxPin = account.getMaxPin();
+        Integer max = Pin.valueOf(pin).getCode();
+        Integer temp = Pin.valueOf(maxPin).getCode();
+        if (max > temp){
+            while (max > temp){
+                temp+=1;
+                String temp_pin = Pin.codeOf(temp).getValue();
+                AccountPinHistory accountPinHistory = new AccountPinHistory();
+                accountPinHistory.setPromotionDate(new Date());
+                accountPinHistory.setAccount(account);
+                accountPinHistory.setCreatedBy("TerryTang");
+                accountPinHistory.setLastUpdatedBy("TerryTang");
+                accountPinHistory.setPin(temp_pin);
+                accountPinHistoryRepository.save(accountPinHistory);
+            }
+        }
+    }
+
+    private Float calculateMergingPoints(int line, int count, List<Float> opvs) {
+        int avg = count / line;
+        int mod = count % line;
+        float[] every = new float[line];
+        float total = 0F;
+        for (int i = 0; i < line; i++) {
+            int step = (i == line - 1) ? avg + mod : avg;
+            for (int j = i * avg; j < (i * avg + step); j++) {
+                every[i] += opvs.get(j);
+            }
+            total = (i == 0) ? every[i] : every[i] + total;
+        }
+        return total;
+    }
 
 	@Override
 	public List<GoldDiamonndVo> convertGoldDiamondVo(String snapshotDate) {
@@ -286,9 +380,9 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                 goldDiamonndVo.setOpv(fiveStarAccountNum.getOpv());
                 goldDiamonndVo.setQualifiedGoldDiamond(count);
                 String pin = goldDiamondNetTreeNode.getData().getPin();
-                goldDiamonndVo.setPin(Pin.codeOf(pin).getCode());
+                goldDiamonndVo.setPin(Pin.valueOf(pin).getCode());
                 // todo 获取每人的历史最高PIN
-                goldDiamonndVo.setMaxPin(Pin.codeOf(pin).getCode());
+                goldDiamonndVo.setMaxPin(Pin.valueOf(pin).getCode());
                 goldDiamonndVos.add(goldDiamonndVo);
             }
         }

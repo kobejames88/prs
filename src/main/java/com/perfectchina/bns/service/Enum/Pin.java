@@ -27,14 +27,15 @@ public enum Pin {
         this.value = value;
     }
 
-    public static Pin codeOf(String value){
+    public static Pin codeOf(Integer code){
         for (Pin pin : values()){
-            if (StringUtils.equals(pin.getValue(),value)){
+            if (pin.getCode() == code){
                 return pin;
             }
         }
         throw new RuntimeException("没有此职级！");
     }
+
 
     public String getValue() {
         return value;

@@ -168,6 +168,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         qualifiedFiveStarNetTreeNode.setPassUpGpv(passUpGpvNetTreeNode.getPassUpGpv());
         qualifiedFiveStarNetTreeNode.setGpv(passUpGpvNetTreeNode.getGpv());
 		qualifiedFiveStarNetTreeNode.setQualifiedLine(passUpGpvNetTreeNode.getQualifiedLine());
+        qualifiedFiveStarNetTreeNode.setGoldDiamondLine(0);
+        qualifiedFiveStarNetTreeNode.setEmeraldLine(0);
 		qualifiedFiveStarNetTreeNode.setSnapshotDate(passUpGpvNetTreeNode.getSnapshotDate());
         qualifiedFiveStarNetTreeNode.setAboveEmeraldNodeSign(false);
         qualifiedFiveStarNetTreeNode.setOpv(opvNetTreeNode.getOpv());
@@ -206,13 +208,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     for (QualifiedFiveStarNetTreeNode qualifiedFiveChildNode : childs){
                         String pin = qualifiedFiveChildNode.getData().getPin();
                         // 爬树获取下级翡翠线
-                        if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.EMERALD).getCode()){
+                        if (Pin.valueOf(pin).getCode() >= Pin.valueOf(PinPosition.EMERALD).getCode()){
                             EmeraldLine+=1;
                         }
-                        // 爬树获取下级金钻线
-//                        if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.GOLD_DIAMOND).getCode()){
-//                            GoldDiamondLine+= 1;
-//                        }
                     }
                 }else {
                     qualifiedFiveStarNetTreeNode.setHasChild(false);
@@ -331,13 +329,11 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     goldDiamondLine.put(uplinkId,1);
                 }
                 qualifiedFiveStarNetTreeNode.setGoldDiamondLine(gLine);
-            }else {
-                qualifiedFiveStarNetTreeNode.setGoldDiamondLine(0);
             }
         }else {
             // 如果当前元素不为金钻
             if (gLine != null){
-                if (Pin.codeOf(pin).getCode() >= Pin.codeOf(PinPosition.EMERALD).getCode()){
+                if (Pin.valueOf(pin).getCode() >= Pin.valueOf(PinPosition.EMERALD).getCode()){
                     // 如果上级是翡翠及以上,则无论下级有多少个金钻都只算一条金钻线
                     goldDiamondLine.put(uplinkId,1);
                 }else {
@@ -403,19 +399,23 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
     private void savePinAndHistory(Account account,String pin){
         account.setPin(pin);
-        String maxPin = account.getMaxPin();
-        if (maxPin==null) maxPin="MEMBER";
-        if (Pin.codeOf(pin).getCode() > Pin.codeOf(maxPin).getCode()){
-            account.setMaxPin(pin);
-            AccountPinHistory accountPinHistory = new AccountPinHistory();
-            accountPinHistory.setPromotionDate(new Date());
-            accountPinHistory.setAccount(account);
-            accountPinHistory.setCreatedBy("TerryTang");
-            accountPinHistory.setLastUpdatedBy("TerryTang");
-            accountPinHistory.setPin(pin);
-            accountPinHistoryRepository.save(accountPinHistory);
-        }
         accountRepository.save(account);
+        String maxPin = account.getMaxPin();
+        Integer max = Pin.valueOf(pin).getCode();
+        Integer temp = Pin.valueOf(maxPin).getCode();
+        if (max > temp){
+            while (max > temp){
+                temp+=1;
+                String temp_pin = Pin.codeOf(temp).getValue();
+                AccountPinHistory accountPinHistory = new AccountPinHistory();
+                accountPinHistory.setPromotionDate(new Date());
+                accountPinHistory.setAccount(account);
+                accountPinHistory.setCreatedBy("TerryTang");
+                accountPinHistory.setLastUpdatedBy("TerryTang");
+                accountPinHistory.setPin(temp_pin);
+                accountPinHistoryRepository.save(accountPinHistory);
+            }
+        }
     }
 
 	private List<PassUpGpv> SortFiveStarIntegral(List<PassUpGpv> passUpGpvs){
@@ -453,9 +453,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
                 qualifiedFiveStarVo.setQualifiedLine(qualifiedLine < 0 ? 0 : qualifiedLine);
                 String pin = qualifiedFiveStarNetTreeNode.getPin();
-                qualifiedFiveStarVo.setPin(Pin.codeOf(pin).getCode());
+                qualifiedFiveStarVo.setPin(Pin.valueOf(pin).getCode());
                 // todo 获取每人的历史最高PIN
-                qualifiedFiveStarVo.setMaxPin(Pin.codeOf(pin).getCode());
+                qualifiedFiveStarVo.setMaxPin(Pin.valueOf(pin).getCode());
                 qualifiedFiveStarVos.add(qualifiedFiveStarVo);
             }
         }

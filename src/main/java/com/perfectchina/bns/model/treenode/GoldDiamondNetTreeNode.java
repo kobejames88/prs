@@ -16,10 +16,29 @@ public class GoldDiamondNetTreeNode extends TreeNode {
 
     private Float opv;
 
-    @Column(columnDefinition="float default 0.00")
     private Float passUpOpv;
 
+    private Float mergePoints;
+
     private String levelLine;
+
+    private String reward;
+
+    public String getReward() {
+        return reward;
+    }
+
+    public void setReward(String reward) {
+        this.reward = reward;
+    }
+
+    public Float getMergePoints() {
+        return mergePoints;
+    }
+
+    public void setMergePoints(Float mergePoints) {
+        this.mergePoints = mergePoints;
+    }
 
     public String getLevelLine() {
         return levelLine;

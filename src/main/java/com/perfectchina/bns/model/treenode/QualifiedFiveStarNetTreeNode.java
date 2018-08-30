@@ -41,10 +41,8 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     @Column(columnDefinition="float default 0.00")
     private float asteriskNodePoints;
 
-    @Column(columnDefinition="int default 0")
     private int emeraldLine;
 
-    @Column(columnDefinition="int default 0")
     private int goldDiamondLine;
 
     private String levelLine;
