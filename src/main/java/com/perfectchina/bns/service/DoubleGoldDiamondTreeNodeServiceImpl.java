@@ -4,6 +4,8 @@ import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.PassUpGpv;
 import com.perfectchina.bns.model.treenode.*;
+import com.perfectchina.bns.model.vo.DoubleGoldDiamonndVo;
+import com.perfectchina.bns.model.vo.GoldDiamonndVo;
 import com.perfectchina.bns.repositories.*;
 import com.perfectchina.bns.service.Enum.Pin;
 import com.perfectchina.bns.service.pin.PinPosition;
@@ -174,6 +176,8 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         doubleGoldDiamondNetTreeNode.setReward(goldDiamondNetTreeNode.getReward());
         doubleGoldDiamondNetTreeNode.setPassUpOpv(goldDiamondNetTreeNode.getOpv());
         doubleGoldDiamondNetTreeNode.setOpv(goldDiamondNetTreeNode.getOpv());
+        doubleGoldDiamondNetTreeNode.setPpv(goldDiamondNetTreeNode.getPpv());
+        doubleGoldDiamondNetTreeNode.setGpv(goldDiamondNetTreeNode.getGpv());
         doubleGoldDiamondNetTreeNode.setDoubleGoldDiamondLine(0);
         doubleGoldDiamondNetTreeNodeRepository.save(doubleGoldDiamondNetTreeNode);
     }
@@ -232,12 +236,12 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         account.setPin(pin);
         accountRepository.save(account);
         String maxPin = account.getMaxPin();
-        Integer max = Pin.valueOf(pin).getCode();
-        Integer temp = Pin.valueOf(maxPin).getCode();
+        Integer max = Pin.descOf(pin).getCode();
+        Integer temp = Pin.descOf(maxPin).getCode();
         if (max > temp){
             while (max > temp){
                 temp+=1;
-                String temp_pin = Pin.codeOf(temp).getValue();
+                String temp_pin = Pin.codeOf(temp).getDesc();
                 AccountPinHistory accountPinHistory = new AccountPinHistory();
                 accountPinHistory.setPromotionDate(new Date());
                 accountPinHistory.setAccount(account);
@@ -253,5 +257,47 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         TreeNode rootNode = doubleGoldDiamondNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
         return rootNode;
     }
+
+    @Override
+    public List<DoubleGoldDiamonndVo> convertDoubleGoldDiamondVo(String snapshotDate) {
+        List<DoubleGoldDiamonndVo> doubleGoldDiamonndVos = new ArrayList<>();
+        // 获取level为1的数据
+        List<DoubleGoldDiamondNetTreeNode> doubleGoldDiamondNetTreeNodes = getTreeNodeRepository().getTreeNodesByLevelAndSnapshotDate(snapshotDate,1);
+        if (doubleGoldDiamondNetTreeNodes.size() >0 ){
+            for (DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode : doubleGoldDiamondNetTreeNodes){
+                DoubleGoldDiamonndVo doubleGoldDiamonndVo = recursion(doubleGoldDiamondNetTreeNode);
+                doubleGoldDiamonndVos.add(doubleGoldDiamonndVo);
+            }
+        }
+        return doubleGoldDiamonndVos;
+    }
+
+    private DoubleGoldDiamonndVo recursion(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode){
+        List<DoubleGoldDiamondNetTreeNode> childs = getTreeNodeRepository().findByParentId(doubleGoldDiamondNetTreeNode.getId());
+        List<DoubleGoldDiamonndVo> nodes = new ArrayList<>();
+        if (childs != null){
+            for (DoubleGoldDiamondNetTreeNode child : childs){
+                DoubleGoldDiamonndVo node = recursion(child);
+                nodes.add(node);
+            }
+        }
+        return  convertChildFiveStarVo(doubleGoldDiamondNetTreeNode,nodes);
+    }
+
+    private DoubleGoldDiamonndVo convertChildFiveStarVo(DoubleGoldDiamondNetTreeNode child, List<DoubleGoldDiamonndVo> nodes){
+        DoubleGoldDiamonndVo childVo = new DoubleGoldDiamonndVo();
+        childVo.setLevelNum(child.getLevelNum());
+        childVo.setName(child.getData().getName());
+        childVo.setAccountNum(child.getData().getAccountNum());
+        childVo.setPpv(child.getPpv());
+        childVo.setGpv(child.getGpv());
+        childVo.setOpv(child.getOpv());
+        childVo.setQualifiedGoldDiamond(child.getDoubleGoldDiamondLine());
+        childVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
+        childVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
+        childVo.setDownlines(nodes);
+        return childVo;
+    }
+
 
 }

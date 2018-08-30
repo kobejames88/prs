@@ -98,6 +98,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 		passUpGpvNetTreeNode.setHasChild(fiveStarNetTreeNode.getHasChild());
 		passUpGpvNetTreeNode.setLevelNum(fiveStarNetTreeNode.getLevelNum());
 		passUpGpvNetTreeNode.setGpv(fiveStarNetTreeNode.getGpv());
+        passUpGpvNetTreeNode.setPpv(fiveStarNetTreeNode.getPpv());
 		passUpGpvNetTreeNode.setSnapshotDate(fiveStarNetTreeNode.getSnapshotDate());
 		passUpGpvNetTreeNode.setData(fiveStarNetTreeNode.getData());
 

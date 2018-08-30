@@ -1,5 +1,7 @@
 package com.perfectchina.bns.model.vo;
 
+import java.util.List;
+
 /**
  * QualifiedFiveStar
  */
@@ -25,6 +27,16 @@ public class GoldDiamonndVo {
     private int pin;
 
     private int maxPin;
+
+    private List<GoldDiamonndVo> downlines;
+
+    public List<GoldDiamonndVo> getDownlines() {
+        return downlines;
+    }
+
+    public void setDownlines(List<GoldDiamonndVo> downlines) {
+        this.downlines = downlines;
+    }
 
     public int getQualifiedGoldDiamond() {
         return qualifiedGoldDiamond;

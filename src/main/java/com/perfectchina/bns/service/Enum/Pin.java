@@ -9,8 +9,8 @@ public enum Pin {
     THREE_STAR(3,"THREE_STAR"),
     FOUR_STAR(4,"FOUR_STAR"),
     FIVE_STAR(5,"5_STAR"),
-    QUALIFIED_FIVE_STAR(5,"Qualified_5_STAR"),
-    NEW_FIVE_STAR(5,"NEW_5_STAR"),
+    Qualified_5_STAR(5,"Qualified_5_STAR"),
+    NEW_5_STAR(5,"NEW_5_STAR"),
     RUBY(6,"RUBY"),
     EMERALD(7,"EMERALD"),
     DIAMOND(8,"DIAMOND"),
@@ -19,12 +19,12 @@ public enum Pin {
     TRI_GOLD_DIA(10,"TRI_GOLD_DIA");
 
 
-    private String value;
+    private String desc;
     private Integer code;
 
-    Pin(Integer code, String value) {
+    Pin(Integer code, String desc) {
         this.code = code;
-        this.value = value;
+        this.desc = desc;
     }
 
     public static Pin codeOf(Integer code){
@@ -36,9 +36,18 @@ public enum Pin {
         throw new RuntimeException("没有此职级！");
     }
 
+    public static Pin descOf(String desc){
+        for (Pin pin : values()){
+            if (StringUtils.equals(pin.getDesc(),desc)){
+                return pin;
+            }
+        }
+        throw new RuntimeException("没有此职级！");
+    }
 
-    public String getValue() {
-        return value;
+
+    public String getDesc() {
+        return desc;
     }
 
     public Integer getCode() {

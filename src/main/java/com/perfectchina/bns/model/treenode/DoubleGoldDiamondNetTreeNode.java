@@ -17,6 +17,10 @@ public class DoubleGoldDiamondNetTreeNode extends TreeNode {
 
     private Float passUpOpv;
 
+    private Float ppv;
+
+    private Float gpv;
+
     private Float opv;
 
     private String pin;
@@ -24,6 +28,22 @@ public class DoubleGoldDiamondNetTreeNode extends TreeNode {
     private String reward;
 
     private int doubleGoldDiamondLine;
+
+    public Float getPpv() {
+        return ppv;
+    }
+
+    public void setPpv(Float ppv) {
+        this.ppv = ppv;
+    }
+
+    public Float getGpv() {
+        return gpv;
+    }
+
+    public void setGpv(Float gpv) {
+        this.gpv = gpv;
+    }
 
     public int getDoubleGoldDiamondLine() {
         return doubleGoldDiamondLine;

@@ -168,27 +168,42 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 
 	@Override
 	public List<FiveStarVo> convertFiveStarVo(String snapshotDate) {
-        List<FiveStarVo> qualifiedFiveStarVos = new ArrayList<>();
-        List<FiveStarNetTreeNode> fiveStarNetTreeNodes = getTreeNodeRepository().getTreeNodesBySnapshotDate(snapshotDate);
+        List<FiveStarVo> fiveStarVos = new ArrayList<>();
+        // 获取level为1的数据
+        List<FiveStarNetTreeNode> fiveStarNetTreeNodes = getTreeNodeRepository().getTreeNodesByLevelAndSnapshotDate(snapshotDate,1);
         if (fiveStarNetTreeNodes.size() >0 ){
             for (FiveStarNetTreeNode fiveStarNetTreeNode : fiveStarNetTreeNodes){
-                if (fiveStarNetTreeNode.getUplinkId() == 0) continue;
-                FiveStarVo fiveStarVo =new FiveStarVo();
-                fiveStarVo.setLevelNum(fiveStarNetTreeNode.getLevelNum());
-                fiveStarVo.setName(fiveStarNetTreeNode.getData().getName());
-                fiveStarVo.setAccountNum(fiveStarNetTreeNode.getData().getAccountNum());
-                fiveStarVo.setPpv(fiveStarNetTreeNode.getPpv());
-                fiveStarVo.setGpv(fiveStarNetTreeNode.getGpv());
-                fiveStarVo.setOpv(fiveStarNetTreeNode.getOpv());
-                fiveStarVo.setQualifiedLine(0);
-                String pin = fiveStarNetTreeNode.getPin();
-                fiveStarVo.setPin(Pin.codeOf(pin).getCode());
-                // todo 获取每人的历史最高PIN
-                fiveStarVo.setMaxPin(Pin.codeOf(pin).getCode());
-                qualifiedFiveStarVos.add(fiveStarVo);
+                FiveStarVo fiveStarVo = recursion(fiveStarNetTreeNode);
+                fiveStarVos.add(fiveStarVo);
             }
         }
-        return qualifiedFiveStarVos;
+        return fiveStarVos;
 	}
+
+	private FiveStarVo recursion(FiveStarNetTreeNode fiveStarNetTreeNode){
+        List<FiveStarNetTreeNode> childs = getTreeNodeRepository().findByParentId(fiveStarNetTreeNode.getId());
+        List<FiveStarVo> nodes = new ArrayList<>();
+        if (childs != null){
+	        for (FiveStarNetTreeNode child : childs){
+                FiveStarVo node = recursion(child);
+                nodes.add(node);
+            }
+        }
+        return  convertChildFiveStarVo(fiveStarNetTreeNode,nodes);
+    }
+
+	private FiveStarVo convertChildFiveStarVo(FiveStarNetTreeNode child, List<FiveStarVo> nodes){
+        FiveStarVo childFiveStarVo = new FiveStarVo();
+        childFiveStarVo.setLevelNum(child.getLevelNum());
+        childFiveStarVo.setName(child.getData().getName());
+        childFiveStarVo.setAccountNum(child.getData().getAccountNum());
+        childFiveStarVo.setPpv(child.getPpv());
+        childFiveStarVo.setGpv(child.getGpv());
+        childFiveStarVo.setOpv(child.getOpv());
+        childFiveStarVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
+        childFiveStarVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
+        childFiveStarVo.setDownlines(nodes);
+        return childFiveStarVo;
+    }
 
 }

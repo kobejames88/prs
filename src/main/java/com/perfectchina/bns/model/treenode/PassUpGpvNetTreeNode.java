@@ -14,7 +14,9 @@ import javax.persistence.Table;
 public class PassUpGpvNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
-    private Float gpv;
+    private Float ppv;
+
+	private Float gpv;
 	// PassUpGpv
     @Column(columnDefinition="float default 0.00")
 	private Float passUpGpv;
@@ -27,6 +29,14 @@ public class PassUpGpvNetTreeNode extends TreeNode {
 
     @Column(columnDefinition="float default 0.00")
     private Float asteriskNodePoints;
+
+    public Float getPpv() {
+        return ppv;
+    }
+
+    public void setPpv(Float ppv) {
+        this.ppv = ppv;
+    }
 
     public Boolean getHasAsteriskNode() {
         return hasAsteriskNode;

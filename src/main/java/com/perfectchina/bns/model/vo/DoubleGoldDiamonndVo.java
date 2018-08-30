@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * QualifiedFiveStar
  */
-public class FiveStarVo {
+public class DoubleGoldDiamonndVo {
 	private static final long serialVersionUID = 1L;
 
     private int levelNum;
@@ -16,24 +16,44 @@ public class FiveStarVo {
 
     private int qualifiedLine;
 
+    private int qualifiedGoldDiamond;
+
     private Float ppv;
 
     private Float gpv;
 
     private Float opv;
 
+    private String type;
+
     private int pin;
 
     private int maxPin;
 
-    private List<FiveStarVo> downlines;
+    public String getType() {
+        return type;
+    }
 
-    public List<FiveStarVo> getDownlines() {
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    private List<DoubleGoldDiamonndVo> downlines;
+
+    public List<DoubleGoldDiamonndVo> getDownlines() {
         return downlines;
     }
 
-    public void setDownlines(List<FiveStarVo> downlines) {
+    public void setDownlines(List<DoubleGoldDiamonndVo> downlines) {
         this.downlines = downlines;
+    }
+
+    public int getQualifiedGoldDiamond() {
+        return qualifiedGoldDiamond;
+    }
+
+    public void setQualifiedGoldDiamond(int qualifiedGoldDiamond) {
+        this.qualifiedGoldDiamond = qualifiedGoldDiamond;
     }
 
     public int getLevelNum() {

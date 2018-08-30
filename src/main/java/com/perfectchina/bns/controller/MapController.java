@@ -1,11 +1,7 @@
 package com.perfectchina.bns.controller;
 
-import com.perfectchina.bns.model.vo.FiveStarVo;
-import com.perfectchina.bns.model.vo.GoldDiamonndVo;
-import com.perfectchina.bns.model.vo.QualifiedFiveStarVo;
-import com.perfectchina.bns.service.FiveStarTreeNodeService;
-import com.perfectchina.bns.service.GoldDiamondTreeNodeService;
-import com.perfectchina.bns.service.QualifiedFiveStarTreeNodeService;
+import com.perfectchina.bns.model.vo.*;
+import com.perfectchina.bns.service.*;
 import com.perfectchina.bns.service.map.MapType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +29,15 @@ public class MapController {
 	public static final Logger logger = LoggerFactory.getLogger(MapController.class);
 
 	@Autowired
+    SimpleTreeNodeService simpleTreeNodeService;
+	@Autowired
 	QualifiedFiveStarTreeNodeService qualifiedFiveStarTreeNodeService; //Service which will do all data retrieval/manipulation work
 	@Autowired
     FiveStarTreeNodeService fiveStarTreeNodeService;
 	@Autowired
     GoldDiamondTreeNodeService goldDiamondTreeNodeService;
+	@Autowired
+    DoubleGoldDiamondTreeNodeService doubleGoldDiamondTreeNodeService;
 
 	// -------------------Retrieve All InterfaceAccountInfos---------------------------------------------
 
@@ -60,8 +60,12 @@ public class MapController {
                 List<GoldDiamonndVo> goldDiamonndVos = goldDiamondTreeNodeService.convertGoldDiamondVo(snapshotDate);
                 return new ResponseEntity (goldDiamonndVos, HttpStatus.OK);
             case MapType.DOUBLE_GOLDDIAMOND_NET:
-                //...;
-                break;
+                List<DoubleGoldDiamonndVo> doubleGoldDiamonndVos = doubleGoldDiamondTreeNodeService.convertDoubleGoldDiamondVo(snapshotDate);
+                return new ResponseEntity (doubleGoldDiamonndVos, HttpStatus.OK);
+
+            case MapType.SIMPLE_NET:
+                List<SimpleVo> simpleVos = simpleTreeNodeService.convertSimpleVo(snapshotDate);
+                return new ResponseEntity (simpleVos, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}

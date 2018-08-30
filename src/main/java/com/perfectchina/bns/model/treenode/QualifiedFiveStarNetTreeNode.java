@@ -18,6 +18,8 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private int qualifiedLine;
 
+    private Float ppv;
+
     private Float gpv;
 
     private Float opv;
@@ -48,6 +50,14 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     private String levelLine;
 
     private String pin;
+
+    public Float getPpv() {
+        return ppv;
+    }
+
+    public void setPpv(Float ppv) {
+        this.ppv = ppv;
+    }
 
     public Boolean getAboveEmeraldNodeSign() {
         return AboveEmeraldNodeSign;

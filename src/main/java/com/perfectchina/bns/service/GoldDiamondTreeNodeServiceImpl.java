@@ -5,6 +5,7 @@ import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.Rank;
 import com.perfectchina.bns.model.treenode.*;
 import com.perfectchina.bns.model.vo.GoldDiamonndVo;
+import com.perfectchina.bns.model.vo.QualifiedFiveStarVo;
 import com.perfectchina.bns.repositories.*;
 import com.perfectchina.bns.service.Enum.Pin;
 import com.perfectchina.bns.service.pin.PinPosition;
@@ -129,7 +130,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                     // 有上级金钻,获取line判断是否有翡翠以上职级
                     Boolean hasEmerald = false;
                     for (Rank rank : ranks){
-                        if (Pin.valueOf(PinPosition.EMERALD).getCode() <= Pin.valueOf(rank.getPin()).getCode()){
+                        if (Pin.descOf(PinPosition.EMERALD).getCode() <= Pin.descOf(rank.getPin()).getCode()){
                             hasEmerald = true;
                             break;
                         }
@@ -238,7 +239,10 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	private void copyNetTree(QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,GoldDiamondNetTreeNode goldDiamondNetTreeNode){
         goldDiamondNetTreeNode.setSnapshotDate(qualifiedFiveStarNetTreeNode.getSnapshotDate());
         goldDiamondNetTreeNode.setData(qualifiedFiveStarNetTreeNode.getData());
+        goldDiamondNetTreeNode.setGoldDiamondLine(qualifiedFiveStarNetTreeNode.getGoldDiamondLine());
         goldDiamondNetTreeNode.setMergePoints(0F);
+        goldDiamondNetTreeNode.setPpv(qualifiedFiveStarNetTreeNode.getPpv());
+        goldDiamondNetTreeNode.setGpv(qualifiedFiveStarNetTreeNode.getGpv());
 		goldDiamondNetTreeNodeRepository.save(goldDiamondNetTreeNode);
 	}
 
@@ -329,12 +333,12 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
         account.setPin(pin);
         accountRepository.save(account);
         String maxPin = account.getMaxPin();
-        Integer max = Pin.valueOf(pin).getCode();
-        Integer temp = Pin.valueOf(maxPin).getCode();
+        Integer max = Pin.descOf(pin).getCode();
+        Integer temp = Pin.descOf(maxPin).getCode();
         if (max > temp){
             while (max > temp){
                 temp+=1;
-                String temp_pin = Pin.codeOf(temp).getValue();
+                String temp_pin = Pin.codeOf(temp).getDesc();
                 AccountPinHistory accountPinHistory = new AccountPinHistory();
                 accountPinHistory.setPromotionDate(new Date());
                 accountPinHistory.setAccount(account);
@@ -364,30 +368,43 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 	@Override
 	public List<GoldDiamonndVo> convertGoldDiamondVo(String snapshotDate) {
         List<GoldDiamonndVo> goldDiamonndVos = new ArrayList<>();
-        List<GoldDiamondNetTreeNode> goldDiamondNetTreeNodes = getTreeNodeRepository().getTreeNodesBySnapshotDate(snapshotDate);
-        if ( goldDiamondNetTreeNodes.size() > 0){
+        // 获取level为1的数据
+        List<GoldDiamondNetTreeNode> goldDiamondNetTreeNodes = getTreeNodeRepository().getTreeNodesByLevelAndSnapshotDate(snapshotDate,1);
+        if (goldDiamondNetTreeNodes.size() >0 ){
             for (GoldDiamondNetTreeNode goldDiamondNetTreeNode : goldDiamondNetTreeNodes){
-                if (goldDiamondNetTreeNode.getUplinkId() == 0) continue;
-                GoldDiamonndVo goldDiamonndVo = new GoldDiamonndVo();
-                List<GoldDiamondNetTreeNode> childNodes = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(goldDiamondNetTreeNode.getId());
-                int count = childNodes.size();
-                FiveStarNetTreeNode fiveStarAccountNum = fiveStarNetTreeNodeRepository.findByAccountNum(snapshotDate, goldDiamondNetTreeNode.getData().getAccountNum());
-                goldDiamonndVo.setLevelNum(goldDiamondNetTreeNode.getLevelNum());
-                goldDiamonndVo.setName(goldDiamondNetTreeNode.getData().getName());
-                goldDiamonndVo.setAccountNum(goldDiamondNetTreeNode.getData().getAccountNum());
-                goldDiamonndVo.setPpv(fiveStarAccountNum.getPpv());
-                goldDiamonndVo.setGpv(fiveStarAccountNum.getGpv());
-                goldDiamonndVo.setOpv(fiveStarAccountNum.getOpv());
-                goldDiamonndVo.setQualifiedGoldDiamond(count);
-                String pin = goldDiamondNetTreeNode.getData().getPin();
-                goldDiamonndVo.setPin(Pin.valueOf(pin).getCode());
-                // todo 获取每人的历史最高PIN
-                goldDiamonndVo.setMaxPin(Pin.valueOf(pin).getCode());
+                GoldDiamonndVo goldDiamonndVo = recursion(goldDiamondNetTreeNode);
                 goldDiamonndVos.add(goldDiamonndVo);
             }
         }
         return goldDiamonndVos;
 	}
+
+    private GoldDiamonndVo recursion(GoldDiamondNetTreeNode goldDiamondNetTreeNode){
+        List<GoldDiamondNetTreeNode> childs = getTreeNodeRepository().findByParentId(goldDiamondNetTreeNode.getId());
+        List<GoldDiamonndVo> nodes = new ArrayList<>();
+        if (childs != null){
+            for (GoldDiamondNetTreeNode child : childs){
+                GoldDiamonndVo node = recursion(child);
+                nodes.add(node);
+            }
+        }
+        return  convertChildFiveStarVo(goldDiamondNetTreeNode,nodes);
+    }
+
+    private GoldDiamonndVo convertChildFiveStarVo(GoldDiamondNetTreeNode child, List<GoldDiamonndVo> nodes){
+        GoldDiamonndVo childVo = new GoldDiamonndVo();
+        childVo.setLevelNum(child.getLevelNum());
+        childVo.setName(child.getData().getName());
+        childVo.setAccountNum(child.getData().getAccountNum());
+        childVo.setPpv(child.getPpv());
+        childVo.setGpv(child.getGpv());
+        childVo.setOpv(child.getOpv());
+        childVo.setQualifiedGoldDiamond(child.getGoldDiamondLine());
+        childVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
+        childVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
+        childVo.setDownlines(nodes);
+        return childVo;
+    }
 
 	public TreeNode getRootNode(String snapshotDate) {
 		TreeNode rootNode = goldDiamondNetTreeNodeRepository.getRootTreeNodeOfMonth( snapshotDate );

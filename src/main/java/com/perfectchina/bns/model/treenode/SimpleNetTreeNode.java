@@ -24,8 +24,17 @@ public class SimpleNetTreeNode extends TreeNode {
 
 	private Float ppv;
 
+	private Float totalSales;
 
-	public Float getPpv() {
+    public Float getTotalSales() {
+        return totalSales;
+    }
+
+    public void setTotalSales(Float totalSales) {
+        this.totalSales = totalSales;
+    }
+
+    public Float getPpv() {
 		return ppv;
 	}
 

@@ -3,13 +3,15 @@ package com.perfectchina.bns.service;
 import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.PassUpGpv;
-import com.perfectchina.bns.model.treenode.*;
+import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
+import com.perfectchina.bns.model.treenode.PassUpGpvNetTreeNode;
+import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
+import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.model.vo.QualifiedFiveStarVo;
 import com.perfectchina.bns.repositories.*;
 import com.perfectchina.bns.service.Enum.Pin;
 import com.perfectchina.bns.service.pin.PinPoints;
 import com.perfectchina.bns.service.pin.PinPosition;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,6 +168,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         qualifiedFiveStarNetTreeNode.setAsteriskNodePoints(asteriskNodePoints == null ? 0F : asteriskNodePoints);
 		qualifiedFiveStarNetTreeNode.setHasAsteriskNode(hasAsteriskNode == null ? false : hasAsteriskNode);
         qualifiedFiveStarNetTreeNode.setPassUpGpv(passUpGpvNetTreeNode.getPassUpGpv());
+        qualifiedFiveStarNetTreeNode.setPpv(passUpGpvNetTreeNode.getPpv());
         qualifiedFiveStarNetTreeNode.setGpv(passUpGpvNetTreeNode.getGpv());
 		qualifiedFiveStarNetTreeNode.setQualifiedLine(passUpGpvNetTreeNode.getQualifiedLine());
         qualifiedFiveStarNetTreeNode.setGoldDiamondLine(0);
@@ -208,7 +211,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     for (QualifiedFiveStarNetTreeNode qualifiedFiveChildNode : childs){
                         String pin = qualifiedFiveChildNode.getData().getPin();
                         // 爬树获取下级翡翠线
-                        if (Pin.valueOf(pin).getCode() >= Pin.valueOf(PinPosition.EMERALD).getCode()){
+                        if (Pin.descOf(pin).getCode() >= Pin.descOf(PinPosition.EMERALD).getCode()){
                             EmeraldLine+=1;
                         }
                     }
@@ -333,7 +336,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }else {
             // 如果当前元素不为金钻
             if (gLine != null){
-                if (Pin.valueOf(pin).getCode() >= Pin.valueOf(PinPosition.EMERALD).getCode()){
+                if (Pin.descOf(pin).getCode() >= Pin.descOf(PinPosition.EMERALD).getCode()){
                     // 如果上级是翡翠及以上,则无论下级有多少个金钻都只算一条金钻线
                     goldDiamondLine.put(uplinkId,1);
                 }else {
@@ -401,12 +404,12 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         account.setPin(pin);
         accountRepository.save(account);
         String maxPin = account.getMaxPin();
-        Integer max = Pin.valueOf(pin).getCode();
-        Integer temp = Pin.valueOf(maxPin).getCode();
+        Integer max = Pin.descOf(pin).getCode();
+        Integer temp = Pin.descOf(maxPin).getCode();
         if (max > temp){
             while (max > temp){
                 temp+=1;
-                String temp_pin = Pin.codeOf(temp).getValue();
+                String temp_pin = Pin.codeOf(temp).getDesc();
                 AccountPinHistory accountPinHistory = new AccountPinHistory();
                 accountPinHistory.setPromotionDate(new Date());
                 accountPinHistory.setAccount(account);
@@ -434,31 +437,46 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     @Override
     public List<QualifiedFiveStarVo> convertQualifiedFiveStarVo(String snapshotDate) {
         List<QualifiedFiveStarVo> qualifiedFiveStarVos = new ArrayList<>();
-        List<QualifiedFiveStarNetTreeNode> qualifiedFiveStarNetTreeNodes = getTreeNodeRepository().getTreeNodesBySnapshotDate(snapshotDate);
-        if (qualifiedFiveStarNetTreeNodes.size() > 0) {
-            for (QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode : qualifiedFiveStarNetTreeNodes) {
-                if (qualifiedFiveStarNetTreeNode.getUplinkId() == 0) continue;
-                QualifiedFiveStarVo qualifiedFiveStarVo = new QualifiedFiveStarVo();
-                FiveStarNetTreeNode fiveStarAccountNum = fiveStarNetTreeNodeRepository.findByAccountNum(snapshotDate, qualifiedFiveStarNetTreeNode.getData().getAccountNum());
-                qualifiedFiveStarVo.setLevelNum(qualifiedFiveStarNetTreeNode.getLevelNum());
-                qualifiedFiveStarVo.setName(qualifiedFiveStarNetTreeNode.getData().getName());
-                qualifiedFiveStarVo.setAccountNum(qualifiedFiveStarNetTreeNode.getData().getAccountNum());
-                qualifiedFiveStarVo.setPpv(fiveStarAccountNum.getPpv());
-                qualifiedFiveStarVo.setGpv(fiveStarAccountNum.getGpv());
-                qualifiedFiveStarVo.setOpv(fiveStarAccountNum.getOpv());
-                qualifiedFiveStarVo.setPassUpGpv(qualifiedFiveStarNetTreeNode.getPassUpGpv());
-                qualifiedFiveStarVo.setBorrowPoints(qualifiedFiveStarNetTreeNode.getBorrowPoints());
-                qualifiedFiveStarVo.setBorrowedPoints(qualifiedFiveStarNetTreeNode.getBorrowedPoints());
-                qualifiedFiveStarVo.setFiveStarIntegral(qualifiedFiveStarNetTreeNode.getFiveStarIntegral());
-                int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
-                qualifiedFiveStarVo.setQualifiedLine(qualifiedLine < 0 ? 0 : qualifiedLine);
-                String pin = qualifiedFiveStarNetTreeNode.getPin();
-                qualifiedFiveStarVo.setPin(Pin.valueOf(pin).getCode());
-                // todo 获取每人的历史最高PIN
-                qualifiedFiveStarVo.setMaxPin(Pin.valueOf(pin).getCode());
+        // 获取level为1的数据
+        List<QualifiedFiveStarNetTreeNode> qualifiedFiveStarNetTreeNodes = getTreeNodeRepository().getTreeNodesByLevelAndSnapshotDate(snapshotDate,1);
+        if (qualifiedFiveStarNetTreeNodes.size() >0 ){
+            for (QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode : qualifiedFiveStarNetTreeNodes){
+                QualifiedFiveStarVo qualifiedFiveStarVo = recursion(qualifiedFiveStarNetTreeNode);
                 qualifiedFiveStarVos.add(qualifiedFiveStarVo);
             }
         }
         return qualifiedFiveStarVos;
+    }
+
+    private QualifiedFiveStarVo recursion(QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode){
+        List<QualifiedFiveStarNetTreeNode> childs = getTreeNodeRepository().findByParentId(qualifiedFiveStarNetTreeNode.getId());
+        List<QualifiedFiveStarVo> nodes = new ArrayList<>();
+        if (childs != null){
+            for (QualifiedFiveStarNetTreeNode child : childs){
+                QualifiedFiveStarVo node = recursion(child);
+                nodes.add(node);
+            }
+        }
+        return  convertChildFiveStarVo(qualifiedFiveStarNetTreeNode,nodes);
+    }
+
+    private QualifiedFiveStarVo convertChildFiveStarVo(QualifiedFiveStarNetTreeNode child, List<QualifiedFiveStarVo> nodes){
+        QualifiedFiveStarVo childVo = new QualifiedFiveStarVo();
+        childVo.setLevelNum(child.getLevelNum());
+        childVo.setName(child.getData().getName());
+        childVo.setAccountNum(child.getData().getAccountNum());
+        childVo.setPpv(child.getPpv());
+        childVo.setGpv(child.getGpv());
+        childVo.setOpv(child.getOpv());
+        childVo.setPassUpGpv(child.getPassUpGpv());
+        childVo.setBorrowPoints(child.getBorrowPoints());
+        childVo.setBorrowedPoints(child.getBorrowedPoints());
+        childVo.setFiveStarIntegral(child.getFiveStarIntegral());
+        int qualifiedLine = child.getQualifiedLine();
+        childVo.setQualifiedLine(qualifiedLine < 0 ? 0 : qualifiedLine);
+        childVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
+        childVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
+        childVo.setDownlines(nodes);
+        return childVo;
     }
 }

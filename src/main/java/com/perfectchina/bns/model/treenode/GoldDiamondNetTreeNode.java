@@ -14,15 +14,45 @@ import javax.persistence.Table;
 public class GoldDiamondNetTreeNode extends TreeNode {
 	private static final long serialVersionUID = 1L;
 
+    private Float ppv;
+
+    private Float gpv;
+
     private Float opv;
 
     private Float passUpOpv;
 
     private Float mergePoints;
 
+    private int goldDiamondLine;
+
     private String levelLine;
 
     private String reward;
+
+    public Float getPpv() {
+        return ppv;
+    }
+
+    public void setPpv(Float ppv) {
+        this.ppv = ppv;
+    }
+
+    public Float getGpv() {
+        return gpv;
+    }
+
+    public void setGpv(Float gpv) {
+        this.gpv = gpv;
+    }
+
+    public int getGoldDiamondLine() {
+        return goldDiamondLine;
+    }
+
+    public void setGoldDiamondLine(int goldDiamondLine) {
+        this.goldDiamondLine = goldDiamondLine;
+    }
 
     public String getReward() {
         return reward;

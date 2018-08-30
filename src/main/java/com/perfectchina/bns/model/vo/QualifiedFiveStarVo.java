@@ -1,11 +1,6 @@
 package com.perfectchina.bns.model.vo;
 
-import com.perfectchina.bns.model.treenode.TreeNode;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import java.util.List;
 
 /**
  * QualifiedFiveStar
@@ -41,13 +36,15 @@ public class QualifiedFiveStarVo{
 
     private int maxPin;
 
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    private List<QualifiedFiveStarVo> downlines;
+
+    public List<QualifiedFiveStarVo> getDownlines() {
+        return downlines;
+    }
+
+    public void setDownlines(List<QualifiedFiveStarVo> downlines) {
+        this.downlines = downlines;
+    }
 
     public int getLevelNum() {
         return levelNum;

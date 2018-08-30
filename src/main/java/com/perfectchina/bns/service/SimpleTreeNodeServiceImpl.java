@@ -2,11 +2,16 @@ package com.perfectchina.bns.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.perfectchina.bns.common.utils.DateUtils;
+import com.perfectchina.bns.model.treenode.DoubleGoldDiamondNetTreeNode;
+import com.perfectchina.bns.model.vo.DoubleGoldDiamonndVo;
+import com.perfectchina.bns.model.vo.SimpleVo;
 import com.perfectchina.bns.repositories.SimpleNetTreeNodeRepository;
+import com.perfectchina.bns.service.Enum.Pin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +64,9 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		SalesRecord totalSales = salesRecordService.findOutPersonalSalesRecordTotal(accountMonthlySales);
 		
 		SimpleNetTreeNode thisNode = (SimpleNetTreeNode) node ;
-		thisNode.setPpv( totalSales.getSalesPV() );
-		
+        float salesPV = totalSales.getSalesPV();
+        thisNode.setPpv( salesPV );
+        thisNode.setTotalSales(salesPV);
 		getTreeNodeRepository().saveAndFlush( thisNode);	
 		
 	}
@@ -88,4 +94,41 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		getTreeNodeRepository().saveAndFlush( thisNode);
 
 	}
+
+	@Override
+	public List<SimpleVo> convertSimpleVo(String snapshotDate) {
+        List<SimpleVo> simpleVos = new ArrayList<>();
+        // 获取level为1的数据
+        List<SimpleNetTreeNode> simpleNetTreeNodes = getTreeNodeRepository().getTreeNodesByLevelAndSnapshotDate(snapshotDate,1);
+        if (simpleNetTreeNodes.size() >0 ){
+            for (SimpleNetTreeNode simpleNetTreeNode : simpleNetTreeNodes){
+                SimpleVo simpleVo = recursion(simpleNetTreeNode);
+                simpleVos.add(simpleVo);
+            }
+        }
+        return simpleVos;
+	}
+
+    private SimpleVo recursion(SimpleNetTreeNode simpleNetTreeNode){
+        List<SimpleNetTreeNode> childs = getTreeNodeRepository().findByParentId(simpleNetTreeNode.getId());
+        List<SimpleVo> nodes = new ArrayList<>();
+        if (childs != null){
+            for (SimpleNetTreeNode child : childs){
+                SimpleVo node = recursion(child);
+                nodes.add(node);
+            }
+        }
+        return  convertChildFiveStarVo(simpleNetTreeNode,nodes);
+    }
+
+    private SimpleVo convertChildFiveStarVo(SimpleNetTreeNode child, List<SimpleVo> nodes){
+        SimpleVo childVo = new SimpleVo();
+        childVo.setLevelNum(child.getLevelNum());
+        childVo.setName(child.getData().getName());
+        childVo.setAccountNum(child.getData().getAccountNum());
+        childVo.setPpv(child.getPpv());
+        childVo.setMoney(child.getTotalSales());
+        childVo.setDownlines(nodes);
+        return childVo;
+    }
 }
