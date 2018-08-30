@@ -89,8 +89,9 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
 		SalesRecord totalSales = salesRecordService.findOutPersonalSalesRecordTotal(accountMonthlySales);
 
 		SimpleNetTreeNode thisNode = (SimpleNetTreeNode) node ;
-		thisNode.setPpv( totalSales.getSalesPV() );
-
+        float salesPV = totalSales.getSalesPV();
+        thisNode.setPpv( salesPV );
+        thisNode.setTotalSales(salesPV);
 		getTreeNodeRepository().saveAndFlush( thisNode);
 
 	}
