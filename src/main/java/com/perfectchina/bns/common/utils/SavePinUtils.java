@@ -21,7 +21,7 @@ public class SavePinUtils {
         if (max > temp){
             account.setMaxPin(pin);
             Integer f_star = Pin.descOf(PinPosition.FIVE_STAR).getCode();
-            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = f_star-1;
+            if (max == f_star) temp = f_star-1;
             while (max > temp){
                 temp+=1;
                 String temp_pin = Pin.codeOf(temp).getDesc();

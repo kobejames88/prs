@@ -1,5 +1,6 @@
 package com.perfectchina.bns.service;
 
+import com.perfectchina.bns.common.utils.SavePinUtils;
 import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.PassUpGpv;
@@ -123,7 +124,8 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
             copyNetTree(goldDiamondNetTreeNode, doubleGoldDiamondNetTreeNode);
             return;
         }
-        Boolean isDoubleGoldDiamond = doubleGoldDiamondNetTreeNode.getData().getPin() == PinPosition.DOUBLE_GOLD_DIAMOND;
+
+        Boolean isDoubleGoldDiamond = goldDiamondNetTreeNode.getData().getPin() == PinPosition.DOUBLE_GOLD_DIAMOND;
         if (count > 0) {
             // 当前节点有下级
             for (GoldDiamondNetTreeNode childNode : childNodes) {
@@ -224,7 +226,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 }
                 if (count >= 7) {
                     Account account = accountRepository.getAccountById(accountId);
-                    savePinAndHistory(account, PinPosition.TRIPLE_GOLD_DIAMOND);
+                    SavePinUtils.savePinAndHistory(account, PinPosition.TRIPLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
                 }
                 doubleGoldDiamondNetTreeNodeRepository.save(doubleGoldDiamondNetTreeNode);
             } // end for loop
@@ -232,29 +234,29 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
     }
 
-    private void savePinAndHistory(Account account,String pin){
-        account.setPin(pin);
-        String maxPin = account.getMaxPin();
-        Integer max = Pin.descOf(pin).getCode();
-        Integer temp = Pin.descOf(maxPin).getCode();
-        if (max > temp){
-            account.setMaxPin(pin);
-            // 五星及以上职级才保存到history表中
-            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = max-1;
-            while (max > temp){
-                temp+=1;
-                String temp_pin = Pin.codeOf(temp).getDesc();
-                AccountPinHistory accountPinHistory = new AccountPinHistory();
-                accountPinHistory.setPromotionDate(new Date());
-                accountPinHistory.setAccount(account);
-                accountPinHistory.setCreatedBy("TerryTang");
-                accountPinHistory.setLastUpdatedBy("TerryTang");
-                accountPinHistory.setPin(temp_pin);
-                accountPinHistoryRepository.save(accountPinHistory);
-            }
-        }
-        accountRepository.save(account);
-    }
+//    private void savePinAndHistory(Account account,String pin){
+//        account.setPin(pin);
+//        String maxPin = account.getMaxPin();
+//        Integer max = Pin.descOf(pin).getCode();
+//        Integer temp = Pin.descOf(maxPin).getCode();
+//        if (max > temp){
+//            account.setMaxPin(pin);
+//            // 五星及以上职级才保存到history表中
+//            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = max-1;
+//            while (max > temp){
+//                temp+=1;
+//                String temp_pin = Pin.codeOf(temp).getDesc();
+//                AccountPinHistory accountPinHistory = new AccountPinHistory();
+//                accountPinHistory.setPromotionDate(new Date());
+//                accountPinHistory.setAccount(account);
+//                accountPinHistory.setCreatedBy("TerryTang");
+//                accountPinHistory.setLastUpdatedBy("TerryTang");
+//                accountPinHistory.setPin(temp_pin);
+//                accountPinHistoryRepository.save(accountPinHistory);
+//            }
+//        }
+//        accountRepository.save(account);
+//    }
 
     public TreeNode getRootNode(String snapshotDate) {
         TreeNode rootNode = doubleGoldDiamondNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);

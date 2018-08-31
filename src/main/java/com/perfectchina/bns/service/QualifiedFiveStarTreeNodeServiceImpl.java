@@ -289,7 +289,6 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                         if (beforeBorrowPin == PinPosition.RUBY){
                                             Account account = accountRepository.getAccountById(accountId);
                                             SavePinUtils.savePinAndHistory(account, PinPosition.RUBY,accountPinHistoryRepository,accountRepository);
-//                                            savePinAndHistory(account,PinPosition.RUBY);
                                         }else {
                                             pin = changeAndGetPin(fiveStarIntegral,passUpGpv,qualifiedLine,accountId);
                                             getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
@@ -380,54 +379,26 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
         Account account = accountRepository.getAccountById(id);
         if ((qualifiedLine >= 8) || (qualifiedLine >= 7 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-//            savePinAndHistory(account,PinPosition.GOLD_DIAMOND);
             SavePinUtils.savePinAndHistory(account, PinPosition.GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
             return PinPosition.GOLD_DIAMOND;
         }
         if ((qualifiedLine >= 6) || (qualifiedLine >= 5 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-//            savePinAndHistory(account,PinPosition.DIAMOND);
             SavePinUtils.savePinAndHistory(account, PinPosition.DIAMOND,accountPinHistoryRepository,accountRepository);
             return PinPosition.DIAMOND;
         }
         if ((qualifiedLine >= 4) || (qualifiedLine >= 3 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-//            savePinAndHistory(account,PinPosition.EMERALD);
             SavePinUtils.savePinAndHistory(account, PinPosition.EMERALD,accountPinHistoryRepository,accountRepository);
             return PinPosition.EMERALD;
         }
         if ((qualifiedLine >= 2) || (qualifiedLine >= 1 && passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS)){
-//            savePinAndHistory(account,PinPosition.RUBY);
             SavePinUtils.savePinAndHistory(account, PinPosition.RUBY,accountPinHistoryRepository,accountRepository);
             return PinPosition.RUBY;
         }
         if (passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS){
-//            savePinAndHistory(account,PinPosition.QUALIFIED_FIVE_STAR);
             SavePinUtils.savePinAndHistory(account, PinPosition.QUALIFIED_FIVE_STAR,accountPinHistoryRepository,accountRepository);
             return PinPosition.QUALIFIED_FIVE_STAR;
         }
         return null;
-    }
-
-    private void savePinAndHistory(Account account,String pin){
-        account.setPin(pin);
-        String maxPin = account.getMaxPin();
-        Integer max = Pin.descOf(pin).getCode();
-        Integer temp = Pin.descOf(maxPin).getCode();
-        if (max > temp){
-            account.setMaxPin(pin);
-            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = max-1;
-            while (max > temp){
-                temp+=1;
-                String temp_pin = Pin.codeOf(temp).getDesc();
-                AccountPinHistory accountPinHistory = new AccountPinHistory();
-                accountPinHistory.setPromotionDate(new Date());
-                accountPinHistory.setAccount(account);
-                accountPinHistory.setCreatedBy("TerryTang");
-                accountPinHistory.setLastUpdatedBy("TerryTang");
-                accountPinHistory.setPin(temp_pin);
-                accountPinHistoryRepository.save(accountPinHistory);
-            }
-        }
-        accountRepository.save(account);
     }
 
 	private List<PassUpGpv> SortFiveStarIntegral(List<PassUpGpv> passUpGpvs){
