@@ -71,6 +71,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 
 	/**
 	 * copy value form gpvNetTree
+	 * 基于gpv网络图过滤非五星节点
 	 */
 	@Override
 	public void createFiveStarNetTree(String snapshotDate) {
