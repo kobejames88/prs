@@ -177,7 +177,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 					while(uplink!=null){
 						if(PinPosition.MEMBER.equals(uplink.getPin())){
 							uplink.setPin(PinPosition.FIVE_STAR);
-							SavePinUtils.savePinAndHistory(opvNetTreeNode.getData(),PinPosition.FIVE_STAR,accountPinHistoryRepository,accountRepository);
+							SavePinUtils.savePinAndHistory(uplink.getData(),PinPosition.FIVE_STAR,accountPinHistoryRepository,accountRepository);
 						}
 						try {
 							uplink = opvTreeNodeRepository.findById(uplink.getUplinkId()).get();
