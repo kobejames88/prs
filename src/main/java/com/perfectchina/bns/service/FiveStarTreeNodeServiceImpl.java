@@ -201,7 +201,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
         childFiveStarVo.setOpv(child.getOpv());
         childFiveStarVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
         childFiveStarVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
-        childFiveStarVo.setDownlines(nodes);
+        childFiveStarVo.setChildren(nodes);
         return childFiveStarVo;
     }
 

@@ -1,5 +1,6 @@
 package com.perfectchina.bns.service;
 
+import com.perfectchina.bns.common.utils.SavePinUtils;
 import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.PassUpGpv;
@@ -287,7 +288,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                         qualifiedLine = qualifiedLine == 0 ? 0 : qualifiedLine-1;
                                         if (beforeBorrowPin == PinPosition.RUBY){
                                             Account account = accountRepository.getAccountById(accountId);
-                                            savePinAndHistory(account,PinPosition.RUBY);
+                                            SavePinUtils.savePinAndHistory(account, PinPosition.RUBY,accountPinHistoryRepository,accountRepository);
+//                                            savePinAndHistory(account,PinPosition.RUBY);
                                         }else {
                                             pin = changeAndGetPin(fiveStarIntegral,passUpGpv,qualifiedLine,accountId);
                                             getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
@@ -378,23 +380,28 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
         Account account = accountRepository.getAccountById(id);
         if ((qualifiedLine >= 8) || (qualifiedLine >= 7 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-            savePinAndHistory(account,PinPosition.GOLD_DIAMOND);
+//            savePinAndHistory(account,PinPosition.GOLD_DIAMOND);
+            SavePinUtils.savePinAndHistory(account, PinPosition.GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
             return PinPosition.GOLD_DIAMOND;
         }
         if ((qualifiedLine >= 6) || (qualifiedLine >= 5 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-            savePinAndHistory(account,PinPosition.DIAMOND);
+//            savePinAndHistory(account,PinPosition.DIAMOND);
+            SavePinUtils.savePinAndHistory(account, PinPosition.DIAMOND,accountPinHistoryRepository,accountRepository);
             return PinPosition.DIAMOND;
         }
         if ((qualifiedLine >= 4) || (qualifiedLine >= 3 && currentFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-            savePinAndHistory(account,PinPosition.EMERALD);
+//            savePinAndHistory(account,PinPosition.EMERALD);
+            SavePinUtils.savePinAndHistory(account, PinPosition.EMERALD,accountPinHistoryRepository,accountRepository);
             return PinPosition.EMERALD;
         }
         if ((qualifiedLine >= 2) || (qualifiedLine >= 1 && passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS)){
-            savePinAndHistory(account,PinPosition.RUBY);
+//            savePinAndHistory(account,PinPosition.RUBY);
+            SavePinUtils.savePinAndHistory(account, PinPosition.RUBY,accountPinHistoryRepository,accountRepository);
             return PinPosition.RUBY;
         }
         if (passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS){
-            savePinAndHistory(account,PinPosition.QUALIFIED_FIVE_STAR);
+//            savePinAndHistory(account,PinPosition.QUALIFIED_FIVE_STAR);
+            SavePinUtils.savePinAndHistory(account, PinPosition.QUALIFIED_FIVE_STAR,accountPinHistoryRepository,accountRepository);
             return PinPosition.QUALIFIED_FIVE_STAR;
         }
         return null;
@@ -478,7 +485,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         childVo.setQualifiedLine(qualifiedLine < 0 ? 0 : qualifiedLine);
         childVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
         childVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
-        childVo.setDownlines(nodes);
+        childVo.setChildren(nodes);
         return childVo;
     }
 }

@@ -30,6 +30,8 @@ public class DoubleGoldDiamonndVo {
 
     private int maxPin;
 
+    private List<DoubleGoldDiamonndVo> children;
+
     public String getType() {
         return type;
     }
@@ -38,14 +40,12 @@ public class DoubleGoldDiamonndVo {
         this.type = type;
     }
 
-    private List<DoubleGoldDiamonndVo> downlines;
-
-    public List<DoubleGoldDiamonndVo> getDownlines() {
-        return downlines;
+    public List<DoubleGoldDiamonndVo> getChildren() {
+        return children;
     }
 
-    public void setDownlines(List<DoubleGoldDiamonndVo> downlines) {
-        this.downlines = downlines;
+    public void setChildren(List<DoubleGoldDiamonndVo> children) {
+        this.children = children;
     }
 
     public int getQualifiedGoldDiamond() {
