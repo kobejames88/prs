@@ -14,7 +14,7 @@ public class FiveStarVo {
 
     private String accountNum;
 
-    private int qualifiedLine;
+//    private int qualifiedLine;
 
     private Float ppv;
 
@@ -60,13 +60,13 @@ public class FiveStarVo {
         this.accountNum = accountNum;
     }
 
-    public int getQualifiedLine() {
-        return qualifiedLine;
-    }
-
-    public void setQualifiedLine(int qualifiedLine) {
-        this.qualifiedLine = qualifiedLine;
-    }
+//    public int getQualifiedLine() {
+//        return qualifiedLine;
+//    }
+//
+//    public void setQualifiedLine(int qualifiedLine) {
+//        this.qualifiedLine = qualifiedLine;
+//    }
 
     public Float getPpv() {
         return ppv;
