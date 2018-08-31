@@ -328,31 +328,8 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
         goldDiamondNetTreeNode.setReward(reward);
         Account account = accountRepository.getAccountById(goldDiamondNetTreeNode.getData().getId());
         SavePinUtils.savePinAndHistory(account, PinPosition.DOUBLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
-//        savePinAndHistory(account, PinPosition.DOUBLE_GOLD_DIAMOND);
     }
 
-    private void savePinAndHistory(Account account,String pin){
-        account.setPin(pin);
-        String maxPin = account.getMaxPin();
-        Integer max = Pin.descOf(pin).getCode();
-        Integer temp = Pin.descOf(maxPin).getCode();
-        if (max > temp){
-            account.setMaxPin(pin);
-            if (max == Pin.descOf(PinPosition.FIVE_STAR).getCode()) temp = max-1;
-            while (max > temp){
-                temp+=1;
-                String temp_pin = Pin.codeOf(temp).getDesc();
-                AccountPinHistory accountPinHistory = new AccountPinHistory();
-                accountPinHistory.setPromotionDate(new Date());
-                accountPinHistory.setAccount(account);
-                accountPinHistory.setCreatedBy("TerryTang");
-                accountPinHistory.setLastUpdatedBy("TerryTang");
-                accountPinHistory.setPin(temp_pin);
-                accountPinHistoryRepository.save(accountPinHistory);
-            }
-        }
-        accountRepository.save(account);
-    }
 
     private Float calculateMergingPoints(int line, int count, List<Float> opvs) {
         int avg = count / line;
