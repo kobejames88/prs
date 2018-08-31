@@ -75,7 +75,6 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
 	 */
 	@Override
 	public void createFiveStarNetTree(String snapshotDate) {
-
 		GpvNetTreeNode rootTreeNode = gpvNetTreeNodeRepository.getRootTreeNodeOfMonth(snapshotDate);
         Stack<GpvNetTreeNode> stk = new Stack<>();
 
@@ -203,7 +202,7 @@ public class FiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl implements 
         childFiveStarVo.setOpv(child.getOpv());
         childFiveStarVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
         childFiveStarVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
-        childFiveStarVo.setDownlines(nodes);
+        childFiveStarVo.setChildren(nodes);
         return childFiveStarVo;
     }
 

@@ -28,14 +28,14 @@ public class GoldDiamonndVo {
 
     private int maxPin;
 
-    private List<GoldDiamonndVo> downlines;
+    private List<GoldDiamonndVo> children;
 
-    public List<GoldDiamonndVo> getDownlines() {
-        return downlines;
+    public List<GoldDiamonndVo> getChildren() {
+        return children;
     }
 
-    public void setDownlines(List<GoldDiamonndVo> downlines) {
-        this.downlines = downlines;
+    public void setChildren(List<GoldDiamonndVo> children) {
+        this.children = children;
     }
 
     public int getQualifiedGoldDiamond() {

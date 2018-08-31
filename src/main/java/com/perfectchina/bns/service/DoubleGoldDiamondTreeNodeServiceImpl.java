@@ -298,7 +298,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         childVo.setQualifiedGoldDiamond(child.getDoubleGoldDiamondLine());
         childVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
         childVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
-        childVo.setDownlines(nodes);
+        childVo.setChildren(nodes);
         return childVo;
     }
 

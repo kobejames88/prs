@@ -18,7 +18,7 @@ public class SimpleVo {
 
     private Float money;
 
-    private List<SimpleVo> downlines;
+    private List<SimpleVo> children;
 
     public Float getMoney() {
         return money;
@@ -28,12 +28,12 @@ public class SimpleVo {
         this.money = money;
     }
 
-    public List<SimpleVo> getDownlines() {
-        return downlines;
+    public List<SimpleVo> getChildren() {
+        return children;
     }
 
-    public void setDownlines(List<SimpleVo> downlines) {
-        this.downlines = downlines;
+    public void setChildren(List<SimpleVo> children) {
+        this.children = children;
     }
 
     public int getLevelNum() {

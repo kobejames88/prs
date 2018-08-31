@@ -129,7 +129,7 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
         childVo.setAccountNum(child.getData().getAccountNum());
         childVo.setPpv(child.getPpv());
         childVo.setMoney(child.getTotalSales());
-        childVo.setDownlines(nodes);
+        childVo.setChildren(nodes);
         return childVo;
     }
 }

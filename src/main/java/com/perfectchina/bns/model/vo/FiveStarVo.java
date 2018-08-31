@@ -14,7 +14,7 @@ public class FiveStarVo {
 
     private String accountNum;
 
-    private int qualifiedLine;
+//    private int qualifiedLine;
 
     private Float ppv;
 
@@ -26,14 +26,14 @@ public class FiveStarVo {
 
     private int maxPin;
 
-    private List<FiveStarVo> downlines;
+    private List<FiveStarVo> children;
 
-    public List<FiveStarVo> getDownlines() {
-        return downlines;
+    public List<FiveStarVo> getChildren() {
+        return children;
     }
 
-    public void setDownlines(List<FiveStarVo> downlines) {
-        this.downlines = downlines;
+    public void setChildren(List<FiveStarVo> children) {
+        this.children = children;
     }
 
     public int getLevelNum() {
@@ -60,13 +60,13 @@ public class FiveStarVo {
         this.accountNum = accountNum;
     }
 
-    public int getQualifiedLine() {
-        return qualifiedLine;
-    }
-
-    public void setQualifiedLine(int qualifiedLine) {
-        this.qualifiedLine = qualifiedLine;
-    }
+//    public int getQualifiedLine() {
+//        return qualifiedLine;
+//    }
+//
+//    public void setQualifiedLine(int qualifiedLine) {
+//        this.qualifiedLine = qualifiedLine;
+//    }
 
     public Float getPpv() {
         return ppv;

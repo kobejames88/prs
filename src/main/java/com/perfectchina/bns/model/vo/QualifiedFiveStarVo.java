@@ -36,14 +36,14 @@ public class QualifiedFiveStarVo{
 
     private int maxPin;
 
-    private List<QualifiedFiveStarVo> downlines;
+    private List<QualifiedFiveStarVo> children;
 
-    public List<QualifiedFiveStarVo> getDownlines() {
-        return downlines;
+    public List<QualifiedFiveStarVo> getChildren() {
+        return children;
     }
 
-    public void setDownlines(List<QualifiedFiveStarVo> downlines) {
-        this.downlines = downlines;
+    public void setChildren(List<QualifiedFiveStarVo> children) {
+        this.children = children;
     }
 
     public int getLevelNum() {

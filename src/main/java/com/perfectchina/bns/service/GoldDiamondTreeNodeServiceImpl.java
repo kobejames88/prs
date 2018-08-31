@@ -1,5 +1,6 @@
 package com.perfectchina.bns.service;
 
+import com.perfectchina.bns.common.utils.SavePinUtils;
 import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.Rank;
@@ -326,7 +327,8 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
     private void saveInfo(GoldDiamondNetTreeNode goldDiamondNetTreeNode, String reward) {
         goldDiamondNetTreeNode.setReward(reward);
         Account account = accountRepository.getAccountById(goldDiamondNetTreeNode.getData().getId());
-        savePinAndHistory(account, PinPosition.DOUBLE_GOLD_DIAMOND);
+        SavePinUtils.savePinAndHistory(account, PinPosition.DOUBLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
+//        savePinAndHistory(account, PinPosition.DOUBLE_GOLD_DIAMOND);
     }
 
     private void savePinAndHistory(Account account,String pin){
@@ -404,7 +406,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
         childVo.setQualifiedGoldDiamond(child.getGoldDiamondLine());
         childVo.setPin(Pin.descOf(child.getData().getPin()).getCode());
         childVo.setMaxPin(Pin.descOf(child.getData().getMaxPin()).getCode());
-        childVo.setDownlines(nodes);
+        childVo.setChildren(nodes);
         return childVo;
     }
 
