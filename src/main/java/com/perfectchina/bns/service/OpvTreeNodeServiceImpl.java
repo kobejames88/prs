@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.perfectchina.bns.common.utils.SavePinUtils;
+import com.perfectchina.bns.repositories.AccountPinHistoryRepository;
+import com.perfectchina.bns.repositories.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,12 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 	
 	@Autowired
 	private ActiveNetTreeNodeRepository activeNetTreeNodeRepository;
+
+	@Autowired
+	private AccountRepository accountRepository;
+
+	@Autowired
+	AccountPinHistoryRepository accountPinHistoryRepository;
 	
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -108,8 +117,10 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 		
 		if(prevMonthNode==null||PinPosition.MEMBER.equals(prevMonthNode.getPin())){
 			opvNetTreeNode.setPin(PinPosition.MEMBER);
+			SavePinUtils.savePinAndHistory(opvNetTreeNode.getData(),PinPosition.MEMBER,accountPinHistoryRepository,accountRepository);
 		}else{
 			opvNetTreeNode.setPin(PinPosition.FIVE_STAR);
+			SavePinUtils.savePinAndHistory(opvNetTreeNode.getData(),PinPosition.FIVE_STAR,accountPinHistoryRepository,accountRepository);
 		}
 		
 		Float aopvLastMonth = 0F;
@@ -155,6 +166,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				opvNetTreeNode.setAopv(aopvLastMonth+opv);
 				if(PinPosition.MEMBER.equals(opvNetTreeNode.getPin())&&opvNetTreeNode.getOpv()>=18000&&opvNetTreeNode.getAopv()>=36000){
 					opvNetTreeNode.setPin(PinPosition.NEW_FIVE_STAR);
+					SavePinUtils.savePinAndHistory(opvNetTreeNode.getData(),PinPosition.NEW_FIVE_STAR,accountPinHistoryRepository,accountRepository);
 					//pass up 5star
 					OpvNetTreeNode uplink = null ;
 					try {
@@ -165,6 +177,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 					while(uplink!=null){
 						if(PinPosition.MEMBER.equals(uplink.getPin())){
 							uplink.setPin(PinPosition.FIVE_STAR);
+							SavePinUtils.savePinAndHistory(opvNetTreeNode.getData(),PinPosition.FIVE_STAR,accountPinHistoryRepository,accountRepository);
 						}
 						try {
 							uplink = opvTreeNodeRepository.findById(uplink.getUplinkId()).get();
