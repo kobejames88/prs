@@ -23,6 +23,33 @@ public class DateUtils {
 		return SDF.format(inputDate);
 	}
 
+	/**
+	 * This function check the snapshot date is next to another
+	 * @param inputDate
+	 * @return
+	 */
+	public static boolean isNextSnapshotDate(String prevSnapshotDate, String inputSnapshotDate) {
+		boolean result = false;
+		try {
+			// add one month to prevDate to see if they are the same
+			Date prevDate = SDF.parse(prevSnapshotDate);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime( prevDate );
+			cal.add( Calendar.MONTH, 1);
+			
+			String checkMonth = SDF.format( cal.getTime() );
+			
+			if ( checkMonth.equals(inputSnapshotDate)){
+				result = true;
+			}			
+			
+		} catch ( Exception ex ) {
+			ex.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 
 	/**
 	 * get current month snapshotDate
