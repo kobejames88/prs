@@ -14,7 +14,7 @@ import java.util.Date;
  * 
  */
 @Entity
-@NamedQuery(name="DiamondDividendBonusReward.findAll", query="SELECT a FROM DiamondDividendBonusReward.java a")
+@NamedQuery(name="DiamondDividendBonusReward.findAll", query="SELECT a FROM DiamondDividendBonusReward a")
 public class DiamondDividendBonusReward implements Serializable {
 	private static final long serialVersionUID = 1L;
 
