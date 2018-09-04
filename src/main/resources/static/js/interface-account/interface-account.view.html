@@ -9,6 +9,8 @@
 <p>&nbsp;</p>
 <p><a href="#!/login" class="btn btn-primary">Logout</a></p>
 
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
 <div class="col-md-6 col-md-offset-3">
     <h2>Add Pending Account</h2>
     <form name="form" ng-submit="vm.createInterfaceAccount()" role="form">
@@ -30,16 +32,19 @@
     </form>
     
   <form id="tf"  enctype="multipart/form-data">  
-    <input type="file" name="file" id="file" />  
-    <input type="button" value="Upload 201807" onclick="upload('201807')"/>
-    <input type="button" value="Upload 201808" onclick="upload('201808')"/>
-    <input type="button" value="Upload 201809" onclick="upload('201809')"/>
+    <input type="file" name="file" id="file" />
+    <input id="inputBtn" type="button" value="Upload " onclick="upload()"/>
   </form>
   <button onclick="listPending()">listPending</button><br/>
-  <button onclick="confirm('201807')">confirm 201807</button>
-  <button onclick="confirm('201808')">confirm 201808</button>
-  <button onclick="confirm('201809')">confirm 201809</button>
+  <button id="sureBtn" onclick="confirm()">confirm</button>
 </div>
+
+<script>
+    $(function () {
+        $("#inputBtn").val('Upload '+$.cookie('date_cookie'));
+        $("#sureBtn").html('confirm '+$.cookie('date_cookie'));
+    })
+</script>
 
 <table id="accountsTB" style="display:none;text-align:center;FONT-SIZE: 11pt; WIDTH: 600px; BORDER-COLLAPSE: collapse" borderColor=#3399ff cellSpacing=0 cellPadding=0 align=center border=1>   
     <tr>   
@@ -65,7 +70,8 @@
 
 
  <script type="text/javascript">
- function confirm(snapshotDate){
+ function confirm(){
+     var snapshotDate = $.cookie('date_cookie');
 	 document.getElementById("accountsTB").style.display='none';
 	 $.ajax({
          url:"/bns/api/interfaceAccount/confirmBatch/"+snapshotDate,
@@ -128,7 +134,8 @@
      });  
      document.getElementById("accountsTB").style.display='';
  }
-  function upload(snapshotDate){
+  function upload(){
+      var snapshotDate = $.cookie('date_cookie');
       var form = new FormData(document.getElementById("tf"));
       $.ajax({
           url:"/bns/api/interfaceAccount/upload/"+snapshotDate,

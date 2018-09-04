@@ -9,6 +9,48 @@
 </ul>
 <p>&nbsp;</p>
 
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<select name="" id="year"></select>
+<select name="" id="month"></select>
+<input type="text" id="date" disabled="disabled">
+<button id="sureBtn">确定</button>
+<script>
+    $(function(){
+        let yearVal = "2015"
+        let monthVal = "01"
+        let dateVal = "201501"
+        var year = ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"]
+        var month = ["1","2","3","4","5","6","7","8","9","10","11","12"]
+        for(let i = 0; i <year.length; i++){
+            let option = `<option value=${year[i]}>${year[i]}</option>`
+            $("#year").append(option)
+        }
+        for(let i = 0; i <month.length; i++){
+            let option = `<option value=${month[i]}>${month[i]}</option>`
+            $("#month").append(option)
+        }
+        $("#year").change(function(){
+            yearVal = $(this).val()
+            dateVal = yearVal + monthVal
+            $("#date").val(dateVal)
+        })
+        $("#month").change(function(){
+            monthVal = $(this).val() < 10 ? "0" + $(this).val() : $(this).val()
+            dateVal = yearVal + monthVal
+            $("#date").val(dateVal)
+        })
+        $("#sureBtn").click(function(){
+            $.cookie('the_cookie', '', { expires: -1 }); // 删除 cookie
+            $.cookie('date_cookie', dateVal);//存到cookie中
+            alert($.cookie('date_cookie'));
+        })
+        $("#date").val($.cookie('date_cookie'));
+    })
+</script>
+
+
+<p>&nbsp;</p>
 <p><a href="#!/interface-account" class="btn btn-primary">Interface Account</a></p>
 
 <p><a href="#!/interface-sales-record" class="btn btn-primary">Interface Sales Record</a></p>

@@ -1,17 +1,20 @@
 <h1>InterfacePassUpGPVNetTreeNode</h1>
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
+<button id="updata" onclick="createNet()">create passupgpvnet </button><br/>
+<a id="alist" ><button id="blist">list passupgpvnet </button></a><br/>
 
-<button onclick="createNet('201807')">create passUpGpvNet 201807</button></br>
-<button onclick="createNet('201808')">create passUpGpvNet 201808</button></br>
-<button onclick="createNet('201809')">create passUpGpvNet 201809</button></br>
-<a href="#!/interface-passupgpvnet-node/list?201807"><button >list passUpGpvNet 201807</button></a></br>
-<a href="#!/interface-passupgpvnet-node/list?201808"><button >list passUpGpvNet 201808</button></a></br>
-<a href="#!/interface-passupgpvnet-node/list?201809"><button >list passUpGpvNet 201809</button></a></br>
+<script type="text/javascript">
+    $(function () {
+        $('#alist').attr('href','#!/interface-passupgpvnet-node/list?'+$.cookie('date_cookie'));
+        $("#updata").html('create passupgpvnet '+$.cookie('date_cookie'));
+        $("#blist").html('list passupgpvnet '+$.cookie('date_cookie'));
+    })
 
- <script type="text/javascript">
- function createNet(snahshotDate){
+    function createNet(){
+        var snapshotDate = $.cookie('date_cookie');
 	 $.ajax({
-         url:"/bns/api/passUpGpvNet/" + snahshotDate ,
+         url:"/bns/api/passUpGpvNet/" + snapshotDate ,
          type:"put",
          data:"",
          async:true, 

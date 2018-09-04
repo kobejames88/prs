@@ -1,17 +1,20 @@
 <h1>goldenDiamondOPVBonus</h1>
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
+<button id="updata" onclick="createNet()">calculate goldenDiamondOPVBonus </button><br/>
+<a id="alist" ><button id="blist">list goldenDiamondOPVBonus </button></a><br/>
 
-<button onclick="createNet('201807')">calculate goldenDiamondOPVBonus 201807</button></br>
-<button onclick="createNet('201808')">calculate goldenDiamondOPVBonus 201808</button></br>
-<button onclick="createNet('201809')">calculate goldenDiamondOPVBonus 201809</button></br>
-<a href="#!/interface-goldendiamondopv-bonus/list?201807"><button >list goldenDiamondOPVBonus 201807</button></a></br>
-<a href="#!/interface-goldendiamondopv-bonus/list?201808"><button >list goldenDiamondOPVBonus 201808</button></a></br>
-<a href="#!/interface-goldendiamondopv-bonus/list?201809"><button >list goldenDiamondOPVBonus 201809</button></a></br>
+<script type="text/javascript">
+    $(function () {
+        $('#alist').attr('href','#!/interface-goldendiamondopv-bonus/list?'+$.cookie('date_cookie'));
+        $("#updata").html('calculate goldenDiamondOPVBonus '+$.cookie('date_cookie'));
+        $("#blist").html('list goldenDiamondOPVBonus '+$.cookie('date_cookie'));
+    })
 
- <script type="text/javascript">
- function createNet(snahshotDate){
-	 $.ajax({
-         url:"/bns/api/reward/calculate/goldendiamondopv/bonus/" + snahshotDate ,
+    function createNet(){
+        var snapshotDate = $.cookie('date_cookie');
+        $.ajax({
+         url:"/bns/api/reward/calculate/goldendiamondopv/bonus/" + snapshotDate ,
          type:"get",
          data:"",
          async:true, 

@@ -1,17 +1,20 @@
 <h1>Interface customer net TreeNode</h1>
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
+<button id="updata" onclick="createNet()">create customernet </button><br/>
+<a id="alist" ><button id="blist">list customernet </button></a><br/>
 
-<button onclick="updata('201807')">updata customernet 201807</button></br>
-<button onclick="updata('201808')">updata customernet 201808</button></br>
-<button onclick="updata('201809')">updata customernet 201809</button></br>
-<a href="#!/interface-customernet-node/list?201807"><button >list customernet 201807</button></a></br>
-<a href="#!/interface-customernet-node/list?201808"><button >list customernet 201808</button></a></br>
-<a href="#!/interface-customernet-node/list?201809"><button >list customernet 201809</button></a></br>
+<script type="text/javascript">
+    $(function () {
+        $('#alist').attr('href','#!/interface-customernet-node/list?'+$.cookie('date_cookie'));
+        $("#updata").html('create customernet '+$.cookie('date_cookie'));
+        $("#blist").html('list customernet '+$.cookie('date_cookie'));
+    })
 
- <script type="text/javascript">
- function updata(snahshotDate){
+    function createNet(){
+     var snapshotDate = $.cookie('date_cookie');
 	 $.ajax({
-         url:"/bns/api/reward/create/rewardnet/"+snahshotDate,
+         url:"/bns/api/reward/create/rewardnet/"+snapshotDate,
          type:"get",
          data:"",
          async:true, 

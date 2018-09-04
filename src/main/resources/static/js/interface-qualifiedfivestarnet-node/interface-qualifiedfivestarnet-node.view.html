@@ -1,17 +1,20 @@
 <h1>InterfaceQualifiedFiveStarNetTreeNode</h1>
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
+<button id="updata" onclick="createNet()">create qualifiedFiveStarNet </button><br/>
+<a id="alist" ><button id="blist">list qualifiedFiveStarNet </button></a><br/>
 
-<button onclick="createNet('201807')">create qualifiedFiveStarNet 201807</button></br>
-<button onclick="createNet('201808')">create qualifiedFiveStarNet 201808</button></br>
-<button onclick="createNet('201809')">create qualifiedFiveStarNet 201809</button></br>
-<a href="#!/interface-qualifiedfivestarnet-node/list?201807"><button >list qualifiedFiveStarNet 201807</button></a></br>
-<a href="#!/interface-qualifiedfivestarnet-node/list?201808"><button >list qualifiedFiveStarNet 201808</button></a></br>
-<a href="#!/interface-qualifiedfivestarnet-node/list?201809"><button >list qualifiedFiveStarNet 201809</button></a></br>
+<script type="text/javascript">
+    $(function () {
+        $('#alist').attr('href','#!/interface-qualifiedfivestarnet-node/list?'+$.cookie('date_cookie'));
+        $("#updata").html('create qualifiedfivestarnet '+$.cookie('date_cookie'));
+        $("#blist").html('list qualifiedfivestarnet '+$.cookie('date_cookie'));
+    })
 
- <script type="text/javascript">
- function createNet(snahshotDate){
+    function createNet(){
+        var snapshotDate = $.cookie('date_cookie');
 	 $.ajax({
-         url:"/bns/api/qualifiedFiveStar/" + snahshotDate ,
+         url:"/bns/api/qualifiedFiveStar/" + snapshotDate ,
          type:"put",
          data:"",
          async:true, 
