@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import com.perfectchina.bns.model.Account;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -22,26 +23,19 @@ public class DiamondDividendBonusReward implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)	
 	private long id;
 
+	private BigDecimal bonusRate;  // 积分
+
 	private String createdBy;
 
 	@Temporal(TemporalType.DATE)
 	private Date creationDate;
 
-	private float bonusRate;  // 1 month for 1 point. 11 month 11 point. 12 month 12 * 1.2 = 14.4 point
-
-	private Boolean hasBonus; // 财年度有6个月达标金钻（或以上职级），且4个月连续，才有资格积分
-	
-	private float amount;
+	private BigDecimal amount;
 	
 	private String lastUpdatedBy;
 
 	@Temporal(TemporalType.DATE)
 	private Date lastUpdatedDate;
-
-	private float ppv;
-
-	@Temporal(TemporalType.DATE)
-	private Date rewardDate;
 
 	//bi-directional many-to-one association to Account
 	@ManyToOne
@@ -76,34 +70,23 @@ public class DiamondDividendBonusReward implements Serializable {
 		this.creationDate = creationDate;
 	}
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-	public Boolean getHasBonus() {
-		return hasBonus;
-	}
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-	public void setHasBonus(Boolean hasBonus) {
-		this.hasBonus = hasBonus;
-	}
+    public BigDecimal getBonusRate() {
+        return bonusRate;
+    }
 
-	
-	public float getAmount() {
-		return amount;
-	}
+    public void setBonusRate(BigDecimal bonusRate) {
+        this.bonusRate = bonusRate;
+    }
 
-	public void setAmount(float amount) {
-		this.amount = amount;
-	}
-
-
-	public float getBonusRate() {
-		return bonusRate;
-	}
-
-	public void setBonusRate(float bonusRate) {
-		this.bonusRate = bonusRate;
-	}
-
-	public String getLastUpdatedBy() {
+    public String getLastUpdatedBy() {
 		return this.lastUpdatedBy;
 	}
 
@@ -117,22 +100,6 @@ public class DiamondDividendBonusReward implements Serializable {
 
 	public void setLastUpdatedDate(Date lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
-	}
-
-	public float getPpv() {
-		return ppv;
-	}
-
-	public void setPpv(float ppv) {
-		this.ppv = ppv;
-	}
-
-	public Date getRewardDate() {
-		return this.rewardDate;
-	}
-
-	public void setRewardDate(Date rewardDate) {
-		this.rewardDate = rewardDate;
 	}
 
 	public Account getAccount() {
@@ -157,11 +124,10 @@ public class DiamondDividendBonusReward implements Serializable {
 	public String toString() {
 		return "AccountReward [id=" + id + ", createdBy=" + createdBy
 				+ ", creationDate=" + creationDate 
-				+ ", bonusRate=" + bonusRate + ", hasBonus=" + hasBonus
+				+ ", bonusRate=" + bonusRate
 				+ ", amount="
 				+ amount + ", lastUpdatedBy=" + lastUpdatedBy
 				+ ", lastUpdatedDate=" + lastUpdatedDate 
-				+ ", ppv=" + ppv + ", rewardDate=" + rewardDate
 				+ ", account=" + account + "]";
 	}
 	

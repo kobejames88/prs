@@ -22,9 +22,12 @@ public class DateUtils {
 	public static String convertToSnapShotDate( Date inputDate ) {
 		return SDF.format(inputDate);
 	}
+    public static String addMonthAndConvertToSnapShotDate( Date inputDate ) {
+        return SDF.format(addMonth(inputDate,1));
+    }
 
 	/**
-	 * This function check the snapshot date is next to another
+	 * 检查传入的日期是否相隔一个月
 	 * @param inputDate
 	 * @return
 	 */
@@ -52,7 +55,7 @@ public class DateUtils {
 	
 
 	/**
-	 * get current month snapshotDate
+	 * 将当月的日期转为 yyyyMM 的格式显示
 	 * @return snapshotDate yyyyMM
 	 */
 	public static String getCurrentSnapshotDate(){
@@ -61,7 +64,7 @@ public class DateUtils {
 	}
 
 	/**
-	 * get last month snapshotDate
+	 * 获取上个月的日期
 	 * @return
 	 */
 	public static String getLastMonthSnapshotDate(){
@@ -71,8 +74,84 @@ public class DateUtils {
 		return lastMonthSnapshotDate;
 	}
 
+    /**
+     * 获取输入月份上一年的月份
+     * @return Date
+     */
+    public static Date getMonthOfLastYearDate(int month){
+        Calendar c = Calendar.getInstance();
+        try{
+            c.setTime(new Date());
+            c.set( Calendar.DAY_OF_MONTH, 1);
+            c.set(Calendar.HOUR_OF_DAY,0);
+            c.set(Calendar.MINUTE,0);
+            c.set(Calendar.SECOND,0);
+            c.set(Calendar.MILLISECOND,0);
+            c.set(Calendar.MONTH,month - 1);
+            c.add(Calendar.YEAR, -1);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return c.getTime();
+    }
+
+    /**
+     * 获取输入月份今年的月份
+     * @return Date
+     */
+    public static Date getMonthOfCurrentYearDate(int month){
+        Calendar c = Calendar.getInstance();
+        try{
+            c.setTime(new Date());
+            c.set(Calendar.HOUR_OF_DAY,0);
+            c.set(Calendar.MINUTE,0);
+            c.set(Calendar.SECOND,0);
+            c.set(Calendar.MILLISECOND,0);
+            c.set(Calendar.MONTH,month);
+            c.add(Calendar.MONTH,-1);
+            // for the previous month, find the last day
+            c.set( Calendar.DAY_OF_MONTH, c.getActualMaximum( Calendar.DAY_OF_MONTH ));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return c.getTime();
+    }
+
 	/**
-	 * get last month snapshotDate by current snapshotDate
+	 * 获取输入月份上一年的月份
+	 * @return String
+	 */
+	public static String getMonthOfLastYearSnapshotDate(int month){
+		Calendar c = Calendar.getInstance();
+		try{
+			c.setTime(new Date());
+			c.set(Calendar.MONTH,month - 1);
+			c.add(Calendar.YEAR, -1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return SDF.format(c.getTime());
+	}
+
+	/**
+	 * 获取输入月份今年的月份
+	 * @return String
+	 */
+	public static String getMonthOfCurrentYearSnapshotDate(int month){
+		Calendar c = Calendar.getInstance();
+		try{
+			c.setTime(new Date());
+			c.set(Calendar.MONTH,month-1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return SDF.format(c.getTime());
+	}
+
+
+
+	/**
+	 * 通过传入的日期获取上个月的日期
 	 * @param snapshotDate
 	 * @return
 	 */
@@ -133,7 +212,8 @@ public class DateUtils {
 	
 	// Use this to find out month start date by inputDate, do not hardcode the date in the system
 	// Assume the program run at every 8th day of month, and it will calculate back last month data
-	public static Date getLastMonthStartDate(Date inputDate) {		
+	// 获取上月1号的日期
+	public static Date getLastMonthStartDate(Date inputDate) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( inputDate );
 		
@@ -144,6 +224,7 @@ public class DateUtils {
 	}
 
 	// Use this to find out month start date by inputDate, do not hardcode the date in the system
+    // 获取上月最后一日的日期
 	public static Date getLastMonthEndDate(Date inputDate) {		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( inputDate );
@@ -192,6 +273,7 @@ public class DateUtils {
 		return cal.getTime();
 	}
 
+	// 获取当日的开始时间
 	public static Date getCurrentDateStartTime(Date inputDate) {		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( inputDate );
@@ -204,6 +286,7 @@ public class DateUtils {
 		return cal.getTime();
 	}
 
+    // 获取当日的结束时间
 	public static Date getCurrentDateEndTime(Date inputDate) {		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( inputDate );
@@ -216,7 +299,8 @@ public class DateUtils {
 		cal.set(Calendar.MILLISECOND, 999);
 		return cal.getTime();
 	}
-	
+
+	// 获取输入日期上一日的开始时间
 	public static Date getPreviousDateStartTime(Date inputDate) {		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( inputDate );
@@ -229,7 +313,7 @@ public class DateUtils {
 		cal.set(Calendar.MILLISECOND,0);
 		return cal.getTime();
 	}
-
+    // 获取输入日期上一日的结束时间
 	public static Date getPreviousDateEndTime(Date inputDate) {		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( inputDate );
