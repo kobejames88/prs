@@ -35,8 +35,8 @@ public class SavePinServiceImpl implements SavePinService{
         savePin2PinHistory(accountPinHistories);
     }
 
+    //批量存储的集合
     public void savePin2PinHistory(List<AccountPinHistory> accountPinHistories) {
-        //批量存储的集合
         List<AccountPinHistory> data = new ArrayList<>();
         //批量存储
         for(AccountPinHistory accountPinHistory : accountPinHistories) {
