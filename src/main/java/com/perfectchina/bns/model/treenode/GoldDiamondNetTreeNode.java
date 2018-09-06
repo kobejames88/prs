@@ -22,7 +22,7 @@ public class GoldDiamondNetTreeNode extends TreeNode {
 
     private Float passUpOpv;
 
-    private Float mergePoints;
+//    private Float mergePoints;
 
     private int goldDiamondLine;
 
@@ -62,13 +62,13 @@ public class GoldDiamondNetTreeNode extends TreeNode {
         this.reward = reward;
     }
 
-    public Float getMergePoints() {
-        return mergePoints;
-    }
+//    public Float getMergePoints() {
+//        return mergePoints;
+//    }
 
-    public void setMergePoints(Float mergePoints) {
-        this.mergePoints = mergePoints;
-    }
+//    public void setMergePoints(Float mergePoints) {
+//        this.mergePoints = mergePoints;
+//    }
 
     public String getLevelLine() {
         return levelLine;

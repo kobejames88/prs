@@ -1,11 +1,11 @@
 package com.perfectchina.bns.repositories;
 
-import javax.transaction.Transactional;
+import com.perfectchina.bns.model.treenode.ActiveNetTreeNode;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.perfectchina.bns.model.treenode.ActiveNetTreeNode;
+import javax.transaction.Transactional;
 
 @Repository
 public interface ActiveNetTreeNodeRepository extends TreeNodeRepository<ActiveNetTreeNode> {

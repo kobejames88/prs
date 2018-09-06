@@ -1,16 +1,12 @@
 package com.perfectchina.bns.repositories;
 
-import java.util.List;
-
+import com.perfectchina.bns.model.treenode.TreeNode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.perfectchina.bns.model.Account;
-import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
-import com.perfectchina.bns.model.treenode.TreeNode;
+import java.util.List;
 
 @Repository
 public interface TreeNodeRepository<T extends TreeNode> extends JpaRepository<T, Long> {
