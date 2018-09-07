@@ -15,6 +15,7 @@ import java.util.Date;
 @NamedQuery(name="LeaderBonus.findAll", query="SELECT a FROM LeaderBonus a")
 public class LeaderBonus extends TreeNode{
 
+    //TODO:要把树结构去掉
     private float rubyReward;
 
     private float emerald;
