@@ -10,6 +10,7 @@ import com.perfectchina.bns.model.vo.DoubleGoldDiamonndVo;
 import com.perfectchina.bns.model.vo.GoldDiamonndVo;
 import com.perfectchina.bns.repositories.*;
 import com.perfectchina.bns.service.Enum.Pin;
+import com.perfectchina.bns.service.Enum.RewardType;
 import com.perfectchina.bns.service.pin.PinPosition;
 import com.perfectchina.bns.service.reward.RewardPosition;
 import org.apache.commons.lang3.StringUtils;
@@ -97,6 +98,10 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
     }
 
     private Map<Long, Long> relation = new HashMap<>();
+    private int DoubleRewardCount = 0;
+    private int TripleRewardCount = 0;
+    private int QuadrupleRewardCount = 0;
+    private BigDecimal totalPassupopv = new BigDecimal(0);
 
     /**
      * param node is SimpleNetTreeNode walking through
@@ -137,12 +142,32 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 } else {
                     // 如果是双金钻职级
                     relation.put(childNode.getId(), id);
+                    totalPassupopv =  totalPassupopv.add(BigDecimalUtil.multiply(0.001D,goldDiamondNetTreeNode.getPassUpOpv().doubleValue()));
+                    countReward(goldDiamondNetTreeNode);
                     buildNode(doubleGoldDiamondNetTreeNode, goldDiamondNetTreeNode, id);
                 }
             }
         }
 
         relation.remove(id);
+    }
+
+    private void countReward(GoldDiamondNetTreeNode goldDiamondNetTreeNode){
+        switch (RewardType.descOf(goldDiamondNetTreeNode.getReward()).getCode()) {
+            case 2:
+                DoubleRewardCount += 1;
+                break;
+            case 3:
+                DoubleRewardCount += 1;
+                TripleRewardCount += 1;
+                break;
+            case 4:
+                DoubleRewardCount += 1;
+                TripleRewardCount += 1;
+                QuadrupleRewardCount += 1;
+                break;
+        }
+
     }
 
     private void buildNode(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode, GoldDiamondNetTreeNode goldDiamondNetTreeNode, Long id) {
@@ -215,7 +240,21 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
                 upperLevelnum = doubleGoldDiamondNetTreeNode.getLevelNum()+4;
                 childsTotalPassupopv = new BigDecimal(0);
-                recursiveCalculateChildsPassupopv(doubleGoldDiamondNetTreeNode);
+
+                // 获取当月公司opv
+                OpvNetTreeNode opvNode = opvNetTreeNodeRepository.findBySnapshotDate(snapshotDate);
+                Float opv = opvNode.getOpv();
+                Integer length = RewardType.descOf(doubleGoldDiamondNetTreeNode.getReward()).getCode();
+                for (int i=1;i <= length;i++){
+                    if (i == 1){
+                        // 计算第一重奖励
+                        // 获取自己余留opv*0.1与下4代节点的余留opv*0.1之和
+                        recursiveCalculateChildsPassupopv(doubleGoldDiamondNetTreeNode);
+                        calculateOnceRewardBonus(doubleGoldDiamondNetTreeNode,opv);
+                        continue;
+                    }
+                    calculateRewardBonusHandle(i,opv);
+                }
 
 //                // 2、统计有多少条双金钻线
 //                List<DoubleGoldDiamondNetTreeNode> childs = doubleGoldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
@@ -241,13 +280,35 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
     }
 
+    private BigDecimal calculateOnceRewardBonus(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode,Float opv){
+        BigDecimal passupopv = BigDecimalUtil.multiply(doubleGoldDiamondNetTreeNode.getPassUpOpv().doubleValue(), 0.001D);
+        BigDecimal average = passupopv.divide(totalPassupopv,2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(0.001));
+        BigDecimal OnceRewardBonus = childsTotalPassupopv.add(average.multiply(BigDecimalUtil.multiply(0.003D,opv.doubleValue())));
+        return OnceRewardBonus;
+    }
+
+    private BigDecimal calculateRewardBonusHandle(int type,Float opv){
+        switch (type) {
+            case 2:
+                return calculateRewardBonus(DoubleRewardCount,opv);
+            case 3:
+                return calculateRewardBonus(TripleRewardCount,opv);
+            case 4:
+                return calculateRewardBonus(QuadrupleRewardCount,opv);
+        }
+        return null;
+    }
+
+    private BigDecimal calculateRewardBonus(int Count,Float opv){
+        return BigDecimalUtil.multiply(0.001D,opv.doubleValue()).divide(new BigDecimal(Count));
+    }
+
     private BigDecimal recursiveCalculateChildsPassupopv(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode){
         if (!(doubleGoldDiamondNetTreeNode.getLevelNum() > upperLevelnum)){
             List<DoubleGoldDiamondNetTreeNode> childs = getTreeNodeRepository().findByParentId(doubleGoldDiamondNetTreeNode.getId());
             if (childs.size() >0){
                 for (DoubleGoldDiamondNetTreeNode child : childs){
-                    BigDecimal childsPassupopv = recursiveCalculateChildsPassupopv(child);
-//                    childsTotalPassupopv = childsTotalPassupopv.add(childsPassupopv);
+                   recursiveCalculateChildsPassupopv(child);
                 }
             }
         }

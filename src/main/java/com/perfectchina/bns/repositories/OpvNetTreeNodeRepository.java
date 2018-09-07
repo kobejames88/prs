@@ -13,4 +13,8 @@ public interface OpvNetTreeNodeRepository extends TreeNodeRepository<OpvNetTreeN
     public List<OpvNetTreeNode> findBySnapshotDate(
             @Param("fromDate") String fromDate,
             @Param("toDate") String toDate);
+
+    @Query("SELECT sr FROM OpvNetTreeNode sr WHERE sr.uplinkId = 0 and sr.snapshotDate = :snapshotDate")
+    public OpvNetTreeNode findBySnapshotDate(
+            @Param("snapshotDate") String snapshotDate);
 }

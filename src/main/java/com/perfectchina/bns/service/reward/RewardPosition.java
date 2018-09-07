@@ -1,8 +1,8 @@
 package com.perfectchina.bns.service.reward;
 
 public interface RewardPosition {
-    public final String ONCE_REWARD = "4-100" ;
-    public final String DOUBLE_REWARD = "7-20" ;
-    public final String TRIPLE_REWARD = "7-50" ;
-    public final String QUADRUPLE_REWARD = "7-100" ;
+    public final String ONCE_REWARD = "ONCE_REWARD" ;
+    public final String DOUBLE_REWARD = "DOUBLE_REWARD" ;
+    public final String TRIPLE_REWARD = "TRIPLE_REWARD" ;
+    public final String QUADRUPLE_REWARD = "QUADRUPLE_REWARD" ;
 }
