@@ -136,7 +136,7 @@
         editStr += '<div class="diy">' + (treeNode.borrowPoints == null ? '&nbsp;' : treeNode.borrowPoints ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.borrowedPoints == null ? '&nbsp;' : treeNode.borrowedPoints ) + '</div>';
         editStr += '<div class="diy">' + (treeNode.fiveStarIntegral == null ? '&nbsp;' : treeNode.fiveStarIntegral ) + '</div>';
-        editStr += '<div class="diy">' + (treeNode.pin == null ? '&nbsp;' : treeNode.pin ) + '</div>';
+        editStr += '<div class="diy">' + (treeNode.data.pin == null ? '&nbsp;' : treeNode.data.pin ) + '</div>';
         aObj.append(editStr);
     }
     /**

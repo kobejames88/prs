@@ -19,5 +19,4 @@ public interface ContinuedProgressRecordRepository extends JpaRepository<Continu
     @Query("SELECT a FROM ContinuedProgressRecord a WHERE a.snapshotDate = :snapShotDate and a.account.id = :AccountId")
     ContinuedProgressRecord findByAccountNum(@Param("snapShotDate") String snapShotDate, @Param("AccountId") Long AccountId);
 
-
 }

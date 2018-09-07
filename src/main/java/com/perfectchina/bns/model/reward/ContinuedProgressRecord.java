@@ -27,6 +27,7 @@ public class ContinuedProgressRecord {
         G = 0;
         this.newCountG = 0;
         this.oldCountG = 0;
+        this.downlinePoint = 0;
     }
     public ContinuedProgressRecord() {
     }
@@ -61,6 +62,17 @@ public class ContinuedProgressRecord {
     private Integer newCountG;
     private Integer oldCountG;
 
+    //获得下级分
+    private Integer downlinePoint;
+
+    //总得分
+    @Transient
+    private Integer total;
+
+    //数据库中不存在该字段，需要值就计算
+    public Integer getTotal() {
+        return this.R+this.E+this.D+this.G+this.downlinePoint;
+    }
 
     //时间yyyyMM
     private String snapshotDate;
@@ -183,5 +195,13 @@ public class ContinuedProgressRecord {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Integer getDownlinePoint() {
+        return downlinePoint;
+    }
+
+    public void setDownlinePoint(Integer downlinePoint) {
+        this.downlinePoint = downlinePoint;
     }
 }
