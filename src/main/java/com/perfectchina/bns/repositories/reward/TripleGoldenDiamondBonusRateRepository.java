@@ -1,6 +1,5 @@
 package com.perfectchina.bns.repositories.reward;
 
-import com.perfectchina.bns.model.reward.GoldenDiamondOPVBonusRate;
 import com.perfectchina.bns.model.reward.TripleGoldenDiamondBonusRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

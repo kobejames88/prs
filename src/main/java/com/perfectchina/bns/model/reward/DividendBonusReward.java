@@ -15,8 +15,8 @@ import java.util.Date;
  * 
  */
 @Entity
-@NamedQuery(name="DiamondDividendBonusReward.findAll", query="SELECT a FROM DiamondDividendBonusReward a")
-public class DiamondDividendBonusReward implements Serializable {
+@NamedQuery(name="DividendBonusReward.findAll", query="SELECT a FROM DividendBonusReward a")
+public class DividendBonusReward implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -24,6 +24,8 @@ public class DiamondDividendBonusReward implements Serializable {
 	private long id;
 
 	private BigDecimal bonusRate;  // 积分
+
+	private int type; // 分红奖类型
 
 	private String createdBy;
 
@@ -42,7 +44,7 @@ public class DiamondDividendBonusReward implements Serializable {
 	@JoinColumn(name="AccountId")
 	private Account account;
 
-	public DiamondDividendBonusReward() {
+	public DividendBonusReward() {
 	}
 
 	public long getId() {
@@ -53,8 +55,15 @@ public class DiamondDividendBonusReward implements Serializable {
 		this.id = id;
 	}
 
+    public int getType() {
+        return type;
+    }
 
-	public String getCreatedBy() {
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getCreatedBy() {
 		return this.createdBy;
 	}
 

@@ -1,17 +1,14 @@
 package com.perfectchina.bns.controller.reward;
 
-import com.perfectchina.bns.model.reward.GoldenDiamondOPVBonus;
-import com.perfectchina.bns.service.reward.DiamondDividendBonusService;
-import com.perfectchina.bns.service.reward.GoldenDiamondOPVBonusService;
+import com.perfectchina.bns.service.pin.PinPosition;
+import com.perfectchina.bns.service.reward.DividendBonus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 /**
  * @Author: TerryTang
@@ -23,7 +20,7 @@ import java.util.List;
 public class RestDiamondDividendBonusController {
 
     @Autowired
-    DiamondDividendBonusService diamondDividendBonusService;
+    DividendBonus dividendBonus;
 
     /**
      * calculate goldenDiamondOPVBonus
@@ -33,8 +30,7 @@ public class RestDiamondDividendBonusController {
     @GetMapping(value = "/diamondDividendBonus")
     public ResponseEntity<?> createRewardNet() {
 
-        diamondDividendBonusService.calculateTotalIntegral();
-        diamondDividendBonusService.calculateDividendBonus();
+        dividendBonus.build(PinPosition.DIAMOND);
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }

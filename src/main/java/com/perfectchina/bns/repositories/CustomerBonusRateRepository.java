@@ -1,14 +1,13 @@
 package com.perfectchina.bns.repositories;
 
-import java.util.Date;
-import java.util.List;
-
+import com.perfectchina.bns.model.CustomerBonusRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.perfectchina.bns.model.CustomerBonusRate;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface CustomerBonusRateRepository extends JpaRepository<CustomerBonusRate, Long> {

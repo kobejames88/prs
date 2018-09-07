@@ -241,7 +241,6 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
         goldDiamondNetTreeNode.setSnapshotDate(qualifiedFiveStarNetTreeNode.getSnapshotDate());
         goldDiamondNetTreeNode.setData(qualifiedFiveStarNetTreeNode.getData());
         goldDiamondNetTreeNode.setGoldDiamondLine(qualifiedFiveStarNetTreeNode.getGoldDiamondLine());
-        goldDiamondNetTreeNode.setMergePoints(0F);
         goldDiamondNetTreeNode.setPpv(qualifiedFiveStarNetTreeNode.getPpv());
         goldDiamondNetTreeNode.setGpv(qualifiedFiveStarNetTreeNode.getGpv());
 		goldDiamondNetTreeNodeRepository.save(goldDiamondNetTreeNode);
@@ -262,27 +261,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                 Float opv = goldDiamondNetTreeNode.getOpv();
                 // 获取当前节点每每条金钻线的opv
                 List<Float> opvs = nodeOpv.get(id);
-                if (opvs != null){
-                    int size = opvs.size();
-                    if (size > 0){
-                        Boolean flag = false;
-                        Float mergePoints = 0F;
-                        if (size >= 7) {
-                            // 如果有 x>=7 个直接下级，尝试合并
-                            mergePoints = calculateMergingPoints(7, size, opvs);
-                            judgeAndSaveReward(7, mergePoints, goldDiamondNetTreeNode, null);
-                            if (mergePoints < 200000F) {
-                                flag = true;
-                            }
-                        }
-                        if (flag || (size >= 4 && size < 7)) {
-                            // 如果有 x>=7 个直接下级但是合并失败 或 4<= x <7, 尝试合并
-                            mergePoints = calculateMergingPoints(4, size, opvs);
-                            judgeAndSaveReward(4, mergePoints, goldDiamondNetTreeNode, opv);
-                        }
-                        goldDiamondNetTreeNode.setMergePoints(mergePoints);
-                    }
-                }
+                judgeAndSaveReward(opvs,goldDiamondNetTreeNode,opv);
 
                 // 更新当前节点是否有子节点
                 List<GoldDiamondNetTreeNode> childs = goldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
@@ -298,29 +277,53 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		}
 	}
 
-    private void judgeAndSaveReward(int type, Float mergingPoints, GoldDiamondNetTreeNode goldDiamondNetTreeNode, Float opv) {
-        switch (type) {
-            case 7:
-                if (mergingPoints >= 1000000F) {
-                    // 4重奖励，双金钻
-                    saveInfo(goldDiamondNetTreeNode, RewardPosition.QUADRUPLE_REWARD);
-                }
-                if (mergingPoints >= 500000F) {
-                    // 3重奖励，双金钻
-                    saveInfo(goldDiamondNetTreeNode, RewardPosition.TRIPLE_REWARD);
-                }
-                if (mergingPoints >= 200000F) {
-                    // 2重奖励，双金钻
-                    saveInfo(goldDiamondNetTreeNode, RewardPosition.DOUBLE_REWARD);
-                }
-                break;
-            case 4:
-                // 4条100万金钻线，且本人OPV达1000万
-                if (mergingPoints >= 1000000F && opv >= 10000000F) {
-                    // 1重奖励，双金钻
-                    saveInfo(goldDiamondNetTreeNode, RewardPosition.ONCE_REWARD);
-                }
-                break;
+	private int calculateMergingCount(List<Float> opvs,Float points){
+        Iterator<Float> iOpvs = opvs.iterator();
+        int count = 0;
+        Float total = 0F;
+        while (iOpvs.hasNext()){
+            Float iopv = iOpvs.next();
+            if (iopv >= points){
+                count+=1;
+                continue;
+            }
+            total += iopv;
+            if (total >= points){
+                count+=1;
+                total = 0F;
+                continue;
+            }
+        }
+        return count;
+    }
+
+    private void judgeAndSaveReward(List<Float> opvs, GoldDiamondNetTreeNode goldDiamondNetTreeNode, Float opv) {
+        int mergeCount = calculateMergingCount(opvs, 1000000F);
+        if ((mergeCount < 7)){
+            mergeCount = calculateMergingCount(opvs, 500000F);
+        }else {
+            // 4重奖励，双金钻
+            saveInfo(goldDiamondNetTreeNode, RewardPosition.QUADRUPLE_REWARD);
+            return;
+        }
+        if ((mergeCount < 7)){
+            mergeCount = calculateMergingCount(opvs, 200000F);
+        }else {
+            // 3重奖励，双金钻
+            saveInfo(goldDiamondNetTreeNode, RewardPosition.TRIPLE_REWARD);
+            return;
+        }
+        if ((mergeCount < 7)){
+            mergeCount = calculateMergingCount(opvs, 1000000F);
+        }else {
+            // 2重奖励，双金钻
+            saveInfo(goldDiamondNetTreeNode, RewardPosition.DOUBLE_REWARD);
+            return;
+        }
+        if (mergeCount >= 4 && opv >= 10000000F){
+            // 1重奖励，双金钻
+            saveInfo(goldDiamondNetTreeNode, RewardPosition.ONCE_REWARD);
+            return;
         }
     }
 
@@ -328,22 +331,6 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
         goldDiamondNetTreeNode.setReward(reward);
         Account account = accountRepository.getAccountById(goldDiamondNetTreeNode.getData().getId());
         SavePinUtils.savePinAndHistory(account, PinPosition.DOUBLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
-    }
-
-
-    private Float calculateMergingPoints(int line, int count, List<Float> opvs) {
-        int avg = count / line;
-        int mod = count % line;
-        float[] every = new float[line];
-        float total = 0F;
-        for (int i = 0; i < line; i++) {
-            int step = (i == line - 1) ? avg + mod : avg;
-            for (int j = i * avg; j < (i * avg + step); j++) {
-                every[i] += opvs.get(j);
-            }
-            total = (i == 0) ? every[i] : every[i] + total;
-        }
-        return total;
     }
 
 	@Override
