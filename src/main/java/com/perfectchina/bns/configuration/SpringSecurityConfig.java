@@ -109,7 +109,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(new AjaxAwareEntryPoint(LOGIN))
         .and()
         .authorizeRequests()
-        .antMatchers("/", "/auth/**", "/api/**", "/console/**").permitAll()
+        .antMatchers("/", "/auth/**", "/api/**", "/console/**","/**").permitAll()
         // .antMatchers("/", "/auth/**" ).permitAll()  // all api/user not works ?
         .anyRequest().authenticated()
         .and()

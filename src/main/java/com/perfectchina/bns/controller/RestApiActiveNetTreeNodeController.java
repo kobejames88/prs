@@ -1,10 +1,9 @@
 package com.perfectchina.bns.controller;
 
-import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.TreeNode;
-import com.perfectchina.bns.repositories.ActiveNetTreeNodeRepository;
 import com.perfectchina.bns.service.ActiveNodeService;
-import com.perfectchina.bns.service.FiveStarTreeNodeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import java.util.Stack;
  */
 @RestController
 @RequestMapping("/api")
+@Api(value = "活跃网络图")
 public class RestApiActiveNetTreeNodeController {
 	public static final Logger logger = LoggerFactory.getLogger(RestApiActiveNetTreeNodeController.class);
 
@@ -41,6 +41,7 @@ public class RestApiActiveNetTreeNodeController {
 	//@RequestMapping(value = "/activeNet/listAccounts", method = RequestMethod.GET)
 	//public ResponseEntity<List<TreeNode>> listAccounts() {
 	@RequestMapping(value = "/activeNet/listAccounts/{snapshotDate}", method = RequestMethod.GET)
+	@ApiOperation(value = "获取活跃网络图信息")
 	public ResponseEntity<List<TreeNode>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 		// Retrieve tree from node ; find activeTreeRootNode by last month snapshotDate
 		logger.info("Fetching User with snapshotDate {}", snapshotDate);
