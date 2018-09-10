@@ -223,6 +223,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         doubleGoldDiamondNetTreeNode.setOpv(goldDiamondNetTreeNode.getOpv());
         doubleGoldDiamondNetTreeNode.setPpv(goldDiamondNetTreeNode.getPpv());
         doubleGoldDiamondNetTreeNode.setGpv(goldDiamondNetTreeNode.getGpv());
+        doubleGoldDiamondNetTreeNode.setRewardBonus(new BigDecimal(0));
         doubleGoldDiamondNetTreeNode.setDoubleGoldDiamondLine(0);
         doubleGoldDiamondNetTreeNodeRepository.save(doubleGoldDiamondNetTreeNode);
     }
@@ -246,23 +247,23 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 long accountId = doubleGoldDiamondNetTreeNode.getData().getId();
                 long uplinkId = doubleGoldDiamondNetTreeNode.getUplinkId();
 
-//                // 1、统计有多少条双金钻线
-//                List<DoubleGoldDiamondNetTreeNode> childs = doubleGoldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
-//                // 双金钻线的条数
-//                int count = childs.size();
-//                doubleGoldDiamondNetTreeNode.setDoubleGoldDiamondLine(count);
-//                // 2、更新每个节点是否有下级
-//                // 判断是否有子节点
-//                if (count > 0) {
-//                    doubleGoldDiamondNetTreeNode.setHasChild(true);
-//                } else {
-//                    doubleGoldDiamondNetTreeNode.setHasChild(false);
-//                }
-//                // 3、计算三金钻职级
-//                if (count >= 7) {
-//                    Account account = accountRepository.getAccountById(accountId);
-//                    SavePinUtils.savePinAndHistory(account, PinPosition.TRIPLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
-//                }
+                // 1、统计有多少条双金钻线
+                List<DoubleGoldDiamondNetTreeNode> childs = doubleGoldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
+                // 双金钻线的条数
+                int count = childs.size();
+                doubleGoldDiamondNetTreeNode.setDoubleGoldDiamondLine(count);
+                // 2、更新每个节点是否有下级
+                // 判断是否有子节点
+                if (count > 0) {
+                    doubleGoldDiamondNetTreeNode.setHasChild(true);
+                } else {
+                    doubleGoldDiamondNetTreeNode.setHasChild(false);
+                }
+                // 3、计算三金钻职级
+                if (count >= 7) {
+                    Account account = accountRepository.getAccountById(accountId);
+                    SavePinUtils.savePinAndHistory(account, PinPosition.TRIPLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
+                }
 
                 upperLevelnum = doubleGoldDiamondNetTreeNode.getLevelNum()+4;
                 childsTotalPassupopv = new BigDecimal(0);
