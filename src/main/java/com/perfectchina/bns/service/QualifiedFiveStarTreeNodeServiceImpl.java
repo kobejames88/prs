@@ -100,9 +100,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
     protected void process(TreeNode node, String snapshotDate) {
         logger.debug("process, update node=" + node.getData().getAccountNum() + "/" + node.getData().getName()
                 + ", level [" + node.getLevelNum() + "].");
-        // Current element
+        // 当前节点
         PassUpGpvNetTreeNode passUpGpvNetTreeNode = (PassUpGpvNetTreeNode) node;
-        // Element to be loaded
+        // 待装载节点
         QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode = new QualifiedFiveStarNetTreeNode();
 
         Float passUpGpv = passUpGpvNetTreeNode.getPassUpGpv();
@@ -120,28 +120,26 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
             long qualifiedFiveStarUplinkId = qualifiedFiveStarUplink.getId();
             String uplinkLevelLine = qualifiedFiveStarUplink.getLevelLine();
             qualifiedFiveStarNetTreeNode.setUplinkId(qualifiedFiveStarUplinkId);
-            // To judge if it is a qualified five-star
+            // 判断是否为合格五星
             if (passUpGpv >= PinPoints.COMMON_QUALIFY_POINTS){
                 setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
                 copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode,snapshotDate);
             }else{
-                // To judge if it is a ruby
+                // 判断是否为红宝石
                 if ((passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS && qualifiedLine >= 1) || (qualifiedLine >= 2)){
                     setuplinkLevelLineAndLevel(uplinkLevelLine,qualifiedFiveStarNetTreeNode,qualifiedFiveStarUplinkId);
                     copyNetTree(passUpGpvNetTreeNode,qualifiedFiveStarNetTreeNode,snapshotDate);
                 }else {
-                    // Filter this element
-                    // Gets the direct subordinate of this element
+                    // 过滤此节点
+                    // 获取此节点的直接下级
                     List<PassUpGpvNetTreeNode> childNodes = passUpGpvNetTreeNodeRepository.getChildNodesByUpid(id);
-
-                    // The direct subordinate ID of this element and the higher level ID are placed in map
+                    // 将直接下级的id和上级的id放入map中
                     if (childNodes.size()>0){
                         for (TreeNode childNode : childNodes){
                             PassUpGpvNetTreeNode passUpGpvNetTreeChildNode = (PassUpGpvNetTreeNode)childNode;
                             relation.put(passUpGpvNetTreeChildNode.getId(), passUpGpvUplinkId);
                         }
                     }
-
                 }
             }
             qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarUplink);
@@ -177,6 +175,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		qualifiedFiveStarNetTreeNode.setSnapshotDate(passUpGpvNetTreeNode.getSnapshotDate());
         qualifiedFiveStarNetTreeNode.setAboveEmeraldNodeSign(false);
         qualifiedFiveStarNetTreeNode.setOpv(opvNetTreeNode.getOpv());
+        qualifiedFiveStarNetTreeNode.setEndFiveStar(false);
 		qualifiedFiveStarNetTreeNode.setData(passUpGpvNetTreeNode.getData());
 		qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
 	}
@@ -195,18 +194,15 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 			return;
 		while (treeLevel > 0) {
 			List<QualifiedFiveStarNetTreeNode> thisTreeLevelList = qualifiedFiveStarNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
-			// loop for the children to calculate OPV at the lowest level
 			for (QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode : thisTreeLevelList) {
                 // first
-                // Judge whether there are people in the map who have common superiors or not.
-                // yes:add no: superposition
 			    long uplinkId = qualifiedFiveStarNetTreeNode.getUplinkId();
                 Float passUpGpv = qualifiedFiveStarNetTreeNode.getPassUpGpv();
                 int qualifiedLine = qualifiedFiveStarNetTreeNode.getQualifiedLine();
                 long id = qualifiedFiveStarNetTreeNode.getId();
                 List<QualifiedFiveStarNetTreeNode> childs = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
+                // 翡翠线
                 int EmeraldLine = 0;
-//                int GoldDiamondLine = 0;
                 if (childs.size()>0){
                     qualifiedFiveStarNetTreeNode.setHasChild(true);
                     for (QualifiedFiveStarNetTreeNode qualifiedFiveChildNode : childs){
@@ -221,28 +217,25 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 }
                 qualifiedFiveStarNetTreeNode.setEmeraldLine(EmeraldLine);
 
-                // Go to map to get all the people with common superiors
                 List<PassUpGpv> downLinePassUpGpvs = downLines.get(uplinkId);
                 List<PassUpGpv> needSortDownLinePassUpGpvs = new ArrayList<>();
                 PassUpGpv passUpGpvVo = new PassUpGpv();
                 passUpGpvVo.setId(id);
                 passUpGpvVo.setPassUpGpv(qualifiedFiveStarNetTreeNode.getPassUpGpv());
                 if (downLinePassUpGpvs != null){
-                    // Loop to get all subordinate levels
                     for (PassUpGpv brotherPassUpGpv : downLinePassUpGpvs){
                         needSortDownLinePassUpGpvs.add(brotherPassUpGpv);
                     }
                 }
                 needSortDownLinePassUpGpvs.add(passUpGpvVo);
-                // Sort the subordinates
+                // 对所有直接下级排序
                 List<PassUpGpv> sortedDownLinePassUpGpvs = SortFiveStarIntegral(needSortDownLinePassUpGpvs);
-                // Store subordinate ID after sorting and sorting.
                 downLines.put(uplinkId,sortedDownLinePassUpGpvs);
 
                 // second
-                // The five-star integral of the current node
+                // 计算五星代积分
                 Float fiveStarIntegral = qualifiedFiveStarNetTreeNode.getPassUpGpv();
-                // Gets all the direct subordinate of the node
+                // 获取所有直接下级
                 List<PassUpGpv> passUpGpvs = downLines.get(id);
                 long accountId = qualifiedFiveStarNetTreeNode.getData().getId();
                 String pin;
@@ -251,7 +244,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     List<QualifiedFiveStarNetTreeNode> nodes = new ArrayList<>();
                     // 如果合格则不需要借分
                     if (fiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
-                        pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                        pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId,childs,qualifiedFiveStarNetTreeNode);
                         getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                         qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
                         qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
@@ -280,7 +273,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 if (isAchieve){
                                     if (downLineNodeFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
                                         // Qualified after borrowing points,Computing grade
-                                        pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                                        pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId,childs,qualifiedFiveStarNetTreeNode);
                                         getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                                     }else {
                                         // 如果借分后仍不合格，则合格线减一
@@ -290,7 +283,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                             Account account = accountRepository.getAccountById(accountId);
                                             SavePinUtils.savePinAndHistory(account, PinPosition.RUBY,accountPinHistoryRepository,accountRepository);
                                         }else {
-                                            pin = changeAndGetPin(fiveStarIntegral,passUpGpv,qualifiedLine,accountId);
+                                            pin = changeAndGetPin(fiveStarIntegral,passUpGpv,qualifiedLine,accountId,childs,qualifiedFiveStarNetTreeNode);
                                             getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                                         }
                                         qualifiedFiveStarNetTreeNode.setQualifiedLine(qualifiedLine);
@@ -311,11 +304,12 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     }
                 }else {
                     // A node that has no subordinates or does not need to borrow points,Direct calculation of five star generation integral
-                    pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId);
+                    pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId,childs,qualifiedFiveStarNetTreeNode);
                     getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                     qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
                     qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
                 }
+
 			} // end for loop
 			treeLevel--;
 		}
@@ -372,7 +366,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         return null;
     }
 
-	private String changeAndGetPin(Float currentFiveStarIntegral,Float passUpGpv,int qualifiedLine,Long id){
+	private String changeAndGetPin(Float currentFiveStarIntegral,Float passUpGpv,int qualifiedLine,Long id,List<QualifiedFiveStarNetTreeNode> childs,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode){
         if (passUpGpv == null){
             logger.error("passUpGpv为空");
             return null;
@@ -396,6 +390,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         }
         if (passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS){
             SavePinUtils.savePinAndHistory(account, PinPosition.QUALIFIED_FIVE_STAR,accountPinHistoryRepository,accountRepository);
+            // 判断职级是否为合格五星，是：添加标记，可获取尾线五星奖
+            if (!(childs.size()>0)) qualifiedFiveStarNetTreeNode.setEndFiveStar(true);
             return PinPosition.QUALIFIED_FIVE_STAR;
         }
         return null;

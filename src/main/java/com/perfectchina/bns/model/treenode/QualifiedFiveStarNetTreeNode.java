@@ -18,29 +18,26 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private int qualifiedLine;
 
+    private Boolean isEndFiveStar;
+
     private Float ppv;
 
     private Float gpv;
 
     private Float opv;
 
-    @Column(columnDefinition="float default 0.00")
     private Float fiveStarIntegral;
 
-    @Column(columnDefinition="float default 0.00")
     private Float borrowPoints;
 
-    @Column(columnDefinition="float default 0.00")
 	private Float borrowedPoints;
 
-    @Column(columnDefinition="bigint default 0")
 	private Long borrowTo;
 
     private Boolean hasAsteriskNode;
 
     private Boolean AboveEmeraldNodeSign;
 
-    @Column(columnDefinition="float default 0.00")
     private float asteriskNodePoints;
 
     private int emeraldLine;
@@ -50,6 +47,14 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
     private String levelLine;
 
     private String pin;
+
+    public Boolean getEndFiveStar() {
+        return isEndFiveStar;
+    }
+
+    public void setEndFiveStar(Boolean endFiveStar) {
+        isEndFiveStar = endFiveStar;
+    }
 
     public Float getPpv() {
         return ppv;

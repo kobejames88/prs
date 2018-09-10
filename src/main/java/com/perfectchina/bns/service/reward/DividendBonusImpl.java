@@ -79,8 +79,8 @@ public class DividendBonusImpl implements DividendBonus{
 
     // 获取总积分
     private BigDecimal getIntegral(int count) {
-        BigDecimal Integral = BigDecimalUtil.multiply(1.2, Double.valueOf(count));
-        totalIntegral = totalIntegral.add(Integral);
+        BigDecimal Integral = BigDecimalUtil.multiply(1.2D, Double.valueOf(count));
+        totalIntegral = totalIntegral.add(Integral).setScale(2,BigDecimal.ROUND_DOWN);
         return Integral;
     }
 
@@ -106,7 +106,7 @@ public class DividendBonusImpl implements DividendBonus{
         if (rewards != null){
             for (DividendBonusReward reward : rewards){
                 BigDecimal bonusRate = reward.getBonusRate();
-                reward.setAmount(avarBonus.multiply(bonusRate));
+                reward.setAmount(avarBonus.multiply(bonusRate).setScale(2,BigDecimal.ROUND_DOWN));
             }
             batchSave(rewards);
         }
