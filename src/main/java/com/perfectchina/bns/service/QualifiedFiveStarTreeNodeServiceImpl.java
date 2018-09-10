@@ -177,6 +177,8 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         qualifiedFiveStarNetTreeNode.setOpv(opvNetTreeNode.getOpv());
         qualifiedFiveStarNetTreeNode.setEndFiveStar(false);
 		qualifiedFiveStarNetTreeNode.setData(passUpGpvNetTreeNode.getData());
+		qualifiedFiveStarNetTreeNode.setBorrowedPoints(0F);
+		qualifiedFiveStarNetTreeNode.setBorrowPoints(0F);
 		qualifiedFiveStarNetTreeNodeRepository.save(qualifiedFiveStarNetTreeNode);
 	}
 
@@ -231,7 +233,6 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 // 对所有直接下级排序
                 List<PassUpGpv> sortedDownLinePassUpGpvs = SortFiveStarIntegral(needSortDownLinePassUpGpvs);
                 downLines.put(uplinkId,sortedDownLinePassUpGpvs);
-
                 // second
                 // 计算五星代积分
                 Float fiveStarIntegral = qualifiedFiveStarNetTreeNode.getPassUpGpv();
@@ -253,6 +254,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                         // 获取借分前的等级
                         String beforeBorrowPin = getPin(fiveStarIntegral, passUpGpv, qualifiedLine);
                         while (!(fiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
+                            // todo bug向下级借分6000，被上级借分6000.但是显示借分12000
                             if (passUpGpvIterator.hasNext()) {
                                 PassUpGpv maxPassUpGpv = passUpGpvIterator.next();
                                 // 获取需要借多少分
@@ -260,16 +262,19 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 // 获取紧缩gpv最高的节点
                                 QualifiedFiveStarNetTreeNode downLineNode = qualifiedFiveStarNetTreeNodeRepository.getOne(maxPassUpGpv.id);
                                 Float downlineFiveStarIntegral = downLineNode.getFiveStarIntegral();
+                                // 设置下级借出给谁
                                 downLineNode.setBorrowTo(qualifiedFiveStarNetTreeNode.getId());
+                                // 设置下级借出的值
                                 downLineNode.setBorrowedPoints(needBorrowPoints);
+                                // 判断下级的分数是否大于上级需要借的分值
                                 Boolean isAchieve = downlineFiveStarIntegral > needBorrowPoints;
                                 Float downLineNodeFiveStarIntegral = isAchieve ? downlineFiveStarIntegral - needBorrowPoints : 0F;
                                 downLineNode.setFiveStarIntegral(downLineNodeFiveStarIntegral);
                                 fiveStarIntegral+=(isAchieve ? needBorrowPoints : downlineFiveStarIntegral);
-                                Float borrowedPoints = qualifiedFiveStarNetTreeNode.getBorrowedPoints()!= null ? qualifiedFiveStarNetTreeNode.getBorrowedPoints() : 0F;
-                                qualifiedFiveStarNetTreeNode.setBorrowPoints(borrowedPoints+(isAchieve ? needBorrowPoints : downlineFiveStarIntegral));
-                                qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
 
+                                Float borrowPoints = qualifiedFiveStarNetTreeNode.getBorrowPoints() != null ? qualifiedFiveStarNetTreeNode.getBorrowPoints() : 0F;
+                                qualifiedFiveStarNetTreeNode.setBorrowPoints(borrowPoints+(isAchieve ? needBorrowPoints : downlineFiveStarIntegral));
+                                qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
                                 if (isAchieve){
                                     if (downLineNodeFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
                                         // Qualified after borrowing points,Computing grade

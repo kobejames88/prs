@@ -123,10 +123,10 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
             List<Rank> ranks = goldRelationLine.get(id);
             List<QualifiedFiveStarNetTreeNode> childNodes = qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(id);
             if (StringUtils.equals(PinPosition.GOLD_DIAMOND,pin)){
+                // 如果是金钻职级
                 goldDiamondNetTreeNode.setUplinkId(goldDiamondUplink.getId());
                 goldDiamondNetTreeNode.setOpv(opv);
                 goldDiamondNetTreeNode.setPassUpOpv(opv);
-			    // 如果是金钻职级
                 if (ranks != null){
                     // 有上级金钻,获取line判断是否有翡翠以上职级
                     Boolean hasEmerald = false;
@@ -139,24 +139,28 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                     Rank upRank = ranks.get(0);
                     QualifiedFiveStarNetTreeNode up = qualifiedFiveStarNetTreeNodeRepository.findById(upRank.getId()).get();
                     GoldDiamondNetTreeNode g_up = goldDiamondNetTreeNodeRepository.findByAccountNum(snapshotDate, up.getData().getAccountNum());
-
-                    Rank rank = ranks.get(1);
-                    QualifiedFiveStarNetTreeNode q = qualifiedFiveStarNetTreeNodeRepository.findById(rank.getId()).get();
-                    Boolean sign = q.getAboveEmeraldNodeSign();
-                    Float q_opv = q.getOpv();
-
                     List<Float> opvs = nodeOpv.get(upRank);
-                    if (hasEmerald){
-                        // 如果有翡翠及以上职级,将此节点线上的金钻下级opv存入map
-                        saveOpv2Map(sign,opvs,q_opv,g_up);
+                    if (ranks.size() > 1){
+                        // 如果
+                        Rank rank = ranks.get(1);
+                        QualifiedFiveStarNetTreeNode q = qualifiedFiveStarNetTreeNodeRepository.findById(rank.getId()).get();
+                        Boolean sign = q.getAboveEmeraldNodeSign();
+                        Float q_opv = q.getOpv();
+                        if (hasEmerald){
+                            // 如果有翡翠及以上职级,将此节点线上的金钻下级opv存入map
+                            saveOpv2Map(sign,opvs,q_opv,g_up);
+                        }else {
+                            // 如果没有翡翠及以上职级,将此节点的opv存入map
+                            saveOpv2Map(sign,opvs,opv,g_up);
+                        }
                     }else {
-                        // 如果没有翡翠及以上职级,将此节点的opv存入map
-                        saveOpv2Map(sign,opvs,opv,g_up);
+                        saveOpv2Map(false,opvs,opv,g_up);
                     }
-                    // 上级金钻的opv-此节点的opv
-                    g_up.setPassUpOpv(g_up.getPassUpOpv() - q_opv);
+                    // 计算余留opv,上级金钻的opv-此金钻节点的opv
+                    g_up.setPassUpOpv(g_up.getPassUpOpv() - qualifiedFiveStarNetTreeNode.getOpv());
                     goldDiamondNetTreeNodeRepository.save(g_up);
                 }
+
 				// 获取金钻的所有直接下级
                 if (childNodes.size() > 0){
                     for (TreeNode childNode : childNodes){
@@ -172,26 +176,33 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
                         goldRelationLine.put(qc_id, upRank);
                     }
                 }
-
 				setuplinkLevelLineAndLevel(uplinkLevelLine,goldDiamondNetTreeNode,goldDiamondUplinkId);
 				copyNetTree(qualifiedFiveStarNetTreeNode,goldDiamondNetTreeNode);
 			}else {
 			    // 如果不是金钻
 //			    if (goldDiamondUplink.getLevelNum() > 0){
-                    if (ranks != null){
-                        // 有上级金钻
-                        Rank rank = new Rank();
-                        rank.setId(id);
-                        rank.setPin(pin);
-                        ranks.add(rank);
-                    }
+//                    if (ranks != null){
+//
+//
+//                    }
                     // 获取当前元素的所有直接下级
                     if (childNodes.size() > 0){
+                        int count = 0;
                         for (TreeNode childNode : childNodes){
                             QualifiedFiveStarNetTreeNode qualifiedFiveChildNode = (QualifiedFiveStarNetTreeNode)childNode;
                             long qc_id = qualifiedFiveChildNode.getId();
-                            if (ranks != null) goldRelationLine.put(qc_id,ranks);
+                            if (ranks != null) {
+                                if (count < 1){
+                                    // 有上级金钻
+                                    Rank rank = new Rank();
+                                    rank.setId(id);
+                                    rank.setPin(pin);
+                                    ranks.add(rank);
+                                }
+                                goldRelationLine.put(qc_id,ranks);
+                            }
                             relation.put(qc_id,map_uplinkId);
+                            count++;
                         }
                     }
                     goldDiamondNetTreeNodeRepository.save(goldDiamondUplink);
@@ -259,7 +270,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 			for (GoldDiamondNetTreeNode goldDiamondNetTreeNode : thisTreeLevelTreeList) {
                 long id = goldDiamondNetTreeNode.getId();
                 Float opv = goldDiamondNetTreeNode.getOpv();
-                // 获取当前节点每每条金钻线的opv
+                // 获取当前节点每条金钻线的opv
                 List<Float> opvs = nodeOpv.get(id);
                 judgeAndSaveReward(opvs,goldDiamondNetTreeNode,opv);
 
@@ -298,6 +309,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
     }
 
     private void judgeAndSaveReward(List<Float> opvs, GoldDiamondNetTreeNode goldDiamondNetTreeNode, Float opv) {
+	    if (opvs == null) return;
         int mergeCount = calculateMergingCount(opvs, 1000000F);
         if ((mergeCount < 7)){
             mergeCount = calculateMergingCount(opvs, 500000F);
