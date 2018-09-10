@@ -3,6 +3,7 @@ package com.perfectchina.bns.model.treenode;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 /**
  * DoubleGoldDiamondNetTreeNode
@@ -27,7 +28,17 @@ public class DoubleGoldDiamondNetTreeNode extends TreeNode {
 
     private String reward;
 
+    private BigDecimal rewardBonus;
+
     private int doubleGoldDiamondLine;
+
+    public BigDecimal getRewardBonus() {
+        return rewardBonus;
+    }
+
+    public void setRewardBonus(BigDecimal rewardBonus) {
+        this.rewardBonus = rewardBonus;
+    }
 
     public Float getPpv() {
         return ppv;

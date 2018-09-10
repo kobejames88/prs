@@ -1,6 +1,7 @@
 package com.perfectchina.bns.service;
 
 import com.perfectchina.bns.common.utils.BigDecimalUtil;
+import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.common.utils.SavePinUtils;
 import com.perfectchina.bns.model.Account;
 import com.perfectchina.bns.model.AccountPinHistory;
@@ -98,9 +99,9 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
     }
 
     private Map<Long, Long> relation = new HashMap<>();
-    private int DoubleRewardCount = 0;
-    private int TripleRewardCount = 0;
-    private int QuadrupleRewardCount = 0;
+    private int DoubleRewardCount = 3;
+    private int TripleRewardCount = 4;
+    private int QuadrupleRewardCount = 1;
     private BigDecimal totalPassupopv = new BigDecimal(0);
 
     /**
@@ -141,6 +142,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     relation.put(childNode.getId(), uplinkId);
                 } else {
                     // 如果是双金钻职级
+
                     relation.put(childNode.getId(), id);
                     totalPassupopv =  totalPassupopv.add(BigDecimalUtil.multiply(0.001D,goldDiamondNetTreeNode.getPassUpOpv().doubleValue()));
                     countReward(goldDiamondNetTreeNode);
@@ -185,10 +187,24 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                     uplinkAccountNum);
             setuplinkLevelLineAndLevel(doubleGoldDiamondUplink.getLevelLine(), doubleGoldDiamondNetTreeNode, doubleGoldDiamondUplink.getId());
             doubleGoldDiamondNetTreeNode.setUplinkId(doubleGoldDiamondUplink.getId());
+            calculatePassupopv(doubleGoldDiamondUplink,doubleGoldDiamondNetTreeNode);
         } else {
             setuplinkLevelLineAndLevel(String.valueOf(0), doubleGoldDiamondNetTreeNode, 0L);
             doubleGoldDiamondNetTreeNode.setUplinkId(0);
+            calculatePassupopv(null,doubleGoldDiamondNetTreeNode);
         }
+    }
+    // 计算余留opv
+    private void calculatePassupopv(DoubleGoldDiamondNetTreeNode doubleGoldDiamondUplink,DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode){
+        // 如果无双金钻上级
+        if (doubleGoldDiamondUplink == null){
+            doubleGoldDiamondUplink.setPassUpOpv(doubleGoldDiamondUplink.getOpv());
+            return;
+        }
+        // 如果有双金钻上级
+        // 用双金钻上级的余留opv-当前节点的opv
+        doubleGoldDiamondUplink.setPassUpOpv(doubleGoldDiamondUplink.getPassUpOpv() - doubleGoldDiamondNetTreeNode.getOpv());
+        doubleGoldDiamondNetTreeNodeRepository.save(doubleGoldDiamondUplink);
     }
 
     private void setuplinkLevelLineAndLevel(String uplinkLevelLine, DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode, Long goldDiamondUplinkId) {
@@ -207,6 +223,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         doubleGoldDiamondNetTreeNode.setOpv(goldDiamondNetTreeNode.getOpv());
         doubleGoldDiamondNetTreeNode.setPpv(goldDiamondNetTreeNode.getPpv());
         doubleGoldDiamondNetTreeNode.setGpv(goldDiamondNetTreeNode.getGpv());
+        doubleGoldDiamondNetTreeNode.setRewardBonus(new BigDecimal(0));
         doubleGoldDiamondNetTreeNode.setDoubleGoldDiamondLine(0);
         doubleGoldDiamondNetTreeNodeRepository.save(doubleGoldDiamondNetTreeNode);
     }
@@ -229,51 +246,46 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
                 long id = doubleGoldDiamondNetTreeNode.getId();
                 long accountId = doubleGoldDiamondNetTreeNode.getData().getId();
                 long uplinkId = doubleGoldDiamondNetTreeNode.getUplinkId();
-//                // 1、计算余留opv
-//                Float childOpv = nodeOpv.get(id);
-//                if (childOpv != null){
-//                    doubleGoldDiamondNetTreeNode.setPassUpOpv(doubleGoldDiamondNetTreeNode.getPassUpOpv() - childOpv);
-//                }
-//                if (uplinkId > 0){
-//                    nodeOpv.put(uplinkId,doubleGoldDiamondNetTreeNode.getOpv());
-//                }
+
+                // 1、统计有多少条双金钻线
+                List<DoubleGoldDiamondNetTreeNode> childs = doubleGoldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
+                // 双金钻线的条数
+                int count = childs.size();
+                doubleGoldDiamondNetTreeNode.setDoubleGoldDiamondLine(count);
+                // 2、更新每个节点是否有下级
+                // 判断是否有子节点
+                if (count > 0) {
+                    doubleGoldDiamondNetTreeNode.setHasChild(true);
+                } else {
+                    doubleGoldDiamondNetTreeNode.setHasChild(false);
+                }
+                // 3、计算三金钻职级
+                if (count >= 7) {
+                    Account account = accountRepository.getAccountById(accountId);
+                    SavePinUtils.savePinAndHistory(account, PinPosition.TRIPLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
+                }
 
                 upperLevelnum = doubleGoldDiamondNetTreeNode.getLevelNum()+4;
                 childsTotalPassupopv = new BigDecimal(0);
-
                 // 获取当月公司opv
                 OpvNetTreeNode opvNode = opvNetTreeNodeRepository.findBySnapshotDate(snapshotDate);
                 Float opv = opvNode.getOpv();
                 Integer length = RewardType.descOf(doubleGoldDiamondNetTreeNode.getReward()).getCode();
+                BigDecimal totalRewardBonus = new BigDecimal(0);
                 for (int i=1;i <= length;i++){
                     if (i == 1){
                         // 计算第一重奖励
                         // 获取自己余留opv*0.1与下4代节点的余留opv*0.1之和
                         recursiveCalculateChildsPassupopv(doubleGoldDiamondNetTreeNode);
-                        calculateOnceRewardBonus(doubleGoldDiamondNetTreeNode,opv);
+                        totalRewardBonus = totalRewardBonus.add(calculateOnceRewardBonus(doubleGoldDiamondNetTreeNode,opv));
                         continue;
                     }
-                    calculateRewardBonusHandle(i,opv);
+                    totalRewardBonus = totalRewardBonus.add(calculateRewardBonusHandle(i,opv));
                 }
+                // todo totalRewardBonus保留两位小数
+                doubleGoldDiamondNetTreeNode.setRewardBonus(totalRewardBonus.setScale(2,BigDecimal.ROUND_DOWN));
 
-//                // 2、统计有多少条双金钻线
-//                List<DoubleGoldDiamondNetTreeNode> childs = doubleGoldDiamondNetTreeNodeRepository.getChildNodesByUpid(id);
-//                // 双金钻线的条数
-//                int count = childs.size();
-//                doubleGoldDiamondNetTreeNode.setDoubleGoldDiamondLine(count);
-//                // 3、更新每个节点是否有下级
-//                // 判断是否有子节点
-//                if (count > 0) {
-//                    doubleGoldDiamondNetTreeNode.setHasChild(true);
-//                } else {
-//                    doubleGoldDiamondNetTreeNode.setHasChild(false);
-//                }
-//                // 4、计算三金钻职级
-//                if (count >= 7) {
-//                    Account account = accountRepository.getAccountById(accountId);
-//                    SavePinUtils.savePinAndHistory(account, PinPosition.TRIPLE_GOLD_DIAMOND,accountPinHistoryRepository,accountRepository);
-//                }
-//                doubleGoldDiamondNetTreeNodeRepository.save(doubleGoldDiamondNetTreeNode);
+                doubleGoldDiamondNetTreeNodeRepository.save(doubleGoldDiamondNetTreeNode);
 
             } // end for loop
             treeLevel--;
@@ -282,9 +294,14 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
     private BigDecimal calculateOnceRewardBonus(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode,Float opv){
         BigDecimal passupopv = BigDecimalUtil.multiply(doubleGoldDiamondNetTreeNode.getPassUpOpv().doubleValue(), 0.001D);
-        BigDecimal average = passupopv.divide(totalPassupopv,2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(0.001));
+        BigDecimal average = passupopv.divide(getTotalPassupopv(), 2, BigDecimal.ROUND_DOWN);
         BigDecimal OnceRewardBonus = childsTotalPassupopv.add(average.multiply(BigDecimalUtil.multiply(0.003D,opv.doubleValue())));
         return OnceRewardBonus;
+    }
+
+    private BigDecimal getTotalPassupopv(){
+        BigDecimal totalPassupopv = BigDecimalUtil.multiply(0.001D, Double.valueOf(doubleGoldDiamondNetTreeNodeRepository.sumBySnapshotDate(DateUtils.getCurrentSnapshotDate())));
+        return totalPassupopv;
     }
 
     private BigDecimal calculateRewardBonusHandle(int type,Float opv){
@@ -300,7 +317,10 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
     }
 
     private BigDecimal calculateRewardBonus(int Count,Float opv){
-        return BigDecimalUtil.multiply(0.001D,opv.doubleValue()).divide(new BigDecimal(Count));
+        if (Count == 0){
+            return new BigDecimal(0);
+        }
+        return BigDecimalUtil.multiply(0.001D,opv.doubleValue()).divide(new BigDecimal(Count),2,BigDecimal.ROUND_DOWN);
     }
 
     private BigDecimal recursiveCalculateChildsPassupopv(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode){

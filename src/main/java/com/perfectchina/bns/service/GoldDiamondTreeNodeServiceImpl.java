@@ -248,7 +248,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 
 	@Override
 	/**
-	 * Update the entire tree's pass-up-gpv
+	 * Update the entire tree's GoldDiamond
 	 */
 	public void updateWholeTreeGoldDiamond(String snapshotDate) {
 		int treeLevel = getMaxTreeLevel(snapshotDate);
