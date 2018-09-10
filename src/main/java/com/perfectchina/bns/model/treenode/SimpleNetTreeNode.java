@@ -10,7 +10,7 @@ import org.hibernate.annotations.PolymorphismType;
 /**
  * The persistent class for the simple tree node database table. It is pre-process for other  
  * Network node creation
- * 
+ *
  */
 @Entity
 @Table(name = "SimpleNetTreeNode")
@@ -18,7 +18,7 @@ import org.hibernate.annotations.PolymorphismType;
 public class SimpleNetTreeNode extends TreeNode {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -26,15 +26,25 @@ public class SimpleNetTreeNode extends TreeNode {
 
 	private Float totalSales;
 
-    public Float getTotalSales() {
-        return totalSales;
-    }
+	private float aopv;
 
-    public void setTotalSales(Float totalSales) {
-        this.totalSales = totalSales;
-    }
+	public Float getAopv() {
+		return aopv;
+	}
 
-    public Float getPpv() {
+	public void setAopv(Float aopv) {
+		this.aopv = aopv;
+	}
+
+	public Float getTotalSales() {
+		return totalSales;
+	}
+
+	public void setTotalSales(Float totalSales) {
+		this.totalSales = totalSales;
+	}
+
+	public Float getPpv() {
 		return ppv;
 	}
 
@@ -48,5 +58,5 @@ public class SimpleNetTreeNode extends TreeNode {
 	}
 
 
-	
+
 }

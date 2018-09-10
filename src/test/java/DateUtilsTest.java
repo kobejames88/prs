@@ -70,11 +70,11 @@ public class DateUtilsTest {
 
 	@Test
 	public void test(){
-		System.out.println(ManthUtils.round(1.005F));
-		System.out.println(ManthUtils.round(1.095F));
-		System.out.println(ManthUtils.round(1.004F));
-		System.out.println(ManthUtils.round(1.04F));
-		System.out.println(ManthUtils.round(1.05F));
+		System.out.println(MathUtils.round(1.005F));
+		System.out.println(MathUtils.round(1.095F));
+		System.out.println(MathUtils.round(1.004F));
+		System.out.println(MathUtils.round(1.04F));
+		System.out.println(MathUtils.round(1.05F));
 	}
 
 }

@@ -6,7 +6,7 @@ package com.perfectchina.bns.common.utils;
  * @Desc:
  */
 
-public class ManthUtils {
+public class MathUtils {
 
     //四舍五入保留两位小数
     public static  float round(float reward){

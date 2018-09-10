@@ -2,19 +2,16 @@ package com.perfectchina.bns.service.reward;
 
 import com.perfectchina.bns.common.utils.BeanUtil;
 import com.perfectchina.bns.common.utils.DateUtils;
-import com.perfectchina.bns.common.utils.ManthUtils;
-import com.perfectchina.bns.model.CustomerBonusNet;
+import com.perfectchina.bns.common.utils.MathUtils;
 import com.perfectchina.bns.model.reward.DistributorBonus;
 import com.perfectchina.bns.model.reward.DistributorBonusRate;
 import com.perfectchina.bns.model.treenode.FiveStarNetTreeNode;
-import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.repositories.FiveStarNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
 import com.perfectchina.bns.repositories.reward.DistributorBonusRateRepository;
 import com.perfectchina.bns.repositories.reward.DistributorBonusRepository;
 import com.perfectchina.bns.service.pin.PinPosition;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,7 +90,7 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
         if(PinPosition.NEW_FIVE_STAR.equals(distributorBonus.getPin())&&distributorBonus.getAopvLastMonth()<18000){
             Float surplus = 18000 - distributorBonus.getAopvLastMonth();
             Float reward = (distributorBonus.getGpv() - surplus)* (bonusRate.getBonusRate() - 0.12F);
-            distributorBonus.setReward(ManthUtils.round(reward));
+            distributorBonus.setReward(MathUtils.round(reward));
             //surplus opv reward need pass up;will calculate in DistributorDifferentialBonus
             Float surplusReward = surplus * 0.12F;
 
@@ -132,7 +129,7 @@ public class DistributorBonusNetServiceImpl implements DistributorBonusNetServic
         }
         else {// if no newFiveStar
             Float reward = distributorBonus.getGpv() * (bonusRate.getBonusRate() - 0.12F);
-            distributorBonus.setReward(ManthUtils.round(reward));
+            distributorBonus.setReward(MathUtils.round(reward));
         }
         //算直销员级差时需要减的直销员奖
         Float temporaryBonus = distributorBonus.getGpv() * (bonusRate.getBonusRate());

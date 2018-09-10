@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Locale;
 
 import com.perfectchina.bns.common.utils.SavePinUtils;
-import com.perfectchina.bns.repositories.AccountPinHistoryRepository;
-import com.perfectchina.bns.repositories.AccountRepository;
+import com.perfectchina.bns.model.treenode.SimpleNetTreeNode;
+import com.perfectchina.bns.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,6 @@ import com.perfectchina.bns.common.utils.DateUtils;
 import com.perfectchina.bns.model.treenode.ActiveNetTreeNode;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
-import com.perfectchina.bns.repositories.ActiveNetTreeNodeRepository;
-import com.perfectchina.bns.repositories.OpvNetTreeNodeRepository;
 import com.perfectchina.bns.service.pin.PinPosition;
 
 @Service
@@ -39,6 +37,9 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 
 	@Autowired
 	AccountPinHistoryRepository accountPinHistoryRepository;
+
+	@Autowired
+	SimpleNetTreeNodeRepository simpleNetTreeNodeRepository;
 	
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -122,10 +123,14 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 			opvNetTreeNode.setPin(PinPosition.FIVE_STAR);
 			SavePinUtils.savePinAndHistory(opvNetTreeNode.getData(),PinPosition.FIVE_STAR,accountPinHistoryRepository,accountRepository);
 		}
-		
+
+		//到原始网络图中找上个月的AOPV
+		SimpleNetTreeNode prevMonthSimpleNode = simpleNetTreeNodeRepository.getAccountByAccountNum(
+				DateUtils.getLastMonthSnapshotDate(activeNetTreeNode.getSnapshotDate()),
+				activeNetTreeNode.getData().getAccountNum());
 		Float aopvLastMonth = 0F;
-		if (prevMonthNode != null) {
-			aopvLastMonth = prevMonthNode.getAopv();
+		if (prevMonthSimpleNode != null) {
+			aopvLastMonth = prevMonthSimpleNode.getAopv();
 		}
 		opvNetTreeNode.setAopvLastMonth(aopvLastMonth);
 
@@ -162,8 +167,12 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 				}
 				Float aopvLastMonth = opvNetTreeNode.getAopvLastMonth();
 				Float opv = opvNetTreeNode.getOpv();
-				//become newFiveStar
 				opvNetTreeNode.setAopv(aopvLastMonth+opv);
+				//把当月AOPV存到原始网络图
+				SimpleNetTreeNode currentMonthSimpleNode = simpleNetTreeNodeRepository.getAccountByAccountNum(
+						opvNetTreeNode.getSnapshotDate(),opvNetTreeNode.getData().getAccountNum());
+				currentMonthSimpleNode.setAopv(opvNetTreeNode.getAopv());
+				//become newFiveStar
 				if(PinPosition.MEMBER.equals(opvNetTreeNode.getPin())&&opvNetTreeNode.getOpv()>=18000&&opvNetTreeNode.getAopv()>=36000){
 					opvNetTreeNode.setPin(PinPosition.NEW_FIVE_STAR);
 					SavePinUtils.savePinAndHistory(opvNetTreeNode.getData(),PinPosition.NEW_FIVE_STAR,accountPinHistoryRepository,accountRepository);

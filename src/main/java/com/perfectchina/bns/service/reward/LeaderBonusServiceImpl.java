@@ -1,6 +1,6 @@
 package com.perfectchina.bns.service.reward;
 
-import com.perfectchina.bns.common.utils.ManthUtils;
+import com.perfectchina.bns.common.utils.MathUtils;
 import com.perfectchina.bns.model.reward.LeaderBonus;
 import com.perfectchina.bns.model.reward.LeaderBonusRate;
 import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
@@ -60,34 +60,37 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
                         accountNum);
                 leaderBonus.setUplinkId(one2.getId());
             }
+            //pin == 红宝石，计算红宝石奖
             if(PinPosition.RUBY.equals(leaderBonus.getData().getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
+                leaderBonus.setRubyReward(MathUtils.round(rubyReward));
             }
+            //pin == 翡翠奖，计算翡翠奖
             if(PinPosition.EMERALD.equals(leaderBonus.getData().getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
+                leaderBonus.setRubyReward(MathUtils.round(rubyReward));
                 float emeraldReward = calculateEmeraldReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setEmerald(ManthUtils.round(emeraldReward));
+                leaderBonus.setEmerald(MathUtils.round(emeraldReward));
             }
+            //pin == 钻石，计算钻石奖
             if(PinPosition.DIAMOND.equals(leaderBonus.getData().getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
+                leaderBonus.setRubyReward(MathUtils.round(rubyReward));
                 float emeraldReward = calculateEmeraldReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setEmerald(ManthUtils.round(emeraldReward));
+                leaderBonus.setEmerald(MathUtils.round(emeraldReward));
                 float diamondReward = calculateDiamondReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setDiamondReward(ManthUtils.round(diamondReward));
+                leaderBonus.setDiamondReward(MathUtils.round(diamondReward));
             }
-
+            //pin == 金钻，计算金钻奖
             if(PinPosition.GOLD_DIAMOND.equals(leaderBonus.getData().getPin())){
                 float rubyReward = calculateRubyReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setRubyReward(ManthUtils.round(rubyReward));
+                leaderBonus.setRubyReward(MathUtils.round(rubyReward));
                 float emeraldReward = calculateEmeraldReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setEmerald(ManthUtils.round(emeraldReward));
+                leaderBonus.setEmerald(MathUtils.round(emeraldReward));
                 float diamondReward = calculateDiamondReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setDiamondReward(ManthUtils.round(diamondReward));
+                leaderBonus.setDiamondReward(MathUtils.round(diamondReward));
                 float goldDiamondReward = calculateGoldDiamondReward(leaderBonus, (QualifiedFiveStarNetTreeNode) top);
-                leaderBonus.setGoldDiamondReward(ManthUtils.round(goldDiamondReward));
+                leaderBonus.setGoldDiamondReward(MathUtils.round(goldDiamondReward));
             }
 
             leaderBonusRepository.saveAndFlush(leaderBonus);
@@ -107,9 +110,24 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
         for(QualifiedFiveStarNetTreeNode starNodeFirst : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(top.getId())){
             //第一代的*节点，属于第二代
             reward += starNodeFirst.getAsteriskNodePoints() * leaderBonusRate.getGoldenDiamondgRate();
-            for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
-                stk.push(starNodeSecond);
+            //如果第一代是金钻以上的级别，只需算到第二代
+            String pin = starNodeFirst.getData().getPin();
+            if(PinPosition.DIAMOND.equals(pin)||
+                    PinPosition.GOLD_DIAMOND.equals(pin)||
+                    PinPosition.DOUBLE_GOLD_DIAMOND.equals(pin)||
+                    PinPosition.TRIPLE_GOLD_DIAMOND.equals(pin)){
+                for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
+                    float emeraldReward = starNodeSecond.getFiveStarIntegral() * leaderBonusRate.getGoldenDiamondgRate();
+                    reward += emeraldReward;
+                }
             }
+            //第二+代入栈
+            else{
+                for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
+                    stk.push(starNodeSecond);
+                }
+            }
+
         }
         while (!stk.isEmpty()){
             QualifiedFiveStarNetTreeNode starNetTreeNode = stk.pop();
@@ -155,9 +173,24 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
         for(QualifiedFiveStarNetTreeNode starNodeFirst : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(top.getId())){
             //第一代的*节点，属于第二代
             reward += starNodeFirst.getAsteriskNodePoints() * leaderBonusRate.getDiamondRate();
-            for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
-                stk.push(starNodeSecond);
+            //如果第一代是钻石，只需算到第二代
+            String pin = starNodeFirst.getData().getPin();
+            if(PinPosition.DIAMOND.equals(pin)||
+                    PinPosition.GOLD_DIAMOND.equals(pin)||
+                    PinPosition.DOUBLE_GOLD_DIAMOND.equals(pin)||
+                    PinPosition.TRIPLE_GOLD_DIAMOND.equals(pin)){
+                for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
+                    float emeraldReward = starNodeSecond.getFiveStarIntegral() * leaderBonusRate.getDiamondRate();
+                    reward +=  emeraldReward;
+                }
             }
+            //第二+代入栈
+            else {
+                for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
+                    stk.push(starNodeSecond);
+                }
+            }
+
         }
         while (!stk.isEmpty()){
             QualifiedFiveStarNetTreeNode starNetTreeNode = stk.pop();
@@ -203,9 +236,25 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
         for (QualifiedFiveStarNetTreeNode starNodeFirst : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(top.getId())) {
             //第一代的*节点，属于第二代
             reward += starNodeFirst.getAsteriskNodePoints() * leaderBonusRate.getEmeraldRate();
-            for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
-                stk.push(starNodeSecond);
+            //如果第一代是是翡翠，只需算到第二代
+            String pin = starNodeFirst.getData().getPin();
+            if(PinPosition.EMERALD.equals(pin)||
+                    PinPosition.DIAMOND.equals(pin)||
+                    PinPosition.GOLD_DIAMOND.equals(pin)||
+                    PinPosition.DOUBLE_GOLD_DIAMOND.equals(pin)||
+                    PinPosition.TRIPLE_GOLD_DIAMOND.equals(pin)){
+                for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
+                    float emeraldReward = starNodeSecond.getFiveStarIntegral() * leaderBonusRate.getEmeraldRate();
+                    reward +=  emeraldReward;
+                }
             }
+            //第二+代入栈
+            else{
+                for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
+                    stk.push(starNodeSecond);
+                }
+            }
+
         }
         while (!stk.isEmpty()){
             QualifiedFiveStarNetTreeNode starNetTreeNode = stk.pop();
@@ -220,7 +269,7 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
                 float asterisk = starNetTreeNode.getAsteriskNodePoints() * leaderBonusRate.getEmeraldRate();
                 float emeraldReward = starNetTreeNode.getFiveStarIntegral() * leaderBonusRate.getEmeraldRate();
                 reward += asterisk + emeraldReward;
-                //再算子节点
+                //再算子节点，然后子节点不入栈
                 for (QualifiedFiveStarNetTreeNode starNode : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNetTreeNode.getId())) {
                     float emeraldReward2 = starNode.getFiveStarIntegral() * leaderBonusRate.getEmeraldRate();
                     reward += emeraldReward2;

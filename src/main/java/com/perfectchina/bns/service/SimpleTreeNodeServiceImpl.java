@@ -92,6 +92,10 @@ public class SimpleTreeNodeServiceImpl extends TreeNodeServiceImpl implements Si
         float salesPV = totalSales.getSalesPV();
         thisNode.setPpv( salesPV );
         thisNode.setTotalSales(salesPV);
+
+        //先复制上个月AOPV，防止不活跃丢失累计opv
+		SimpleNetTreeNode lastMonthNode = simpleTreeNodeRepository.findByAccountNum(thisNode.getSnapshotDate(), thisNode.getData().getAccountNum());
+		thisNode.setAopv(lastMonthNode.getAopv());
 		getTreeNodeRepository().saveAndFlush( thisNode);
 
 	}
