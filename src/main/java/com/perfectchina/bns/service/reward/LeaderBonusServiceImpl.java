@@ -112,8 +112,7 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
             reward += starNodeFirst.getAsteriskNodePoints() * leaderBonusRate.getGoldenDiamondgRate();
             //如果第一代是金钻以上的级别，只需算到第二代
             String pin = starNodeFirst.getData().getPin();
-            if(PinPosition.DIAMOND.equals(pin)||
-                    PinPosition.GOLD_DIAMOND.equals(pin)||
+            if(PinPosition.GOLD_DIAMOND.equals(pin)||
                     PinPosition.DOUBLE_GOLD_DIAMOND.equals(pin)||
                     PinPosition.TRIPLE_GOLD_DIAMOND.equals(pin)){
                 for(QualifiedFiveStarNetTreeNode starNodeSecond : qualifiedFiveStarNetTreeNodeRepository.getChildNodesByUpid(starNodeFirst.getId())){
@@ -133,8 +132,7 @@ public class LeaderBonusServiceImpl implements  LeaderBonusService {
             QualifiedFiveStarNetTreeNode starNetTreeNode = stk.pop();
             String pin = starNetTreeNode.getData().getPin();
             //如果是金钻以上的级别
-            if(PinPosition.DIAMOND.equals(pin)||
-                    PinPosition.GOLD_DIAMOND.equals(pin)||
+            if(PinPosition.GOLD_DIAMOND.equals(pin)||
                     PinPosition.DOUBLE_GOLD_DIAMOND.equals(pin)||
                     PinPosition.TRIPLE_GOLD_DIAMOND.equals(pin)){
                 //先算该节点
