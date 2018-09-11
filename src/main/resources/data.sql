@@ -34,3 +34,8 @@ INSERT INTO `LeaderBonusRate` VALUES ('1', 'chenhuahai', '2018-08-16', '0.03', '
 -- Records of GoldenDiamondOPVBonusRate
 -- ----------------------------
 INSERT INTO `GoldenDiamondOPVBonusRate` VALUES ('1', '0.01', '0.005', '0.0025', '0.0025', '0.001', '0.001', '0.001', '0.001', null, null, '1999-08-28', '2099-08-28', null, null);
+
+-- ----------------------------
+-- Records of triplegoldendiamondbonusrate
+-- ----------------------------
+INSERT INTO `TripleGoldenDiamondBonusRate` VALUES ('1', 'lightway', '2018-09-11', '0.0005', '1999-09-11', '2099-01-11', 'chen', '2018-09-11', '0.0005');

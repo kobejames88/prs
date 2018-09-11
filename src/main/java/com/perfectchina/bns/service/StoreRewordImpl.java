@@ -55,8 +55,9 @@ public class StoreRewordImpl implements StoreRewordService {
         float bonus=0F;
         float total=0F;
         List<SalesRecord> salesRecords=salesRecordRepository.selectServiceNum(date);
-        StoreReward storeReward=new StoreReward();
+
         if(salesRecords.size()==0){
+            StoreReward storeReward=new StoreReward();
             logger.error("该用户没有进行服务中心报单");
             bonus= 0;
             storeReward.setReword(bonus);
@@ -65,6 +66,7 @@ public class StoreRewordImpl implements StoreRewordService {
             storeRewardRepository.saveAndFlush(storeReward);
         }
         for(int i=0;i<salesRecords.size();i++){
+            StoreReward storeReward=new StoreReward();
             String centerNum= salesRecords.get(i).getServiceCenterNum();
             List<SalesRecord> salesRecordList =salesRecordRepository.getByAccountNum(centerNum,date);
                for(SalesRecord salesRecord1:salesRecordList){

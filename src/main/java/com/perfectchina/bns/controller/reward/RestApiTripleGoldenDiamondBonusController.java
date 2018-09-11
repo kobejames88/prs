@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @Author: chenhuahai
  * @Date: 2018/8/29
- * @Desc: 金钻平级奖
+ * @Desc: 三金钻奖
  */
 @RestController
 @RequestMapping("/api/reward")
@@ -41,14 +41,14 @@ public class RestApiTripleGoldenDiamondBonusController {
 
     /**
      * 根据时间获取三金钻奖信息
-     * @param snapshotDate
+     * @param snapshotDate yyyyMM
      * @return
      */
     @GetMapping(value = "/list/triplediamond/bonus/{snapshotDate}")
     public ResponseEntity<List<TripleGoldenDiamondBonus>> listAccounts(@PathVariable("snapshotDate") String snapshotDate) {
 
-        List<TripleGoldenDiamondBonus> goldenDiamondOPVBonusList =  tripleGoldenDiamondBonusService.listBonusInfo(snapshotDate);
+        List<TripleGoldenDiamondBonus> tripleGoldenDiamondOPVBonusList =  tripleGoldenDiamondBonusService.listBonusInfo(snapshotDate);
 
-        return new ResponseEntity<List<TripleGoldenDiamondBonus>>(goldenDiamondOPVBonusList, HttpStatus.OK);
+        return new ResponseEntity<List<TripleGoldenDiamondBonus>>(tripleGoldenDiamondOPVBonusList, HttpStatus.OK);
     }
 }
