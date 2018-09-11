@@ -279,7 +279,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                 qualifiedFiveStarNetTreeNode.setFiveStarIntegral(fiveStarIntegral);
                                 if (isAchieve){
                                     if (downLineNodeFiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS){
-                                        // Qualified after borrowing points,Computing grade
+                                        // 借分后合格，计算等级
                                         pin = changeAndGetPin(fiveStarIntegral, passUpGpv, qualifiedLine, accountId,childs,qualifiedFiveStarNetTreeNode);
                                         getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,pin);
                                     }else {
@@ -337,13 +337,13 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
         Integer gLine = goldDiamondLine.get(id);
         if (pin == PinPosition.GOLD_DIAMOND){
             // 如果当前元素为金钻
+            Integer uplinkGLine = goldDiamondLine.get(uplinkId);
+            if (uplinkGLine != null){
+                goldDiamondLine.put(uplinkId,uplinkGLine+1);
+            }else {
+                goldDiamondLine.put(uplinkId,1);
+            }
             if (gLine != null){
-                Integer uplinkGLine = goldDiamondLine.get(uplinkId);
-                if (uplinkGLine != null){
-                    goldDiamondLine.put(uplinkId,uplinkGLine+1);
-                }else {
-                    goldDiamondLine.put(uplinkId,1);
-                }
                 qualifiedFiveStarNetTreeNode.setGoldDiamondLine(gLine);
             }
         }else {
