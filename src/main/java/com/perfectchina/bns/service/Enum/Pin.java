@@ -11,6 +11,7 @@ public enum Pin {
     FIVE_STAR(5,"5_STAR"),
     Qualified_5_STAR(5,"Qualified_5_STAR"),
     NEW_5_STAR(5,"NEW_5_STAR"),
+    BOTTOM_QUALIFIED_5_STAR(5,"BOTTOM_QUALIFIED_5_STAR"),
     RUBY(6,"RUBY"),
     EMERALD(7,"EMERALD"),
     DIAMOND(8,"DIAMOND"),

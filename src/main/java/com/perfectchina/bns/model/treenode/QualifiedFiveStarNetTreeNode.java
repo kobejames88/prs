@@ -18,7 +18,7 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private int qualifiedLine;
 
-    private Boolean isEndFiveStar;
+//    private Boolean isEndFiveStar;
 
     private Float ppv;
 
@@ -48,13 +48,13 @@ public class QualifiedFiveStarNetTreeNode extends TreeNode {
 
     private String pin;
 
-    public Boolean getEndFiveStar() {
-        return isEndFiveStar;
-    }
-
-    public void setEndFiveStar(Boolean endFiveStar) {
-        isEndFiveStar = endFiveStar;
-    }
+//    public Boolean getEndFiveStar() {
+//        return isEndFiveStar;
+//    }
+//
+//    public void setEndFiveStar(Boolean endFiveStar) {
+//        isEndFiveStar = endFiveStar;
+//    }
 
     public Float getPpv() {
         return ppv;

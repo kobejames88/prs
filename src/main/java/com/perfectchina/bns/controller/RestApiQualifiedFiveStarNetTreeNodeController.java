@@ -87,6 +87,7 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
         if (readyToUpdate){
             treeNodeService.updateWholeTree(snapshotDate);
             treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
+			treeNodeService.calculateBottomQualifiedFiveStarReward(snapshotDate);
         }
 
 		 
@@ -103,9 +104,9 @@ public class RestApiQualifiedFiveStarNetTreeNodeController {
     @RequestMapping(value = "/qualifiedFiveStar/test/{snapshotDate}", method = RequestMethod.GET)
 	public void test(@PathVariable("snapshotDate") String snapshotDate) {
 		long startTime = System.currentTimeMillis();    //获取开始时间
-//        treeNodeService.setPreviousDateEndTime(DateUtils.getLastMonthEndDate( new Date() ));
         treeNodeService.updateWholeTree(snapshotDate);
         treeNodeService.updateWholeTreeQualifiedFiveStar(snapshotDate);
+		treeNodeService.calculateBottomQualifiedFiveStarReward(snapshotDate);
         long endTime = System.currentTimeMillis();    //获取结束时间
         logger.info("计算合格五星网络图运行时间： {} ms ",(endTime - startTime));
 	}

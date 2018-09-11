@@ -1,15 +1,17 @@
 package com.perfectchina.bns.service;
 
+import com.perfectchina.bns.common.utils.BigDecimalUtil;
 import com.perfectchina.bns.common.utils.SavePinUtils;
 import com.perfectchina.bns.model.Account;
-import com.perfectchina.bns.model.AccountPinHistory;
 import com.perfectchina.bns.model.PassUpGpv;
+import com.perfectchina.bns.model.reward.BottomQualifiedFiveStarReward;
 import com.perfectchina.bns.model.treenode.OpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.PassUpGpvNetTreeNode;
 import com.perfectchina.bns.model.treenode.QualifiedFiveStarNetTreeNode;
 import com.perfectchina.bns.model.treenode.TreeNode;
 import com.perfectchina.bns.model.vo.QualifiedFiveStarVo;
 import com.perfectchina.bns.repositories.*;
+import com.perfectchina.bns.repositories.reward.BottomQualifiedFiveStarRewardRepository;
 import com.perfectchina.bns.service.Enum.Pin;
 import com.perfectchina.bns.service.pin.PinPoints;
 import com.perfectchina.bns.service.pin.PinPosition;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -36,11 +39,11 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 	@Autowired
     private AccountRepository accountRepository;
 	@Autowired
-    private FiveStarNetTreeNodeRepository fiveStarNetTreeNodeRepository;
-	@Autowired
     private AccountPinHistoryRepository accountPinHistoryRepository;
     @Autowired
     private OpvNetTreeNodeRepository opvNetTreeNodeRepository;
+    @Autowired
+    private BottomQualifiedFiveStarRewardRepository bottomQualifiedFiveStarRewardRepository;
 
 	private Date previousDateEndTime; // Parameter to set calculate PPV for
 										// which month
@@ -175,7 +178,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		qualifiedFiveStarNetTreeNode.setSnapshotDate(passUpGpvNetTreeNode.getSnapshotDate());
         qualifiedFiveStarNetTreeNode.setAboveEmeraldNodeSign(false);
         qualifiedFiveStarNetTreeNode.setOpv(opvNetTreeNode.getOpv());
-        qualifiedFiveStarNetTreeNode.setEndFiveStar(false);
+//        qualifiedFiveStarNetTreeNode.setEndFiveStar(false);
 		qualifiedFiveStarNetTreeNode.setData(passUpGpvNetTreeNode.getData());
 		qualifiedFiveStarNetTreeNode.setBorrowedPoints(0F);
 		qualifiedFiveStarNetTreeNode.setBorrowPoints(0F);
@@ -319,7 +322,18 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		}
 	}
 
-	private void getGoldDiamondLine(long id,long uplinkId,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,String pin){
+    @Override
+    public void calculateBottomQualifiedFiveStarReward(String snapShotDate) {
+        int bottomQualifiedFiveStarCount = qualifiedFiveStarNetTreeNodeRepository.countTreeNodesBySnapshotDateAndPin(snapShotDate,PinPosition.BOTTOM_QUALIFIED_5_STAR);
+        BigDecimal Reward = BigDecimalUtil.multiply(500D, Double.valueOf(bottomQualifiedFiveStarCount));
+        BottomQualifiedFiveStarReward bottomQualifiedFiveStarReward = new BottomQualifiedFiveStarReward();
+        bottomQualifiedFiveStarReward.setCreatedBy("TerryTang");
+        bottomQualifiedFiveStarReward.setLastUpdatedBy("TerryTang");
+        bottomQualifiedFiveStarReward.setBottomQualifiedFiveStarReward(Reward);
+        bottomQualifiedFiveStarRewardRepository.save(bottomQualifiedFiveStarReward);
+    }
+
+    private void getGoldDiamondLine(long id,long uplinkId,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,String pin){
         Integer gLine = goldDiamondLine.get(id);
         if (pin == PinPosition.GOLD_DIAMOND){
             // 如果当前元素为金钻
@@ -393,9 +407,13 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
             return PinPosition.RUBY;
         }
         if (passUpGpv >= PinPoints.RUBY_QUALIFY_POINTS){
-            SavePinUtils.savePinAndHistory(account, PinPosition.QUALIFIED_FIVE_STAR,accountPinHistoryRepository,accountRepository);
             // 判断职级是否为合格五星，是：添加标记，可获取尾线五星奖
-            if (!(childs.size()>0)) qualifiedFiveStarNetTreeNode.setEndFiveStar(true);
+            if (!(childs.size()>0)){
+//                qualifiedFiveStarNetTreeNode.setEndFiveStar(true);
+                SavePinUtils.savePinAndHistory(account, PinPosition.BOTTOM_QUALIFIED_5_STAR,accountPinHistoryRepository,accountRepository);
+                return PinPosition.BOTTOM_QUALIFIED_5_STAR;
+            }
+            SavePinUtils.savePinAndHistory(account, PinPosition.QUALIFIED_FIVE_STAR,accountPinHistoryRepository,accountRepository);
             return PinPosition.QUALIFIED_FIVE_STAR;
         }
         return null;
