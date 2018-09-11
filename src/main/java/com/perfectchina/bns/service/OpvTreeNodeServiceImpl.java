@@ -153,7 +153,7 @@ public class OpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements OpvTr
 			return;
 		
 		while (treeLevel >= 0) {
-			List<OpvNetTreeNode> thisTreeLevelTreeList = opvTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			List<OpvNetTreeNode> thisTreeLevelTreeList = opvTreeNodeRepository.getTreeNodesByLevelAndSnapshotDate(snapshotDate,treeLevel);
 			// loop for the children to calculate OPV at the lowest level
 			for (OpvNetTreeNode opvNetTreeNode : thisTreeLevelTreeList) {
 				//calculate OPV
