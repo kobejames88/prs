@@ -5,6 +5,7 @@ public interface PinPosition {
 	public final String NEW_FIVE_STAR = "NEW_5_STAR" ;
 	public final String FIVE_STAR = "5_STAR" ;
 	public final String QUALIFIED_FIVE_STAR = "Qualified_5_STAR" ;
+	public final String BOTTOM_QUALIFIED_5_STAR = "BOTTOM_QUALIFIED_5_STAR" ;
 	public final String RUBY = "RUBY" ;
 	public final String EMERALD = "EMERALD" ;
 	public final String DIAMOND = "DIAMOND" ;
