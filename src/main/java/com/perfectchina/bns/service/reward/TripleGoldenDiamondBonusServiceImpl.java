@@ -79,14 +79,14 @@ public class TripleGoldenDiamondBonusServiceImpl implements TripleGoldenDiamondB
             //获取所有达标双钻所领取的双钻奖金额,总的 TODO: 到双金钻奖的表中查
             float totalDoubleDiamondBonus = 1F;
             for(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode : tripleGoldenDiamondBonusNodes){
-                totalDoubleDiamondBonus += doubleGoldDiamondNetTreeNodeRepository.findByAccountNum(doubleGoldDiamondNetTreeNode.getSnapshotDate(),doubleGoldDiamondNetTreeNode.getData().getId()).getRewardBonus().floatValue();
+                totalDoubleDiamondBonus += doubleGoldDiamondNetTreeNodeRepository.findByAccountId(doubleGoldDiamondNetTreeNode.getSnapshotDate(),doubleGoldDiamondNetTreeNode.getData().getId()).getRewardBonus().floatValue();
             }
 
             for(DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode : tripleGoldenDiamondBonusNodes){
 
                 //获取自己的双金钻奖
                 float doubleDiamondBonus = 1F; //TODO: 到双金钻奖的表中查
-                doubleDiamondBonus = doubleGoldDiamondNetTreeNodeRepository.findByAccountNum(doubleGoldDiamondNetTreeNode.getSnapshotDate(),doubleGoldDiamondNetTreeNode.getData().getId()).getRewardBonus().floatValue();
+                doubleDiamondBonus = doubleGoldDiamondNetTreeNodeRepository.findByAccountId(doubleGoldDiamondNetTreeNode.getSnapshotDate(),doubleGoldDiamondNetTreeNode.getData().getId()).getRewardBonus().floatValue();
 
                 //双钻奖金额作加权平均
                 float doubleDiamondReward = doubleDiamondBonusCompany * (doubleDiamondBonus/totalDoubleDiamondBonus);

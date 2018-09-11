@@ -10,6 +10,6 @@ public interface DoubleGoldDiamondNetTreeNodeRepository extends TreeNodeReposito
     @Query("SELECT sum(a.passUpOpv) FROM DoubleGoldDiamondNetTreeNode a WHERE a.snapshotDate = :snapShotDate")
     public Float sumBySnapshotDate(@Param("snapShotDate") String snapShotDate);
 
-    @Query("SELECT a FROM DoubleGoldDiamondNetTreeNode a WHERE a.snapshotDate = :snapShotDate and a.account.id = :AccountId")
-    DoubleGoldDiamondNetTreeNode findByAccountNum(@Param("snapShotDate") String snapShotDate, @Param("AccountId") Long AccountId);
+    @Query("SELECT a FROM DoubleGoldDiamondNetTreeNode a WHERE a.snapshotDate = :snapShotDate and a.data.id = :AccountId")
+    DoubleGoldDiamondNetTreeNode findByAccountId(@Param("snapShotDate") String snapShotDate, @Param("AccountId") Long AccountId);
 }
