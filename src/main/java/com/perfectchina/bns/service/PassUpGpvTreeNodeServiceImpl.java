@@ -117,7 +117,7 @@ public class PassUpGpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements
 			return;
 		while (treeLevel > 0) {
 			// Get all the nodes in this layer
-			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			List<PassUpGpvNetTreeNode> thisTreeLevelList = passUpGpvNetTreeNodeRepository.getTreeNodesByLevelAndSnapshotDate(snapShotDate,treeLevel);
 			// loop for the children to calculate OPV at the lowest level
 			for (PassUpGpvNetTreeNode passUpGpvNetTreeNode : thisTreeLevelList) {
 				long id = passUpGpvNetTreeNode.getId();

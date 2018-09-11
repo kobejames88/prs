@@ -195,7 +195,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 		if (treeLevel < 0)
 			return;
 		while (treeLevel > 0) {
-			List<QualifiedFiveStarNetTreeNode> thisTreeLevelList = qualifiedFiveStarNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			List<QualifiedFiveStarNetTreeNode> thisTreeLevelList = qualifiedFiveStarNetTreeNodeRepository.getTreeNodesByLevelAndSnapshotDate(snapShotDate,treeLevel);
 			for (QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode : thisTreeLevelList) {
                 // first
 			    long uplinkId = qualifiedFiveStarNetTreeNode.getUplinkId();
@@ -254,7 +254,6 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                         // 获取借分前的等级
                         String beforeBorrowPin = getPin(fiveStarIntegral, passUpGpv, qualifiedLine);
                         while (!(fiveStarIntegral >= PinPoints.COMMON_QUALIFY_POINTS)){
-                            // todo bug向下级借分6000，被上级借分6000.但是显示借分12000
                             if (passUpGpvIterator.hasNext()) {
                                 PassUpGpv maxPassUpGpv = passUpGpvIterator.next();
                                 // 获取需要借多少分

@@ -240,7 +240,7 @@ public class DoubleGoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl im
         if (treeLevel < 0)
             return;
         while (treeLevel > 0) {
-            List<DoubleGoldDiamondNetTreeNode> thisTreeLevelTreeList = doubleGoldDiamondNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+            List<DoubleGoldDiamondNetTreeNode> thisTreeLevelTreeList = doubleGoldDiamondNetTreeNodeRepository.getTreeNodesByLevelAndSnapshotDate(snapshotDate,treeLevel);
             // 从下往上循环获取每个节点
             for (DoubleGoldDiamondNetTreeNode doubleGoldDiamondNetTreeNode : thisTreeLevelTreeList) {
                 long id = doubleGoldDiamondNetTreeNode.getId();

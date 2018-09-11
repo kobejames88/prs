@@ -123,7 +123,7 @@ public class GpvTreeNodeServiceImpl extends TreeNodeServiceImpl implements GpvTr
 			return;
 		Map<Long,Float> map = new HashMap<>();
 		while (treeLevel > 0) {
-			List<GpvNetTreeNode> thisTreeLevelList = gpvNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			List<GpvNetTreeNode> thisTreeLevelList = gpvNetTreeNodeRepository.getTreeNodesByLevelAndSnapshotDate(snapshotDate,treeLevel);
 			// loop for the children to calculate OPV at the lowest level
 			for (GpvNetTreeNode gpvNetTreeNode : thisTreeLevelList) {
 				long id = gpvNetTreeNode.getId();

@@ -266,7 +266,7 @@ public class GoldDiamondTreeNodeServiceImpl extends TreeNodeServiceImpl implemen
 		if (treeLevel < 0)
 			return;
 		while (treeLevel > 0) {
-			List<GoldDiamondNetTreeNode> thisTreeLevelTreeList = goldDiamondNetTreeNodeRepository.getTreeNodesByLevel(treeLevel);
+			List<GoldDiamondNetTreeNode> thisTreeLevelTreeList = goldDiamondNetTreeNodeRepository.getTreeNodesByLevelAndSnapshotDate(snapshotDate,treeLevel);
 			for (GoldDiamondNetTreeNode goldDiamondNetTreeNode : thisTreeLevelTreeList) {
                 long id = goldDiamondNetTreeNode.getId();
                 Float opv = goldDiamondNetTreeNode.getOpv();
