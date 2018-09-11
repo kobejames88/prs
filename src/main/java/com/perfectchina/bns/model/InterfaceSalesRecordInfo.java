@@ -35,6 +35,11 @@ public class InterfaceSalesRecordInfo implements Serializable, Comparable<Interf
 
 	private float salesPv;
 
+	//订单类型
+	private Integer orderType;
+	//服务中心账号
+	private String serviceCenterNum;
+
 	@Temporal(TemporalType.DATE)
 	private Date requestDate;
 
@@ -59,7 +64,22 @@ public class InterfaceSalesRecordInfo implements Serializable, Comparable<Interf
 		this.orderNum = orderNum;
 	}
 
-	
+	public Integer getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(Integer orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getServiceCenterNum() {
+		return serviceCenterNum;
+	}
+
+	public void setServiceCenterNum(String serviceCenterNum) {
+		this.serviceCenterNum = serviceCenterNum;
+	}
+
 	public Date getSalesDate() {
 		return this.salesDate;
 	}

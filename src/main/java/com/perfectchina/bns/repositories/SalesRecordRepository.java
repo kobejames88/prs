@@ -24,4 +24,12 @@ public interface SalesRecordRepository extends JpaRepository<SalesRecord, Long> 
 			@Param("orderNum") String orderNum,
 			@Param("salesDate") Date salesDate);
 
+	@Query("SELECT sr FROM SalesRecord sr WHERE sr.serviceCenterNum = :serviceCenterNum and DATE_FORMAT(sr.salesDate, '%Y-%m')=:date and sr.orderType=1")
+	public List<SalesRecord> getByAccountNum(
+			@Param("serviceCenterNum") String serviceCenterNum,
+			@Param("date") String date);
+	@Query("SELECT DISTINCT new SalesRecord(sr.serviceCenterNum) FROM SalesRecord sr WHERE  DATE_FORMAT(sr.salesDate, '%Y-%m')=:date and sr.orderType=1")
+	public List<SalesRecord> selectServiceNum(
+			@Param("date") String date);
+
 }

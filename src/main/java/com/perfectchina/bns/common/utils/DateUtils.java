@@ -27,6 +27,21 @@ public class DateUtils {
     }
 
 	/**
+	 * 把用户输入的月份转换成date类型进行数据查询
+	 */
+	public static Date  convertSubmissionDate(String date) {
+		Date submissionDate=null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+			submissionDate=sdf.parse(date);
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return submissionDate;
+	}
+
+	/**
 	 * 检查传入的日期是否相隔一个月
 	 * @param inputDate
 	 * @return

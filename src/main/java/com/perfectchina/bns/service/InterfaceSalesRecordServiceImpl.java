@@ -80,6 +80,8 @@ public class InterfaceSalesRecordServiceImpl implements InterfaceSalesRecordServ
 		salesRecord.setSalesDate( axSale.getSalesDate() );
 		salesRecord.setSalesPV( axSale.getSalesPv() );
 		salesRecord.setAccount(account);
+		salesRecord.setOrderType(axSale.getOrderType());
+		salesRecord.setServiceCenterNum(axSale.getServiceCenterNum());
 		
 		return salesRecord;
 	}	

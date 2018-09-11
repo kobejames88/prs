@@ -37,6 +37,11 @@ public class SalesRecord implements Serializable {
 	
 	private float salesAmount;
 
+	//订单类型
+	private Integer orderType;
+	//服务中心账号
+	private String serviceCenterNum;
+
 	@Temporal(TemporalType.DATE)
 	private Date salesDate;
 
@@ -49,6 +54,9 @@ public class SalesRecord implements Serializable {
 
 	public SalesRecord() {
 	}
+	public SalesRecord(String serviceCenterNum) {
+		this.serviceCenterNum=serviceCenterNum;
+	}
 
 	public long getId() {
 		return id;
@@ -58,6 +66,21 @@ public class SalesRecord implements Serializable {
 		this.id = id;
 	}
 
+	public Integer getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(Integer orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getServiceCenterNum() {
+		return serviceCenterNum;
+	}
+
+	public void setServiceCenterNum(String serviceCenterNum) {
+		this.serviceCenterNum = serviceCenterNum;
+	}
 
 	public String getCreatedBy() {
 		return this.createdBy;
