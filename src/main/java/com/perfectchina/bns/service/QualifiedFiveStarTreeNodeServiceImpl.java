@@ -287,6 +287,7 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
                                         // 红宝石职级不受影响
                                         qualifiedLine = qualifiedLine == 0 ? 0 : qualifiedLine-1;
                                         if (beforeBorrowPin == PinPosition.RUBY){
+                                            getGoldDiamondLine(id,uplinkId,qualifiedFiveStarNetTreeNode,PinPosition.RUBY);
                                             Account account = accountRepository.getAccountById(accountId);
                                             SavePinUtils.savePinAndHistory(account, PinPosition.RUBY,accountPinHistoryRepository,accountRepository);
                                         }else {
@@ -335,9 +336,9 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
 
     private void getGoldDiamondLine(long id,long uplinkId,QualifiedFiveStarNetTreeNode qualifiedFiveStarNetTreeNode,String pin){
         Integer gLine = goldDiamondLine.get(id);
+        Integer uplinkGLine = goldDiamondLine.get(uplinkId);
         if (pin == PinPosition.GOLD_DIAMOND){
             // 如果当前元素为金钻
-            Integer uplinkGLine = goldDiamondLine.get(uplinkId);
             if (uplinkGLine != null){
                 goldDiamondLine.put(uplinkId,uplinkGLine+1);
             }else {
@@ -351,10 +352,18 @@ public class QualifiedFiveStarTreeNodeServiceImpl extends TreeNodeServiceImpl im
             if (gLine != null){
                 if (Pin.descOf(pin).getCode() >= Pin.descOf(PinPosition.EMERALD).getCode()){
                     // 如果上级是翡翠及以上,则无论下级有多少个金钻都只算一条金钻线
-                    goldDiamondLine.put(uplinkId,1);
+                    if (uplinkGLine != null){
+                        goldDiamondLine.put(uplinkId,uplinkGLine+1);
+                    }else {
+                        goldDiamondLine.put(uplinkId,1);
+                    }
                 }else {
                     // 如果上级是翡翠以下,则下级有多少个金钻就算多少条金钻线
-                    goldDiamondLine.put(uplinkId,gLine);
+                    if (uplinkGLine != null){
+                        goldDiamondLine.put(uplinkId,uplinkGLine+gLine);
+                    }else {
+                        goldDiamondLine.put(uplinkId,gLine);
+                    }
                 }
             }
         }
